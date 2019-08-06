@@ -43,4 +43,4 @@ stages:
 - stage: Release
   displayName: Release
   jobs:
-  - template: jobs/release/netcore/public-package.yaml@templates
+  - template: jobs/release/netcore/internal-package.yaml@templates
