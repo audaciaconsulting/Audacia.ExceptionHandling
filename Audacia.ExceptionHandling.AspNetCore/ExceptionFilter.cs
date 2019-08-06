@@ -29,7 +29,6 @@ namespace Audacia.ExceptionHandling.AspNetCore
 			}
 
 			var assembly = exception.TargetSite.Module.Assembly;
-			
 			var trace = new StackTrace(exception, true);
 
 			

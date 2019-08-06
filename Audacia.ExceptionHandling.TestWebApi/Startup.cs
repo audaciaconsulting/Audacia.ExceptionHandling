@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 
 namespace Audacia.ExceptionHandling.TestWebApi
 {
@@ -38,6 +39,8 @@ namespace Audacia.ExceptionHandling.TestWebApi
 				e.Handle.KeyNotFoundException();
 				e.Handle.ValidationException();
 				e.Handle.FluentValidationException();
+				
+				e.Handle<JsonSerializationException>(exception => new ErrorResult("It didn't serialize"));
 			});
 			
 			app.UseHttpsRedirection();
