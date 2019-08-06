@@ -25,6 +25,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Audacia.ExceptionHandling.A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Audacia.ExceptionHandling.TestWebApi.Framework", "Audacia.ExceptionHandling.TestWebApi.Framework\Audacia.ExceptionHandling.TestWebApi.Framework.csproj", "{435DCC6E-676D-4601-8F6C-82F0C49FBC7B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Audacia.ExceptionHandling.FluentValidation", "Audacia.ExceptionHandling.FluentValidation\Audacia.ExceptionHandling.FluentValidation.csproj", "{2E06D3D9-638B-4F58-ACA4-23FCD53B7AB3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -71,6 +73,10 @@ Global
 		{435DCC6E-676D-4601-8F6C-82F0C49FBC7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{435DCC6E-676D-4601-8F6C-82F0C49FBC7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{435DCC6E-676D-4601-8F6C-82F0C49FBC7B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E06D3D9-638B-4F58-ACA4-23FCD53B7AB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E06D3D9-638B-4F58-ACA4-23FCD53B7AB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E06D3D9-638B-4F58-ACA4-23FCD53B7AB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E06D3D9-638B-4F58-ACA4-23FCD53B7AB3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

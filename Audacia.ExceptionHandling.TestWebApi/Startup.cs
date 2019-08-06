@@ -1,7 +1,8 @@
 ﻿using System.IO;
 using System.Reflection;
-using Audacia.ExceptionHandling.Annotations;
 using Audacia.ExceptionHandling.AspNetCore;
+using Audacia.ExceptionHandling.FluentValidation;
+using Audacia.ExceptionHandling.Annotations;
 using Audacia.ExceptionHandling.Json;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
@@ -36,6 +37,7 @@ namespace Audacia.ExceptionHandling.TestWebApi
 				e.Handle.JsonReaderException();
 				e.Handle.KeyNotFoundException();
 				e.Handle.ValidationException();
+				e.Handle.FluentValidationException();
 			});
 			
 			app.UseHttpsRedirection();
