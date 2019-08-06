@@ -39,6 +39,20 @@ stages:
     parameters:
       displayName: Audacia.ExceptionHandling.FluentValidation
       projects: Audacia.ExceptionHandling.FluentValidation/Audacia.ExceptionHandling.FluentValidation.csproj
+      
+  - job:
+    displayName: Audacia.ExceptionHandling.AspNetFramework
+    steps:
+    - template: steps/build/netfx/package.yaml@templates
+      parameters:
+        projects: Audacia.ExceptionHandling.AspNetFramework/Audacia.ExceptionHandling.AspNetFramework.csproj
+      
+  - job:
+    displayName: Audacia.ExceptionHandling.EntityFramework6
+    steps:
+    - template: steps/build/netfx/package.yaml@templates
+      parameters:
+        projects: Audacia.ExceptionHandling.EntityFramework6/Audacia.ExceptionHandling.EntityFramework6.csproj
 
 - stage: Release
   displayName: Release
