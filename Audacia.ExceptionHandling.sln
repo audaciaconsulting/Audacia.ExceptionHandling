@@ -21,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Audacia.ExceptionHandling.T
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Audacia.ExceptionHandling.Json", "Audacia.ExceptionHandling.Json\Audacia.ExceptionHandling.Json.csproj", "{19DC974D-2C6E-45F7-846F-D19DBF950EC8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Audacia.ExceptionHandling.DataAnnotations", "Audacia.ExceptionHandling.DataAnnotations\Audacia.ExceptionHandling.DataAnnotations.csproj", "{DCF56F8D-05CC-4330-9170-456B6CDD945C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Audacia.ExceptionHandling.Annotations", "Audacia.ExceptionHandling.Annotations\Audacia.ExceptionHandling.Annotations.csproj", "{DCF56F8D-05CC-4330-9170-456B6CDD945C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Audacia.ExceptionHandling.TestWebApi.Framework", "Audacia.ExceptionHandling.TestWebApi.Framework\Audacia.ExceptionHandling.TestWebApi.Framework.csproj", "{435DCC6E-676D-4601-8F6C-82F0C49FBC7B}"
 EndProject

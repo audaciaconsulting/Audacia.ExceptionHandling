@@ -3,7 +3,7 @@ using System.Linq;
 using System.Net;
 using Audacia.ExceptionHandling.Builders;
 
-namespace Audacia.ExceptionHandling.DataAnnotations
+namespace Audacia.ExceptionHandling.Annotations
 {
 	public static class Extensions
 	{

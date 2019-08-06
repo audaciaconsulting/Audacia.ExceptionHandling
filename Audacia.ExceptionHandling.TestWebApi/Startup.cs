@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Reflection;
+using Audacia.ExceptionHandling.Annotations;
 using Audacia.ExceptionHandling.AspNetCore;
-using Audacia.ExceptionHandling.DataAnnotations;
 using Audacia.ExceptionHandling.Json;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
