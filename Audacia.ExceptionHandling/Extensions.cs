@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using Audacia.ExceptionHandling.Builders;
 
@@ -6,7 +7,10 @@ namespace Audacia.ExceptionHandling
 {
 	public static class Extensions
 	{
-		public static ExceptionConfigurationBuilder KeyNotFoundException(this ExceptionHandlerBuilder builder) => 
+		public static ExceptionHandlerCollectionBuilder KeyNotFoundException(this ExceptionHandlerBuilder builder) => 
 			builder.Handle((KeyNotFoundException e) => new ErrorResult(HttpStatusCode.NotFound, e.Message));
+		
+		public static ExceptionHandlerCollectionBuilder UnauthorizedAccessException(this ExceptionHandlerBuilder builder) => 
+			builder.Handle((UnauthorizedAccessException e) => new ErrorResult(HttpStatusCode.Unauthorized));
 	}
 }

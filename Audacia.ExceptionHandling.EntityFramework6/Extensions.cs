@@ -7,7 +7,7 @@ namespace Audacia.ExceptionHandling.EntityFramework6
 {
 	public static class Extensions
 	{
-		public static ExceptionConfigurationBuilder DbEntityValidationException(this ExceptionHandlerBuilder builder)
+		public static ExceptionHandlerCollectionBuilder DbEntityValidationException(this ExceptionHandlerBuilder builder)
 		{
 			return builder.Handle((DbEntityValidationException e) => e.EntityValidationErrors
 				.Select((entityValidation, index) => entityValidation.ValidationErrors

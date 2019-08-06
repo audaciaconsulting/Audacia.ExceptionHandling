@@ -14,11 +14,19 @@ namespace Audacia.ExceptionHandling
 
         /// <summary>The property on the model which caused the error, if applicable.</summary>
         public string Property => this["Property"].ToString();
+
+        public ErrorResult() { }
+        
+        public ErrorResult(HttpStatusCode statusCode)
+        {
+            StatusCode = statusCode;
+        }
         
         public ErrorResult(string message)
         {
             this["Message"] = message;
         }
+        
         public ErrorResult(string message, string property)
         {
             this["Message"] = message;

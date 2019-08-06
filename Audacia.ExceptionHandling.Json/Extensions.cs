@@ -6,7 +6,7 @@ namespace Audacia.ExceptionHandling.Json
 {
 	public static class Extensions
 	{
-		public static ExceptionConfigurationBuilder JsonReaderException(this ExceptionHandlerBuilder builder, int statusCode = 400)
+		public static ExceptionHandlerCollectionBuilder JsonReaderException(this ExceptionHandlerBuilder builder, int statusCode = 400)
 		{
 			return builder.Handle((JsonReaderException e) => new ErrorResult((HttpStatusCode)statusCode, e.Message, e.Path)
 			{

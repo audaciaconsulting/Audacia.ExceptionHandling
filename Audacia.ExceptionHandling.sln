@@ -1,26 +1,29 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Audacia.ExceptionHandling", "Audacia.ExceptionHandling\Audacia.ExceptionHandling.csproj", "{6B2854E9-16DC-4327-9732-69DB3B8AD853}"
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.489
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Audacia.ExceptionHandling", "Audacia.ExceptionHandling\Audacia.ExceptionHandling.csproj", "{6B2854E9-16DC-4327-9732-69DB3B8AD853}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Audacia.ExceptionHandling.AspNetCore", "Audacia.ExceptionHandling.AspNetCore\Audacia.ExceptionHandling.AspNetCore.csproj", "{E56E2D0E-2726-4018-95B3-B214D66D2848}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Audacia.ExceptionHandling.AspNetCore", "Audacia.ExceptionHandling.AspNetCore\Audacia.ExceptionHandling.AspNetCore.csproj", "{E56E2D0E-2726-4018-95B3-B214D66D2848}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Audacia.ExceptionHandling.AspNetFramework", "Audacia.ExceptionHandling.AspNetFramework\Audacia.ExceptionHandling.AspNetFramework.csproj", "{C54FAAB0-FD48-4BED-B7EC-5F6BE78BA9A3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Audacia.ExceptionHandling.EntityFramework6", "Audacia.ExceptionHandling.EntityFramework6\Audacia.ExceptionHandling.EntityFramework6.csproj", "{ADA5EFA3-E7C9-475A-AE20-83BFBB30A0E0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Audacia.ExceptionHandling.EntityFrameworkCore", "Audacia.ExceptionHandling.EntityFrameworkCore\Audacia.ExceptionHandling.EntityFrameworkCore.csproj", "{8DB335DF-BFCC-46B1-BC3E-DB7A16A9CF1E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Audacia.ExceptionHandling.EntityFrameworkCore", "Audacia.ExceptionHandling.EntityFrameworkCore\Audacia.ExceptionHandling.EntityFrameworkCore.csproj", "{8DB335DF-BFCC-46B1-BC3E-DB7A16A9CF1E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Audacia.ExceptionHandling.Tests", "Audacia.ExceptionHandling.Tests\Audacia.ExceptionHandling.Tests.csproj", "{33022217-9716-4C82-AAEA-01063C177BE0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Audacia.ExceptionHandling.Tests", "Audacia.ExceptionHandling.Tests\Audacia.ExceptionHandling.Tests.csproj", "{33022217-9716-4C82-AAEA-01063C177BE0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{F6BAB80E-3694-4840-ACF7-77FD18690897}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Audacia.ExceptionHandling.TestWebApi", "Audacia.ExceptionHandling.TestWebApi\Audacia.ExceptionHandling.TestWebApi.csproj", "{432EFB45-5BFF-401C-A4DB-B36781FB4CF2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Audacia.ExceptionHandling.TestWebApi", "Audacia.ExceptionHandling.TestWebApi\Audacia.ExceptionHandling.TestWebApi.csproj", "{432EFB45-5BFF-401C-A4DB-B36781FB4CF2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Audacia.ExceptionHandling.Json", "Audacia.ExceptionHandling.Json\Audacia.ExceptionHandling.Json.csproj", "{19DC974D-2C6E-45F7-846F-D19DBF950EC8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Audacia.ExceptionHandling.Json", "Audacia.ExceptionHandling.Json\Audacia.ExceptionHandling.Json.csproj", "{19DC974D-2C6E-45F7-846F-D19DBF950EC8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Audacia.ExceptionHandling.DataAnnotations", "Audacia.ExceptionHandling.DataAnnotations\Audacia.ExceptionHandling.DataAnnotations.csproj", "{DCF56F8D-05CC-4330-9170-456B6CDD945C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Audacia.ExceptionHandling.DataAnnotations", "Audacia.ExceptionHandling.DataAnnotations\Audacia.ExceptionHandling.DataAnnotations.csproj", "{DCF56F8D-05CC-4330-9170-456B6CDD945C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Audacia.ExceptionHandling.TestWebApi.Legacy", "Audacia.ExceptionHandling.TestWebApi.Legacy\Audacia.ExceptionHandling.TestWebApi.Legacy.csproj", "{755279DB-6BC4-493F-9A62-A93E0F7CC97E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Audacia.ExceptionHandling.TestWebApi.Framework", "Audacia.ExceptionHandling.TestWebApi.Framework\Audacia.ExceptionHandling.TestWebApi.Framework.csproj", "{435DCC6E-676D-4601-8F6C-82F0C49FBC7B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -64,14 +67,20 @@ Global
 		{DCF56F8D-05CC-4330-9170-456B6CDD945C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DCF56F8D-05CC-4330-9170-456B6CDD945C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DCF56F8D-05CC-4330-9170-456B6CDD945C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{755279DB-6BC4-493F-9A62-A93E0F7CC97E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{755279DB-6BC4-493F-9A62-A93E0F7CC97E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{755279DB-6BC4-493F-9A62-A93E0F7CC97E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{755279DB-6BC4-493F-9A62-A93E0F7CC97E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{435DCC6E-676D-4601-8F6C-82F0C49FBC7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{435DCC6E-676D-4601-8F6C-82F0C49FBC7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{435DCC6E-676D-4601-8F6C-82F0C49FBC7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{435DCC6E-676D-4601-8F6C-82F0C49FBC7B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{33022217-9716-4C82-AAEA-01063C177BE0} = {F6BAB80E-3694-4840-ACF7-77FD18690897}
 		{432EFB45-5BFF-401C-A4DB-B36781FB4CF2} = {F6BAB80E-3694-4840-ACF7-77FD18690897}
-		{755279DB-6BC4-493F-9A62-A93E0F7CC97E} = {F6BAB80E-3694-4840-ACF7-77FD18690897}
+		{435DCC6E-676D-4601-8F6C-82F0C49FBC7B} = {F6BAB80E-3694-4840-ACF7-77FD18690897}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {79E28713-672D-45FB-AF9A-85EC6CFBAAEC}
 	EndGlobalSection
 EndGlobal

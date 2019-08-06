@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Audacia.ExceptionHandling.Builders;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
@@ -7,17 +8,20 @@ namespace Audacia.ExceptionHandling.AspNetCore
 {
 	public static class Extensions
 	{
-		public static IApplicationBuilder ConfigureExceptions(this IApplicationBuilder appBuilder, Action<ExceptionFilter> action)
+		public static IApplicationBuilder ConfigureExceptions(this IApplicationBuilder appBuilder, Action<ExceptionHandlerCollectionBuilder> action)
 		{
-			var configBuilder = new ExceptionFilter();
+			var configBuilder = new ExceptionHandlerCollectionBuilder();
 			action(configBuilder);
+			var config = configBuilder.ExceptionHandlerCollection;
+			var filter = new ExceptionFilter(config);
 
 			appBuilder.UseExceptionHandler(builder =>
 			{
-				builder.Run(async context =>
+				builder.Run(context =>
 				{
 					var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
-					configBuilder.OnException(exceptionHandlerPathFeature.Error, context);
+					filter.OnException(exceptionHandlerPathFeature.Error, context);
+					return Task.CompletedTask;
 				});
 			});
 			

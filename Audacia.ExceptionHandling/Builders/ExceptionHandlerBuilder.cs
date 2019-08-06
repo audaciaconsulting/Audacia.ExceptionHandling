@@ -5,14 +5,14 @@ namespace Audacia.ExceptionHandling.Builders
 {
 	public class ExceptionHandlerBuilder
 	{
-		private readonly ExceptionConfigurationBuilder _builder;
+		private readonly ExceptionHandlerCollectionBuilder _builder;
 
-		public ExceptionHandlerBuilder(ExceptionConfigurationBuilder builder) => _builder = builder;
+		public ExceptionHandlerBuilder(ExceptionHandlerCollectionBuilder builder) => _builder = builder;
 
-		public ExceptionConfigurationBuilder Handle<TException>(Func<TException, ErrorResult> func)
-			where TException : Exception => _builder.Handle(func);
+		public ExceptionHandlerCollectionBuilder Handle<TException>(Func<TException, ErrorResult> func)
+			where TException : Exception => _builder.Add(func);
 
-		public ExceptionConfigurationBuilder Handle<TException>(Func<TException, IEnumerable<ErrorResult>> func)
-			where TException : Exception => _builder.Handle(func);
+		public ExceptionHandlerCollectionBuilder Handle<TException>(Func<TException, IEnumerable<ErrorResult>> func)
+			where TException : Exception => _builder.Add(func);
 	}
 }

@@ -7,7 +7,7 @@ namespace Audacia.ExceptionHandling.DataAnnotations
 {
 	public static class Extensions
 	{
-		public static ExceptionConfigurationBuilder ValidationException(this ExceptionHandlerBuilder builder) =>
+		public static ExceptionHandlerCollectionBuilder ValidationException(this ExceptionHandlerBuilder builder) =>
 			builder.Handle((ValidationException e) => e.ValidationResult.MemberNames
 				.Select(member => new ErrorResult(HttpStatusCode.BadRequest, e.ValidationResult.ErrorMessage, member)));
 	}

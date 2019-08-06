@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 namespace Audacia.ExceptionHandling.TestWebApi.Controllers
@@ -9,17 +8,10 @@ namespace Audacia.ExceptionHandling.TestWebApi.Controllers
 	public class ExceptionsController : ControllerBase
 	{
 		// GET api/values
-		[HttpGet, Route("JsonReaderException")]
+		[HttpGet, Route(nameof(JsonReaderException))]
 		public object JsonReaderException()
 		{
 			return JsonConvert.DeserializeObject("<json>this is definitely not JSON.</json>");
-		}
-
-		// GET api/values/5
-		[HttpGet("{id}")]
-		public ActionResult<string> DbUpdateException(int id)
-		{
-			return "value";
 		}
 
 		// POST api/values
