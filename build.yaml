@@ -42,6 +42,8 @@ stages:
       
   - job:
     displayName: Audacia.ExceptionHandling.AspNetFramework
+    pool:
+      vmImage: windows-latest
     steps:
     - template: steps/build/netfx/package.yaml@templates
       parameters:
@@ -49,6 +51,8 @@ stages:
       
   - job:
     displayName: Audacia.ExceptionHandling.EntityFramework6
+    pool:
+      vmImage: windows-latest
     steps:
     - template: steps/build/netfx/package.yaml@templates
       parameters:
