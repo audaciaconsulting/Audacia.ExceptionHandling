@@ -1,7 +1,6 @@
-﻿using Audacia.ExceptionHandling.AspNetCore;
-using Audacia.ExceptionHandling.FluentValidation;
-using Audacia.ExceptionHandling.Annotations;
-using Audacia.ExceptionHandling.Json;
+﻿using System.Configuration;
+using System.Net;
+using Audacia.ExceptionHandling.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -31,12 +30,12 @@ namespace Audacia.ExceptionHandling.TestWebApi
 		{
 			app.ConfigureExceptions(e =>
 			{
-				e.Handle.JsonReaderException();
+				// Add the default handler for a KeyNotFoundException
 				e.Handle.KeyNotFoundException();
-				e.Handle.ValidationException();
-				e.Handle.FluentValidationException();
+				e.Handle.UnauthorizedAccessException();
 				
-				e.Handle<JsonSerializationException>(exception => new ErrorResult("It didn't serialize"));
+				// Add a custom handler for an exception 
+				e.Handle<ConfigurationErrorsException>(exception => new ErrorResult(HttpStatusCode.ServiceUnavailable, "The app is not configured properly."));
 			});
 			
 			app.UseHttpsRedirection();
