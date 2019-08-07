@@ -28,10 +28,10 @@ As can be seen, there are some default handlers that are included in the base li
 A full list of default handlers and their usages are as follows:
 
 
-| Exception                              | Package                                    | Response Code              |
-|----------------------------------------|--------------------------------------------|----------------------------|
-| KeyNotFoundException                   | Audacia.ExceptionHandling                  | 404 (Not Found)            |
-| UnauthorizedAccessException            | Audacia.ExceptionHandling                  | 403 (Forbidden)            |
-| ValidationException                    | Audacia.ExceptionHandling.Annotations      | 422 (Unprocessable Entity) |
-| ValidationException (FluentValidation) | Audacia.ExceptionHandling.FluentValidation | 422 (Unprocessable Entity) |
-| JsonReaderException (Json.NET)         | Audacia.ExceptionHandling.Json             | 400 (Bad Request)          |
+| Exception                                                                                 | Package                                     | Response Code              |
+|-------------------------------------------------------------------------------------------|---------------------------------------------|----------------------------|
+| KeyNotFoundException                                                                      | Audacia.ExceptionHandling                   | 404 (Not Found)            |
+| UnauthorizedAccessException                                                               | Audacia.ExceptionHandling                   | 403 (Forbidden)            |
+| ValidationException                                                                       | Audacia.ExceptionHandling.Annotations       | 422 (Unprocessable Entity) |
+| ValidationException [FluentValidation](https://github.com/JeremySkinner/FluentValidation) | Audacia.ExceptionHandling.FluentValidation  | 422 (Unprocessable Entity) |
+| JsonReaderException [Json.NET](https://github.com/JamesNK/Newtonsoft.Json)                | Audacia.ExceptionHandling.Json              | 400 (Bad Request)          |
