@@ -1,13 +1,29 @@
 ## Audacia.ExceptionHandling
 Fluent standardized exception configuration for ASP.NET Web APIs.
 
-### .NET Core
+### ASP.NET Core
 
 After adding the `Audacia.ExceptionHandling.AspNetCore` package, the following can be added to your `Startup.cs` file:
 
 ```c#
-app.ConfigureExceptions(e => { });
+public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+{
+    app.ConfigureExceptions(e => { });
+}
 ```
+
+### ASP.NET Framework
+
+For older .NET Framework projects this can be added into the `Global.asax.cs` file like so:
+
+```c#
+protected void Application_Start()
+{
+    GlobalConfiguration.Configuration.Filters.ConfigureExceptions(e => { });
+}
+```
+
+### Adding Handlers
 
 And we can now start adding some handlers like this:
 
