@@ -15,29 +15,35 @@ namespace Audacia.ExceptionHandling
         /// <summary>The property on the model which caused the error, if applicable.</summary>
         public string Property => this["Property"].ToString();
 
+        /// <summary>Creates a new instance of <see cref="ErrorResult"/>.</summary>
         public ErrorResult() { }
         
+        /// <summary>Create an <see cref="ErrorResult"/> with the specified HTTP status code.</summary>
         public ErrorResult(HttpStatusCode statusCode)
         {
             StatusCode = statusCode;
         }
         
+        /// <summary>Create an <see cref="ErrorResult"/> with the specified message.</summary>
         public ErrorResult(string message)
         {
             this["Message"] = message;
         }
         
+        /// <summary>Create an error result with the specified message for the specified property.</summary>
         public ErrorResult(string message, string property)
         {
             this["Message"] = message;
             this["Property"] = property;
         }
         
+        /// <summary>Create an <see cref="ErrorResult"/> with the specified HTTP status code and message.</summary>
         public ErrorResult(HttpStatusCode statusCode, string message) : this(message)
         {
             StatusCode = statusCode;
         }
         
+        /// <summary>Create an <see cref="ErrorResult"/> with the specified HTTP status code and message, for the specified property.</summary>
         public ErrorResult(HttpStatusCode statusCode, string message, string property) : this(message, property)
         {
             StatusCode = statusCode;

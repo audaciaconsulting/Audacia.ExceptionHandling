@@ -3,7 +3,6 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web.Http.ExceptionHandling;
 using System.Web.Http.Filters;
 
 namespace Audacia.ExceptionHandling.AspNetFramework
@@ -13,12 +12,16 @@ namespace Audacia.ExceptionHandling.AspNetFramework
 	{
 		private readonly ExceptionHandlerCollection _handlers;
 
+		/// <summary>Create a new <see cref="ExceptionFilter"/> instance.</summary>
 		public ExceptionFilter(ExceptionHandlerCollection handlers)
 		{
 			_handlers = handlers;
 		}
 
+		/// <inheritdoc />
 		public bool AllowMultiple { get; } = false;
+
+		/// <inheritdoc />
 		public Task ExecuteExceptionFilterAsync(HttpActionExecutedContext context, CancellationToken cancellationToken)
 		{
 			var exception = context.Exception;

@@ -1,23 +1,22 @@
 using System;
-using System.Diagnostics;
-using System.Net;
-using System.Net.Http;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Features;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
 namespace Audacia.ExceptionHandling.AspNetCore
 {
+	/// <summary>Handles exceptions thrown in an ASP.NET Core application based on the configured <see cref="ExceptionHandlerCollection"/>.</summary>
 	public class ExceptionFilter
 	{
 		private readonly ExceptionHandlerCollection _exceptions;
 
+		/// <summary>Create a new instance of <see cref="ExceptionFilter"/>.</summary>
 		public ExceptionFilter(ExceptionHandlerCollection exceptions)
 		{
 			_exceptions = exceptions;
 		}
 		
+		/// <summary>Handles the specified exception based on the configured <see cref="ExceptionHandlerCollection"/>.</summary>
 		public void OnException(Exception exception, HttpContext context)
 		{
 			if (exception is AggregateException aggregateException)
@@ -27,10 +26,6 @@ namespace Audacia.ExceptionHandling.AspNetCore
 				if (exception.InnerException != null)
 					exception = exception.InnerException;
 			}
-
-			var assembly = exception.TargetSite.Module.Assembly;
-			var trace = new StackTrace(exception, true);
-
 			
 			if (!_exceptions.TryGetValue(exception.GetType(), out var handler)) return;
 			if (handler == null) return;

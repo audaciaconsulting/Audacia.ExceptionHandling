@@ -5,8 +5,10 @@ using Audacia.ExceptionHandling.Builders;
 
 namespace Audacia.ExceptionHandling.EntityFramework6
 {
+	/// <summary>Extension methods.</summary>
 	public static class Extensions
 	{
+		/// <summary>Configure the default handler for <see cref="DbEntityValidationException"/>.</summary>
 		public static ExceptionHandlerCollectionBuilder DbEntityValidationException(this ExceptionHandlerBuilder builder)
 		{
 			return builder.Handle((DbEntityValidationException e) => e.EntityValidationErrors

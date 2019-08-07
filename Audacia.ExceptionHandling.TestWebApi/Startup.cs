@@ -1,13 +1,9 @@
-﻿using System.IO;
-using System.Reflection;
-using Audacia.ExceptionHandling.AspNetCore;
+﻿using Audacia.ExceptionHandling.AspNetCore;
 using Audacia.ExceptionHandling.FluentValidation;
 using Audacia.ExceptionHandling.Annotations;
 using Audacia.ExceptionHandling.Json;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

@@ -21,6 +21,7 @@
 		<DefineConstants>DEBUG;TRACE</DefineConstants>
 		<ErrorReport>prompt</ErrorReport>
 		<WarningLevel>4</WarningLevel>
+		<DocumentationFile>bin\Debug\Audacia.ExceptionHandling.AspNetFramework.xml</DocumentationFile>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
 		<PlatformTarget>AnyCPU</PlatformTarget>
@@ -30,6 +31,9 @@
 		<DefineConstants>TRACE</DefineConstants>
 		<ErrorReport>prompt</ErrorReport>
 		<WarningLevel>4</WarningLevel>
+		<DocumentationFile>bin\Release\Audacia.ExceptionHandling.AspNetFramework.xml</DocumentationFile>
+		<TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+		<WarningsAsErrors>CS1591</WarningsAsErrors>
 	</PropertyGroup>
 	<ItemGroup>
 		<Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
@@ -90,6 +94,9 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <None Include="packages.config" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Content Include="Audacia.ExceptionHandling.AspNetFramework.nuspec" />
 	</ItemGroup>
 	<Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 	<!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
