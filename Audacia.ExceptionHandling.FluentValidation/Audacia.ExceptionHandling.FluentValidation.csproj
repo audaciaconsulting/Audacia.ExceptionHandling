@@ -2,7 +2,6 @@
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
-		<PackageVersion>1.0.0.0</PackageVersion>
 		<Authors>Adam Drewery</Authors>
 		<Description>Handlers for exceptions in FluentValidation.</Description>
 		<Copyright>Copyright © Audacia 2019</Copyright>
