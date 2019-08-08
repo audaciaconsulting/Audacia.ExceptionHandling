@@ -1,5 +1,8 @@
 <?xml version="1.0"?>
 <package>
+	<id>$id$</id>
+	<description>$description$</description>
+	<authors>$author$</authors>
 	<metadata>
 		<iconUrl>https://www.audacia.co.uk/media/pkenoobu/audacia-logo-circle-blue.png</iconUrl>
 	</metadata>
