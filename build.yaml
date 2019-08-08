@@ -32,11 +32,6 @@ stages:
 
   - template: jobs/build/netcore/package.yaml@templates
     parameters:
-      displayName: Audacia.ExceptionHandling.EntityFrameworkCore
-      projects: Audacia.ExceptionHandling.EntityFrameworkCore/Audacia.ExceptionHandling.EntityFrameworkCore.csproj
-
-  - template: jobs/build/netcore/package.yaml@templates
-    parameters:
       displayName: Audacia.ExceptionHandling.FluentValidation
       projects: Audacia.ExceptionHandling.FluentValidation/Audacia.ExceptionHandling.FluentValidation.csproj
       
