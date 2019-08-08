@@ -35,6 +35,11 @@ stages:
       displayName: Audacia.ExceptionHandling.FluentValidation
       projects: Audacia.ExceptionHandling.FluentValidation/Audacia.ExceptionHandling.FluentValidation.csproj
       
+  - template: jobs/build/netcore/package.yaml@templates
+    parameters:
+      displayName: Audacia.ExceptionHandling.Json
+      projects: Audacia.ExceptionHandling.Json/Audacia.ExceptionHandling.Json.csproj
+      
   - job:
     displayName: Audacia.ExceptionHandling.AspNetFramework
     pool:
