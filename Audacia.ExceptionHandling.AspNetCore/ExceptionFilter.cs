@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -15,9 +16,9 @@ namespace Audacia.ExceptionHandling.AspNetCore
 		{
 			_exceptions = exceptions;
 		}
-		
+
 		/// <summary>Handles the specified exception based on the configured <see cref="ExceptionHandlerCollection"/>.</summary>
-		public void OnException(Exception exception, HttpContext context)
+		public Task OnException(Exception exception, HttpContext context)
 		{
 			if (exception is AggregateException aggregateException)
 			{
@@ -26,15 +27,15 @@ namespace Audacia.ExceptionHandling.AspNetCore
 				if (exception.InnerException != null)
 					exception = exception.InnerException;
 			}
-			
-			if (!_exceptions.TryGetValue(exception.GetType(), out var handler)) return;
-			if (handler == null) return;
+
+			if (!_exceptions.TryGetValue(exception.GetType(), out var handler)) return Task.CompletedTask;
+			if (handler == null) return Task.CompletedTask;
 
 			var result = handler.Action.Invoke(exception);
-			
+
 			// todo: make this respect the accept header from the client (if possible)
 			var json = JsonConvert.SerializeObject(result, new JsonSerializerSettings {ContractResolver = new CamelCasePropertyNamesContractResolver()});
-			context.Response.WriteAsync(json);
+			return context.Response.WriteAsync(json);
 		}
 	}
 }
