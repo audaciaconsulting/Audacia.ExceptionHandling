@@ -7,14 +7,23 @@ namespace Audacia.ExceptionHandling.Json
 	/// <summary>Extension methods.</summary>
 	public static class Extensions
 	{
-		/// <summary>Configure the default handler for <see cref="JsonReaderException"/>.</summary>
-		public static ExceptionHandlerCollectionBuilder JsonReaderException(this ExceptionHandlerBuilder builder, int statusCode = 400)
+		/// <summary>Configure the default handler for <see cref="Newtonsoft.Json.JsonReaderException"/> with the specified HTTP status code.</summary>
+		public static ExceptionHandlerCollectionBuilder JsonReaderException(this ExceptionHandlerBuilder builder, HttpStatusCode statusCode)
 		{
-			return builder.Handle((JsonReaderException e) => new ErrorResult((HttpStatusCode)statusCode, e.Message, e.Path)
+			return builder.Handle((JsonReaderException e) => new ErrorResult(statusCode, e.Message, e.Path)
 			{
 				["LineNumber"] = e.LineNumber,
 				["Position"] = e.LinePosition
 			});
 		}
+
+		/// <summary>Configure the default handler for <see cref="Newtonsoft.Json.JsonReaderException"/> with the specified HTTP status code.</summary>
+		public static ExceptionHandlerCollectionBuilder
+			JsonReaderException(this ExceptionHandlerBuilder builder, int statusCode) =>
+			builder.JsonReaderException((HttpStatusCode) statusCode);
+
+		/// <summary>Configure the default handler for <see cref="Newtonsoft.Json.JsonReaderException"/> with an HTTP status code of 400: Bad Request.</summary>
+		public static ExceptionHandlerCollectionBuilder JsonReaderException(this ExceptionHandlerBuilder builder) =>
+			builder.JsonReaderException((HttpStatusCode) 400);
 	}
 }

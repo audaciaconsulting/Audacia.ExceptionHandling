@@ -8,9 +8,18 @@ namespace Audacia.ExceptionHandling.Annotations
 	/// <summary>Extension methods.</summary>
 	public static class Extensions
 	{
-		/// <summary>Configure the default handler for <see cref="ValidationException"/>.</summary>
-		public static ExceptionHandlerCollectionBuilder ValidationException(this ExceptionHandlerBuilder builder) =>
+		/// <summary>Configure the default handler for <see cref="System.ComponentModel.DataAnnotations.ValidationException"/> with the specified http status code.</summary>
+		public static ExceptionHandlerCollectionBuilder ValidationException(this ExceptionHandlerBuilder builder, HttpStatusCode statusCode) =>
 			builder.Handle((ValidationException e) => e.ValidationResult.MemberNames
-				.Select(member => new ErrorResult((HttpStatusCode)422, e.ValidationResult.ErrorMessage, member)));
+				.Select(member => new ErrorResult(statusCode, e.ValidationResult.ErrorMessage, member)));
+
+		/// <summary>Configure the default handler for <see cref="System.ComponentModel.DataAnnotations.ValidationException"/> with the specified http status code.</summary>
+		public static ExceptionHandlerCollectionBuilder
+			ValidationException(this ExceptionHandlerBuilder builder, int statusCode) =>
+			builder.ValidationException((HttpStatusCode) statusCode);
+
+		/// <summary>Configure the default handler for <see cref="System.ComponentModel.DataAnnotations.ValidationException"/> with an HTTP status code of 422: Unprocessable Entity.</summary>
+		public static ExceptionHandlerCollectionBuilder ValidationException(this ExceptionHandlerBuilder builder) =>
+			builder.ValidationException((HttpStatusCode) 422);
 	}
 }
