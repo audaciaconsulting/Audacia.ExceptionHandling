@@ -22,11 +22,10 @@ namespace Audacia.ExceptionHandling.AspNetCore
 				builder.Run(context =>
 				{
 					var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
-					filter.OnException(exceptionHandlerPathFeature.Error, context);
-					return Task.CompletedTask;
+					return filter.OnExceptionAsync(exceptionHandlerPathFeature.Error, context);
 				});
 			});
-			
+
 			return appBuilder;
 		}
 	}
