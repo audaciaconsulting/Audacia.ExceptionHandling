@@ -18,7 +18,7 @@ namespace Audacia.ExceptionHandling.AspNetCore
 		}
 
 		/// <summary>Handles the specified exception based on the configured <see cref="ExceptionHandlerCollection"/>.</summary>
-		public void OnExceptionAsync(Exception exception, HttpContext context)
+		public void OnException(Exception exception, HttpContext context)
 		{
 			if (exception is AggregateException aggregateException)
 			{
