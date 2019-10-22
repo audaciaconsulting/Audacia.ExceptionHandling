@@ -8,8 +8,16 @@ namespace Audacia.ExceptionHandling.EntityFramework6
 	/// <summary>Extension methods.</summary>
 	public static class Extensions
 	{
-		/// <summary>Configure the default handler for <see cref="DbEntityValidationException"/>.</summary>
-		public static ExceptionHandlerCollectionBuilder DbEntityValidationException(this ExceptionHandlerBuilder builder)
+		/// <summary>Configure the default handler for <see cref="System.Data.Entity.Validation.DbEntityValidationException"/> with an HTTP status code of 400: Bad Request.</summary>
+		public static ExceptionHandlerCollectionBuilder DbEntityValidationException(this ExceptionHandlerBuilder builder) =>
+			builder.DbEntityValidationException(HttpStatusCode.BadRequest);
+
+		/// <summary>Configure the default handler for <see cref="System.Data.Entity.Validation.DbEntityValidationException"/> with the specified HTTP status code.</summary>
+		public static ExceptionHandlerCollectionBuilder DbEntityValidationException(this ExceptionHandlerBuilder builder, int statusCode) =>
+			builder.DbEntityValidationException((HttpStatusCode) statusCode);
+
+		/// <summary>Configure the default handler for <see cref="System.Data.Entity.Validation.DbEntityValidationException"/> with the specified HTTP status code.</summary>
+		public static ExceptionHandlerCollectionBuilder DbEntityValidationException(this ExceptionHandlerBuilder builder, HttpStatusCode statusCode)
 		{
 			return builder.Handle((DbEntityValidationException e) => e.EntityValidationErrors
 				.Select((entityValidation, index) => entityValidation.ValidationErrors
@@ -18,7 +26,7 @@ namespace Audacia.ExceptionHandling.EntityFramework6
 					var entityType = entityValidation.Entry.Entity.GetType().Name;
 					var propertyName = propertyValidation.PropertyName; // .CamelCase(); todo: let asp.net decide whether to camelcase things
 					var message = propertyValidation.ErrorMessage;
-					return new ErrorResult(HttpStatusCode.BadRequest, message, propertyName)
+					return new ErrorResult(statusCode, message, propertyName)
 					{
 						{"Type", entityType},
 						{"Ordinal", index}
