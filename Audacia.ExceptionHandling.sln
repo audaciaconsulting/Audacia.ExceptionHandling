@@ -21,8 +21,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Audacia.ExceptionHandling.A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Audacia.ExceptionHandling.FluentValidation", "Audacia.ExceptionHandling.FluentValidation\Audacia.ExceptionHandling.FluentValidation.csproj", "{2E06D3D9-638B-4F58-ACA4-23FCD53B7AB3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Audacia.ExceptionHandling.AspNetCore.Tests", "Audacia.ExceptionHandling.AspNetCore.Tests\Audacia.ExceptionHandling.AspNetCore.Tests.csproj", "{18B9918B-A89E-4E74-98A0-AE73D1345E5F}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,17 +59,12 @@ Global
 		{2E06D3D9-638B-4F58-ACA4-23FCD53B7AB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E06D3D9-638B-4F58-ACA4-23FCD53B7AB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2E06D3D9-638B-4F58-ACA4-23FCD53B7AB3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{18B9918B-A89E-4E74-98A0-AE73D1345E5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{18B9918B-A89E-4E74-98A0-AE73D1345E5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{18B9918B-A89E-4E74-98A0-AE73D1345E5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{18B9918B-A89E-4E74-98A0-AE73D1345E5F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{33022217-9716-4C82-AAEA-01063C177BE0} = {F6BAB80E-3694-4840-ACF7-77FD18690897}
-		{18B9918B-A89E-4E74-98A0-AE73D1345E5F} = {F6BAB80E-3694-4840-ACF7-77FD18690897}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {79E28713-672D-45FB-AF9A-85EC6CFBAAEC}
