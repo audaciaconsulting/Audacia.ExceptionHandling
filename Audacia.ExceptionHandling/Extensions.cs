@@ -35,5 +35,11 @@ namespace Audacia.ExceptionHandling
 			this ExceptionHandlerCollectionBuilder builder,
 			Func<T, ErrorResult> handler) where T : Exception =>
 			builder.Handle.Handle(handler);
+
+		/// <summary>Register a handler for the specified exception, using the specified transformation function.</summary>
+		public static ExceptionHandlerCollectionBuilder Handle<T>(
+			this ExceptionHandlerCollectionBuilder builder,
+			Func<T, IEnumerable<ErrorResult>> handler) where T : Exception =>
+			builder.Handle.Handle(handler);
 	}
 }
