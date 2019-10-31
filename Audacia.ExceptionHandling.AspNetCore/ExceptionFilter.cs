@@ -18,7 +18,7 @@ namespace Audacia.ExceptionHandling.AspNetCore
 		}
 
 		/// <summary>Handles the specified exception based on the configured <see cref="ExceptionHandlerCollection"/>.</summary>
-		public void OnException(Exception exception, HttpContext context)
+		public Task OnException(Exception exception, HttpContext context)
 		{
 			if (exception is AggregateException aggregateException)
 			{
@@ -29,13 +29,15 @@ namespace Audacia.ExceptionHandling.AspNetCore
 			}
 
 			var handler = _exceptions.Match(exception);
-			if (handler == null) return;
+			if (handler == null) return Task.CompletedTask;
 
 			var result = handler.Action.Invoke(exception);
 
 			// todo: make this respect the accept header from the client (if possible)
 			var json = JsonConvert.SerializeObject(result, new JsonSerializerSettings {ContractResolver = new CamelCasePropertyNamesContractResolver()});
 			context.Response.OnStarting(() => context.Response.WriteAsync(json));
+
+			return Task.CompletedTask;
 		}
 	}
 }
