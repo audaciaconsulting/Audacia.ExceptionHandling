@@ -28,7 +28,7 @@ namespace Audacia.ExceptionHandling.AspNetCore
 					exception = exception.InnerException;
 			}
 
-			if (!_exceptions.TryGetValue(exception.GetType(), out var handler)) return;
+			var handler = _exceptions.Match(exception);
 			if (handler == null) return;
 
 			var result = handler.Action.Invoke(exception);

@@ -19,7 +19,6 @@ namespace Audacia.ExceptionHandling.Tests
 
 		protected ExceptionHandlerBuilder HandlerBuilder { get; }
 
-
 		[Fact]
 		public void Registers_correctly()
 		{
