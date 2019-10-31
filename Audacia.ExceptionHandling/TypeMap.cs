@@ -10,15 +10,12 @@ namespace Audacia.ExceptionHandling
 	/// </summary>
 	internal class TypeMap
 	{
-		private readonly IDictionary<Type, ExceptionHandler> _maps = new ConcurrentDictionary<Type, ExceptionHandler>();
+		private readonly ConcurrentDictionary<Type, ExceptionHandler> _maps = new ConcurrentDictionary<Type, ExceptionHandler>();
 
-		public void Add(Type source, ExceptionHandler handler) => _maps.Add(source, handler);
+		public void Add(Type source, ExceptionHandler handler) => _maps.TryAdd(source, handler);
 
 		public void Invalidate() => _maps.Clear();
 
-		public ExceptionHandler Find(Type source)
-		{
-			return _maps.TryGetValue(source, out var target) ? target : null;
-		}
+		public ExceptionHandler Find(Type source) => _maps.TryGetValue(source, out var target) ? target : null;
 	}
 }
