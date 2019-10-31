@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace Audacia.ExceptionHandling
@@ -9,7 +10,7 @@ namespace Audacia.ExceptionHandling
 	/// </summary>
 	internal class TypeMap
 	{
-		private readonly IDictionary<Type, ExceptionHandler> _maps = new Dictionary<Type, ExceptionHandler>();
+		private readonly IDictionary<Type, ExceptionHandler> _maps = new ConcurrentDictionary<Type, ExceptionHandler>();
 
 		public void Add(Type source, ExceptionHandler handler) => _maps.Add(source, handler);
 
