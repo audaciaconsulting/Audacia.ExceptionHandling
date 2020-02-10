@@ -24,8 +24,10 @@ namespace Audacia.ExceptionHandling
 	/// <summary>Handles an exception, transforming it into a standardized <see cref="ErrorResult"/>.</summary>
 	public abstract class ExceptionHandler
 	{
+		/// <summary>Initializes a new instance of <see cref="ExceptionHandler{TException}"/></summary>
 		public ExceptionHandler(HttpStatusCode statusCode) => StatusCode = statusCode;
 
+		/// <summary>The HTTP Status code to set on the response.</summary>
 		public HttpStatusCode StatusCode { get; }
 
 		/// <summary>The type of Exception this handler handles.</summary>
