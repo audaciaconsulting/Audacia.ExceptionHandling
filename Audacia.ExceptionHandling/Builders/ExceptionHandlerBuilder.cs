@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Net;
 
 namespace Audacia.ExceptionHandling.Builders
 {
@@ -12,11 +13,11 @@ namespace Audacia.ExceptionHandling.Builders
 		public ExceptionHandlerBuilder(ExceptionHandlerCollectionBuilder builder) => _builder = builder;
 
 		/// <summary>Handle the specified exception type using the specified handler.</summary>
-		public ExceptionHandlerCollectionBuilder Handle<TException>(Func<TException, ErrorResult> func)
-			where TException : Exception => _builder.Add(func);
+		public ExceptionHandlerCollectionBuilder Handle<TException>(HttpStatusCode statusCode, Func<TException, ErrorResult> func)
+			where TException : Exception => _builder.Add(func, statusCode);
 
 		/// <summary>Handle the specified exception type using the specified handler.</summary>
-		public ExceptionHandlerCollectionBuilder Handle<TException>(Func<TException, IEnumerable<ErrorResult>> func)
-			where TException : Exception => _builder.Add(func);
+		public ExceptionHandlerCollectionBuilder Handle<TException>(HttpStatusCode statusCode, Func<TException, IEnumerable<ErrorResult>> func)
+			where TException : Exception => _builder.Add(func, statusCode);
 	}
 }

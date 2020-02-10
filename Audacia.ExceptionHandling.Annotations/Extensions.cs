@@ -10,8 +10,8 @@ namespace Audacia.ExceptionHandling.Annotations
 	{
 		/// <summary>Configure the default handler for <see cref="System.ComponentModel.DataAnnotations.ValidationException"/> with the specified http status code.</summary>
 		public static ExceptionHandlerCollectionBuilder ValidationException(this ExceptionHandlerBuilder builder, HttpStatusCode statusCode) =>
-			builder.Handle((ValidationException e) => e.ValidationResult.MemberNames
-				.Select(member => new ErrorResult(statusCode, e.ValidationResult.ErrorMessage, member)));
+			builder.Handle(statusCode, (ValidationException e) => e.ValidationResult.MemberNames
+				.Select(member => new ErrorResult(e.ValidationResult.ErrorMessage, member)));
 
 		/// <summary>Configure the default handler for <see cref="System.ComponentModel.DataAnnotations.ValidationException"/> with the specified http status code.</summary>
 		public static ExceptionHandlerCollectionBuilder

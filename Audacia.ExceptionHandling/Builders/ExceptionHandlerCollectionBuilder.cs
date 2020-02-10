@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Net;
 
 namespace Audacia.ExceptionHandling.Builders
 {
@@ -7,21 +8,21 @@ namespace Audacia.ExceptionHandling.Builders
 	public class ExceptionHandlerCollectionBuilder
 	{
 		internal ExceptionHandlerCollection ExceptionHandlerCollection { get; } = new ExceptionHandlerCollection();
-		
+
 		/// <summary>Add the specified handler to the collection.</summary>
-		public ExceptionHandlerCollectionBuilder Add<TException>(Func<TException, ErrorResult> func) where TException : Exception
+		public ExceptionHandlerCollectionBuilder Add<TException>(Func<TException, ErrorResult> func, HttpStatusCode statusCode) where TException : Exception
 		{
-			ExceptionHandlerCollection.Add(func);
+			ExceptionHandlerCollection.Add(func, statusCode);
 			return this;
 		}
-		
+
 		/// <summary>Add the specified handler to the collection.</summary>
-		public ExceptionHandlerCollectionBuilder Add<TException>(Func<TException, IEnumerable<ErrorResult>> func) where TException : Exception
+		public ExceptionHandlerCollectionBuilder Add<TException>(Func<TException, IEnumerable<ErrorResult>> func, HttpStatusCode statusCode) where TException : Exception
 		{
-			ExceptionHandlerCollection.Add(func);
+			ExceptionHandlerCollection.Add(func, statusCode);
 			return this;
 		}
-		
+
 		/// <summary>Provides an <see cref="ExceptionHandlerBuilder"/> for configuring the handler for a single exception type.</summary>
 		public ExceptionHandlerBuilder Handle => new ExceptionHandlerBuilder(this);
 	}

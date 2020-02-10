@@ -19,14 +19,14 @@ namespace Audacia.ExceptionHandling.EntityFramework6
 		/// <summary>Configure the default handler for <see cref="System.Data.Entity.Validation.DbEntityValidationException"/> with the specified HTTP status code.</summary>
 		public static ExceptionHandlerCollectionBuilder DbEntityValidationException(this ExceptionHandlerBuilder builder, HttpStatusCode statusCode)
 		{
-			return builder.Handle((DbEntityValidationException e) => e.EntityValidationErrors
+			return builder.Handle(statusCode, (DbEntityValidationException e) => e.EntityValidationErrors
 				.Select((entityValidation, index) => entityValidation.ValidationErrors
 				.Select(propertyValidation =>
 				{
 					var entityType = entityValidation.Entry.Entity.GetType().Name;
 					var propertyName = propertyValidation.PropertyName; // .CamelCase(); todo: let asp.net decide whether to camelcase things
 					var message = propertyValidation.ErrorMessage;
-					return new ErrorResult(statusCode, message, propertyName)
+					return new ErrorResult(message, propertyName)
 					{
 						{"Type", entityType},
 						{"Ordinal", index}

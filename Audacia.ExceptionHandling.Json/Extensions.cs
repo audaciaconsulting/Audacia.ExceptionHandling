@@ -10,7 +10,7 @@ namespace Audacia.ExceptionHandling.Json
 		/// <summary>Configure the default handler for <see cref="Newtonsoft.Json.JsonReaderException"/> with the specified HTTP status code.</summary>
 		public static ExceptionHandlerCollectionBuilder JsonReaderException(this ExceptionHandlerBuilder builder, HttpStatusCode statusCode)
 		{
-			return builder.Handle((JsonReaderException e) => new ErrorResult(statusCode, e.Message, e.Path)
+			return builder.Handle(statusCode, (JsonReaderException e) => new ErrorResult(e.Message, e.Path)
 			{
 				["LineNumber"] = e.LineNumber,
 				["Position"] = e.LinePosition

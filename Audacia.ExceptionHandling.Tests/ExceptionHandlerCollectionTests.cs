@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Net;
 using FluentAssertions;
 using Xunit;
 
@@ -12,8 +13,8 @@ namespace Audacia.ExceptionHandling.Tests
 		public ExceptionHandlerCollectionTests()
 		{
 			ExceptionHandlerCollection.Add((InvalidOperationException e) =>
-				new ErrorResult(nameof(InvalidOperationException)));
-			ExceptionHandlerCollection.Add((SystemException e) => new ErrorResult(nameof(SystemException)));
+				new ErrorResult(nameof(InvalidOperationException)), HttpStatusCode.Ambiguous);
+			ExceptionHandlerCollection.Add((SystemException e) => new ErrorResult(nameof(SystemException)), HttpStatusCode.Ambiguous);
 		}
 
 		public class Match : ExceptionHandlerCollectionTests

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
@@ -34,8 +35,13 @@ namespace Audacia.ExceptionHandling.AspNetCore
 			var result = handler.Action.Invoke(exception);
 
 			// todo: make this respect the accept header from the client (if possible)
-			var json = JsonConvert.SerializeObject(result, new JsonSerializerSettings {ContractResolver = new CamelCasePropertyNamesContractResolver()});
-			context.Response.OnStarting(() => context.Response.WriteAsync(json));
+			var json = JsonConvert.SerializeObject(result, new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() });
+			context.Response.OnStarting(state =>
+			{
+				var http = (HttpContext) state;
+				http.Response.StatusCode = (int)handler.StatusCode;
+				return http.Response.WriteAsync(json);
+			}, context);
 
 			return Task.CompletedTask;
 		}
