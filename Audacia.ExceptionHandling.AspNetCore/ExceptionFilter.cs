@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
@@ -40,8 +41,10 @@ namespace Audacia.ExceptionHandling.AspNetCore
 				new JsonSerializerSettings {ContractResolver = new CamelCasePropertyNamesContractResolver()});
 
             context.Response.Clear();
+            context.Response.Headers.Add("Content-Type", "application/json");
+            context.Response.Headers.Add("Content-Length", Encoding.UTF8.GetByteCount(json).ToString());
 			context.Response.StatusCode = (int) handler.StatusCode;
-            context.Response.WriteAsync(json);
+            context.Response.WriteAsync(json, Encoding.UTF8);
 			return Task.CompletedTask;
 		}
 	}
