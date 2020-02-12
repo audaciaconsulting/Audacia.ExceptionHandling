@@ -9,8 +9,8 @@ namespace Audacia.ExceptionHandling.FluentValidation
 	{
 		/// <summary>Configure the default handler for FluentValidation's <see cref="ValidationException"/> with the specified HTTP status code.</summary>
 		public static ExceptionHandlerCollectionBuilder FluentValidationException(this ExceptionHandlerBuilder builder, HttpStatusCode statusCode) =>
-			builder.Handle((ValidationException e) => e.Errors
-				.Select(member => new ErrorResult(statusCode, member.ErrorMessage, member.PropertyName)));
+			builder.Handle(statusCode, (ValidationException e) => e.Errors
+				.Select(member => new ErrorResult(member.ErrorMessage, member.PropertyName)));
 
 		/// <summary>Configure the default handler for <see cref="System.ComponentModel.DataAnnotations.ValidationException"/> with the specified HTTP status code.</summary>
 		public static ExceptionHandlerCollectionBuilder

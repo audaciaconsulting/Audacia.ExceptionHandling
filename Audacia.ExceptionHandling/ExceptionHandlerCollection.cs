@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Net;
 
 namespace Audacia.ExceptionHandling
 {
@@ -9,16 +10,16 @@ namespace Audacia.ExceptionHandling
 		private TypeMap TypeMap { get; } = new TypeMap();
 
 		/// <summary>Add a handler to the collection.</summary>
-		public void Add<TException>(Func<TException, ErrorResult> func) where TException : Exception
+		public void Add<TException>(Func<TException, ErrorResult> func, HttpStatusCode statusCode) where TException : Exception
 		{
-			Add(typeof(TException), new ExceptionHandler<TException>(func));
+			Add(typeof(TException), new ExceptionHandler<TException>(func, statusCode));
 			TypeMap.Invalidate();
 		}
 
 		/// <summary>Add a handler to the collection.</summary>
-		public void Add<TException>(Func<TException, IEnumerable<ErrorResult>> func) where TException : Exception
+		public void Add<TException>(Func<TException, IEnumerable<ErrorResult>> func, HttpStatusCode statusCode) where TException : Exception
 		{
-			Add(typeof(TException), new ExceptionHandler<TException>(func));
+			Add(typeof(TException), new ExceptionHandler<TException>(func, statusCode));
 			TypeMap.Invalidate();
 		}
 
