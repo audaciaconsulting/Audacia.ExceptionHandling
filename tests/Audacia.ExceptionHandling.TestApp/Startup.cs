@@ -60,7 +60,7 @@ namespace Audacia.ExceptionHandling.TestApp
                     Console.Error.Write("Argument exception encountered");
                 });
 
-                e.Logging(ex =>
+                e.WithDefaultLogging(ex =>
                 {
                     Console.Error.Write(ex);
                 });

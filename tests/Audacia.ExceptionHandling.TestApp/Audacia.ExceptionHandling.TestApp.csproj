@@ -1,16 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-	<PropertyGroup>
-		<TargetFramework>netcoreapp3.1</TargetFramework>
-	</PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+    </PropertyGroup>
 
-	<ItemGroup>
-	  <ProjectReference Include="..\Audacia.ExceptionHandling.AspNetCore\Audacia.ExceptionHandling.AspNetCore.csproj" />
-	</ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\Audacia.ExceptionHandling.AspNetCore\Audacia.ExceptionHandling.AspNetCore.csproj"/>
+    </ItemGroup>
 
-	<ItemGroup>
-	  <PackageReference Include="Audacia.Middleware.RobotsMetaTag" Version="0.0.19028.30907" />
-	  <PackageReference Include="Robotify.AspNetCore" Version="1.0.2" />
-	</ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Audacia.Middleware.RobotsMetaTag" Version="0.0.19028.30907"/>
+        <PackageReference Include="Robotify.AspNetCore" Version="1.0.2"/>
+    </ItemGroup>
 
 </Project>

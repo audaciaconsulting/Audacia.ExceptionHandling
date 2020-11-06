@@ -11,7 +11,7 @@ namespace Audacia.ExceptionHandling
         private readonly IDictionary<Type, IExceptionHandler> _exceptionToHandlerMap =
             new Dictionary<Type, IExceptionHandler>();
 
-        private void Add<TException>(IExceptionHandler handler)
+        internal void Add<TException>(IExceptionHandler handler)
             where TException : Exception
         {
             _exceptionToHandlerMap.Add(typeof(TException), handler);

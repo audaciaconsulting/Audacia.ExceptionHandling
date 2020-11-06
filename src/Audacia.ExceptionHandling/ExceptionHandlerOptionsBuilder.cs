@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using Audacia.ExceptionHandling.Handlers;
 
 namespace Audacia.ExceptionHandling
 {
@@ -26,7 +27,15 @@ namespace Audacia.ExceptionHandling
             return this;
         }
 
-        public ExceptionHandlerOptionsBuilder Logging(Action<Exception> loggingAction)
+        public ExceptionHandlerOptionsBuilder AddHandler<TException, TResult>(
+            ExceptionHandler<TException, TResult> handler)
+            where TException : Exception
+        {
+            _options.HandlerCollection.Add<TException>(handler);
+            return this;
+        }
+
+        public ExceptionHandlerOptionsBuilder WithDefaultLogging(Action<Exception> loggingAction)
         {
             _options.Logging = loggingAction;
             return this;
