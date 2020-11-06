@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -41,13 +42,28 @@ namespace Audacia.ExceptionHandling.TestApp
 
             app.ConfigureExceptions(e =>
             {
-                e.KeyNotFoundException();
-                e.UnauthorizedAccessException();
-                e.Add((InvalidOperationException exception) => new ErrorResult(
-                        "huh",
-                        string.Empty,
-                        string.Empty),
-                    HttpStatusCode.LoopDetected);
+                e.Handle((KeyNotFoundException ex) => new
+                {
+                    Result = ex.Message
+                }, HttpStatusCode.NotFound);
+
+                e.Handle((InvalidOperationException ex) => new
+                {
+                    Result = ex.Message
+                });
+
+                e.Handle((ArgumentException ex) => new
+                {
+                    Result = ex.Message
+                }, ex =>
+                {
+                    Console.Error.Write("Argument exception encountered");
+                });
+
+                e.Logging(ex =>
+                {
+                    Console.Error.Write(ex);
+                });
             });
 
             app.UseEndpoints(endpoints =>

@@ -10,17 +10,17 @@ namespace Audacia.ExceptionHandling.Tests
 {
     public class ExceptionHandlerBuilderTests
     {
-        private ExceptionHandlerBuilder ExceptionHandlerBuilder { get; } = new ExceptionHandlerBuilder();
+        private ExceptionHandlerCollection ExceptionHandlerCollection { get; } = new ExceptionHandlerCollection();
 
         public ExceptionHandlerBuilderTests()
         {
-            ExceptionHandlerBuilder.Add((InvalidOperationException e) =>
+            ExceptionHandlerCollection.Add((InvalidOperationException e) =>
                 new List<ErrorResult>
                 {
                     new ErrorResult(nameof(InvalidOperationException), nameof(InvalidOperationException),
                         nameof(InvalidOperationException))
                 }, HttpStatusCode.Ambiguous);
-            ExceptionHandlerBuilder.Add((SystemException e) =>
+            ExceptionHandlerCollection.Add((SystemException e) =>
                     new List<ErrorResult>
                     {
                         new ErrorResult(nameof(SystemException), nameof(SystemException), nameof(SystemException))
@@ -33,7 +33,7 @@ namespace Audacia.ExceptionHandling.Tests
             [Fact]
             public void Matches_The_Exact_Type()
             {
-                var match = ExceptionHandlerBuilder.Get<InvalidOperationException>();
+                var match = ExceptionHandlerCollection.Get<InvalidOperationException>();
                 match.Should().NotBeNull();
                 var result = match?.Invoke(new InvalidOperationException());
                 var actions = result?.As<IEnumerable<ErrorResult>>().ToList();
@@ -46,7 +46,7 @@ namespace Audacia.ExceptionHandling.Tests
             [Fact]
             public void Matches_A_Base_Type()
             {
-                var match = ExceptionHandlerBuilder.Get<SystemException>();
+                var match = ExceptionHandlerCollection.Get<SystemException>();
                 match.Should().NotBeNull();
             }
         }

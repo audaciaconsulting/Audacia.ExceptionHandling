@@ -9,18 +9,18 @@ using Newtonsoft.Json.Serialization;
 
 namespace Audacia.ExceptionHandling.AspNetCore
 {
-    /// <summary>Handles exceptions thrown in an ASP.NET Core application based on the configured <see cref="ExceptionHandlerBuilder"/>.</summary>
+    /// <summary>Handles exceptions thrown in an ASP.NET Core application based on the configured <see cref="ExceptionHandlerCollection"/>.</summary>
     public class ExceptionFilter
     {
-        private readonly ExceptionHandlerBuilder _exceptions;
+        private readonly ExceptionHandlerOptions _options;
 
         /// <summary>Create a new instance of <see cref="ExceptionFilter"/>.</summary>
-        public ExceptionFilter(ExceptionHandlerBuilder exceptions)
+        public ExceptionFilter(ExceptionHandlerOptions options)
         {
-            _exceptions = exceptions;
+            _options = options;
         }
 
-        /// <summary>Handles the specified exception based on the configured <see cref="ExceptionHandlerBuilder"/>.</summary>
+        /// <summary>Handles the specified exception based on the configured <see cref="ExceptionHandlerCollection"/>.</summary>
         public Task OnExceptionAsync(Exception exception, HttpContext context)
         {
             if (exception is AggregateException aggregateException)
@@ -33,7 +33,9 @@ namespace Audacia.ExceptionHandling.AspNetCore
                 }
             }
 
-            var handler = _exceptions.Get(exception.GetType());
+            var handler = _options.Get(exception.GetType());
+
+            _options.Log(handler, exception);
 
             if (handler == null)
             {

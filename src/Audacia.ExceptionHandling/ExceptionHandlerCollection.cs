@@ -6,7 +6,7 @@ using Audacia.ExceptionHandling.Handlers;
 namespace Audacia.ExceptionHandling
 {
     /// <summary>Fluent API interface for configuring how exceptions are handled.</summary>
-    public class ExceptionHandlerBuilder
+    public class ExceptionHandlerCollection
     {
         private readonly IDictionary<Type, IExceptionHandler> _exceptionToHandlerMap =
             new Dictionary<Type, IExceptionHandler>();
@@ -17,20 +17,23 @@ namespace Audacia.ExceptionHandling
             _exceptionToHandlerMap.Add(typeof(TException), handler);
         }
 
-        public ExceptionHandlerBuilder Add<TException, TResult>(Func<TException, TResult> action)
+        internal ExceptionHandlerCollection Add<TException, TResult>(
+            Func<TException, TResult> action,
+            Action<TException>? logAction = null)
             where TException : Exception
         {
-            var handler = new ExceptionHandler<TException, TResult>(action);
+            var handler = new ExceptionHandler<TException, TResult>(action, logAction);
             Add<TException>(handler);
             return this;
         }
 
-        public ExceptionHandlerBuilder Add<TException, TResult>(
+        internal ExceptionHandlerCollection Add<TException, TResult>(
             Func<TException, TResult> action,
-            HttpStatusCode statusCode)
+            HttpStatusCode statusCode,
+            Action<TException>? logAction = null)
             where TException : Exception
         {
-            var handler = new HttpExceptionHandler<TException, TResult>(action, statusCode);
+            var handler = new HttpExceptionHandler<TException, TResult>(action, statusCode, logAction);
             Add<TException>(handler);
             return this;
         }
@@ -41,7 +44,7 @@ namespace Audacia.ExceptionHandling
         /// </summary>
         /// <param name="exceptionType">The type of exception to handle.</param>
         /// <returns></returns>
-        public IExceptionHandler? Get(Type exceptionType)
+        internal IExceptionHandler? Get(Type exceptionType)
         {
             if (_exceptionToHandlerMap.TryGetValue(exceptionType, out var handler))
             {
@@ -56,7 +59,7 @@ namespace Audacia.ExceptionHandling
         /// </summary>
         /// <typeparam name="TException">The type of exception to return a handler for.</typeparam>
         /// <returns>The handler for the given exception.</returns>
-        public IExceptionHandler? Get<TException>()
+        internal IExceptionHandler? Get<TException>()
             where TException : Exception
         {
             return Get(typeof(TException));

@@ -7,13 +7,13 @@ namespace Audacia.ExceptionHandling.AspNetCore
     /// <summary>Extension methods.</summary>
     public static class Extensions
     {
-        /// <summary>Configure an <see cref="ExceptionHandlerBuilder"/> for an application.</summary>
+        /// <summary>Configure an <see cref="ExceptionHandlerCollection"/> for an application.</summary>
         public static IApplicationBuilder ConfigureExceptions(this IApplicationBuilder appBuilder,
-            Action<ExceptionHandlerBuilder> action)
+            Action<ExceptionHandlerOptionsBuilder> action)
         {
-            var configBuilder = new ExceptionHandlerBuilder();
+            var configBuilder = new ExceptionHandlerOptionsBuilder();
             action(configBuilder);
-            var filter = new ExceptionFilter(configBuilder);
+            var filter = new ExceptionFilter(configBuilder.Build());
 
             appBuilder.UseExceptionHandler(builder =>
             {

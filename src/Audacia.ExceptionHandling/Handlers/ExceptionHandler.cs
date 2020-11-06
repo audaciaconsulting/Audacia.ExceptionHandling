@@ -11,9 +11,10 @@ namespace Audacia.ExceptionHandling.Handlers
         where TException : Exception
     {
         /// <summary>Initializes a new instance of <see cref="ExceptionHandler{TException, TResult}"/></summary>
-        public ExceptionHandler(Func<TException, TResult> action)
+        public ExceptionHandler(Func<TException, TResult> action, Action<TException>? log = null)
         {
             Action = action;
+            LogAction = log;
         }
 
         /// <summary>The type of Exception this handler handles.</summary>
@@ -24,6 +25,9 @@ namespace Audacia.ExceptionHandling.Handlers
 
         /// <summary>The function which transforms the exception into <see cref="TResult"/>.</summary>
         public Func<TException, TResult> Action { get; }
+
+        /// <summary>The function which transforms the exception into <see cref="TResult"/>.</summary>
+        public Action<TException>? LogAction { get; }
 
         /// <summary>
         /// Call the action. This is a wrapper such that
@@ -36,6 +40,27 @@ namespace Audacia.ExceptionHandling.Handlers
             if (exception is TException ex)
             {
                 return Action.Invoke(ex);
+            }
+
+            throw new ArgumentException($"Exception is not of type {typeof(TException)}");
+        }
+
+        /// <summary>
+        /// Logs an exception.
+        /// </summary>
+        /// <param name="exception">The exception that has been encountered.</param>
+        /// <returns>True if the exception was logged, false if not, an exception if the exception input is not of the correct type.</returns>
+        public bool Log(Exception exception)
+        {
+            if (exception is TException ex)
+            {
+                if (LogAction != null)
+                {
+                    LogAction.Invoke(ex);
+                    return true;
+                }
+
+                return false;
             }
 
             throw new ArgumentException($"Exception is not of type {typeof(TException)}");
@@ -53,5 +78,12 @@ namespace Audacia.ExceptionHandling.Handlers
         /// <param name="exception">The exception that has been encountered.</param>
         /// <returns>The error result that has been setup.</returns>
         public object? Invoke(Exception exception);
+
+        /// <summary>
+        /// Logs an exception.
+        /// </summary>
+        /// <param name="exception">The exception that has been encountered.</param>
+        /// <returns>True if the exception was logged, false if not, an exception if the exception input is not of the correct type.</returns>
+        public bool Log(Exception exception);
     }
 }

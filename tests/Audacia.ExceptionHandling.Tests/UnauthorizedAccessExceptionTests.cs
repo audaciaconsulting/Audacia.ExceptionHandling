@@ -9,26 +9,26 @@ namespace Audacia.ExceptionHandling.Tests
 {
     public class UnauthorizedAccessExceptionTests
     {
-        private ExceptionHandlerBuilder HandlerBuilder { get; }
+        private ExceptionHandlerCollection HandlerCollection { get; }
 
         public UnauthorizedAccessExceptionTests()
         {
-            HandlerBuilder = new ExceptionHandlerBuilder();
+            HandlerCollection = new ExceptionHandlerCollection();
         }
 
         [Fact]
         public void Registers_Correctly()
         {
-            HandlerBuilder.UnauthorizedAccessException();
-            var handler = HandlerBuilder.Get<UnauthorizedAccessException>();
+            HandlerCollection.UnauthorizedAccessException();
+            var handler = HandlerCollection.Get<UnauthorizedAccessException>();
             handler.Should().NotBeNull();
         }
 
         [Fact]
         public void Registers_Correctly_With_Integer_Status_Code()
         {
-            HandlerBuilder.UnauthorizedAccessException(418);
-            var handler = HandlerBuilder.Get<UnauthorizedAccessException>();
+            HandlerCollection.UnauthorizedAccessException(418);
+            var handler = HandlerCollection.Get<UnauthorizedAccessException>();
             handler.Should().NotBeNull();
             handler.Should().BeOfType<HttpExceptionHandler<UnauthorizedAccessException, ErrorResult>>();
             if (handler is HttpExceptionHandler<Exception, object> unauthorizedHandler)
@@ -40,8 +40,8 @@ namespace Audacia.ExceptionHandling.Tests
         [Fact]
         public void Registers_Correctly_With_Enum_Status_Code()
         {
-            HandlerBuilder.UnauthorizedAccessException(HttpStatusCode.UnavailableForLegalReasons);
-            var handler = HandlerBuilder.Get<UnauthorizedAccessException>();
+            HandlerCollection.UnauthorizedAccessException(HttpStatusCode.UnavailableForLegalReasons);
+            var handler = HandlerCollection.Get<UnauthorizedAccessException>();
             handler.Should().NotBeNull();
             handler.Should().BeOfType<HttpExceptionHandler<UnauthorizedAccessException, ErrorResult>>();
             if (handler is HttpExceptionHandler<Exception, object> unauthorizedHandler)

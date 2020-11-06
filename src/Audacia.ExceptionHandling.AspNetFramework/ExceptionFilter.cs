@@ -11,12 +11,12 @@ namespace Audacia.ExceptionHandling.AspNetFramework
     /// <summary>Handles exceptions and produces standardised error responses from them.</summary>
     public class ExceptionFilter : IExceptionFilter
     {
-        private readonly ExceptionHandlerBuilder _builder;
+        private readonly ExceptionHandlerOptions _options;
 
         /// <summary>Create a new <see cref="ExceptionFilter"/> instance.</summary>
-        public ExceptionFilter(ExceptionHandlerBuilder builder)
+        public ExceptionFilter(ExceptionHandlerOptions options)
         {
-            _builder = builder;
+            _options = options;
         }
 
         /// <inheritdoc />
@@ -36,7 +36,9 @@ namespace Audacia.ExceptionHandling.AspNetFramework
                 }
             }
 
-            var handler = _builder.Get(exception.GetType());
+            var handler = _options.Get(exception.GetType());
+
+            _options.Log(handler, exception);
 
             if (handler == null)
             {
