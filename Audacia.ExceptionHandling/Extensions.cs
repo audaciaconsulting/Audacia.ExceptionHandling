@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
-using Audacia.ExceptionHandling.Builders;
+using Audacia.ExceptionHandling.Results;
 
 namespace Audacia.ExceptionHandling
 {
@@ -12,7 +12,11 @@ namespace Audacia.ExceptionHandling
         public static ExceptionHandlerBuilder KeyNotFoundException(
             this ExceptionHandlerBuilder builder,
             HttpStatusCode statusCode) =>
-            builder.Add(statusCode, (KeyNotFoundException e) => new ErrorResult(e.Message));
+            builder.Add((KeyNotFoundException e) => new ErrorResult(
+                    e.Message,
+                    string.Empty,
+                    nameof(KeyNotFoundException)),
+                statusCode);
 
         /// <summary>Register the default handler for a <see cref="System.Collections.Generic.KeyNotFoundException"/> with the specified HTTP status code.</summary>
         public static ExceptionHandlerBuilder
@@ -27,7 +31,7 @@ namespace Audacia.ExceptionHandling
         public static ExceptionHandlerBuilder UnauthorizedAccessException(
             this ExceptionHandlerBuilder builder,
             HttpStatusCode statusCode) =>
-            builder.Add(statusCode, (UnauthorizedAccessException e) => new ErrorResult());
+            builder.Add((UnauthorizedAccessException e) => new ErrorResult(), statusCode);
 
         /// <summary>Register the default handler for a <see cref="System.UnauthorizedAccessException"/> with the specified HTTP status code.</summary>
         public static ExceptionHandlerBuilder UnauthorizedAccessException(
@@ -38,21 +42,5 @@ namespace Audacia.ExceptionHandling
         /// <summary>Register the default handler for a <see cref="System.UnauthorizedAccessException"/> with an HTTP status code of 401: Unauthorized.</summary>
         public static ExceptionHandlerBuilder UnauthorizedAccessException(this ExceptionHandlerBuilder builder) =>
             builder.UnauthorizedAccessException(HttpStatusCode.Unauthorized);
-
-        /// <summary>Register a handler for the specified exception, using the specified transformation function.</summary>
-        public static ExceptionHandlerBuilder Add<T>(
-            this ExceptionHandlerBuilder builder,
-            HttpStatusCode statusCode,
-            Func<T, ErrorResult> action)
-            where T : Exception =>
-            builder.Add(action, statusCode);
-
-        /// <summary>Register a handler for the specified exception, using the specified transformation function.</summary>
-        public static ExceptionHandlerBuilder Add<T>(
-            this ExceptionHandlerBuilder builder,
-            HttpStatusCode statusCode,
-            Func<T, IEnumerable<ErrorResult>> action)
-            where T : Exception =>
-            builder.Add(action, statusCode);
     }
 }

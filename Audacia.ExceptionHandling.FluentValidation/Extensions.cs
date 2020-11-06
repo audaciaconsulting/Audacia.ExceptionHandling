@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using System.Net;
-using Audacia.ExceptionHandling.Builders;
+using Audacia.ExceptionHandling.Results;
 using FluentValidation;
 
 namespace Audacia.ExceptionHandling.FluentValidation
@@ -12,8 +12,10 @@ namespace Audacia.ExceptionHandling.FluentValidation
         public static ExceptionHandlerBuilder FluentValidationException(
             this ExceptionHandlerBuilder builder,
             HttpStatusCode statusCode) =>
-            builder.Add(statusCode, (ValidationException e) => e.Errors
-                .Select(member => new ValidationErrorResult(member.ErrorMessage, member.PropertyName)));
+            builder.Add((ValidationException e) => e.Errors
+                    .Select(member => new ValidationErrorResult(member.ErrorMessage, string.Empty,
+                        nameof(ValidationException), member.PropertyName)),
+                statusCode);
 
         /// <summary>Configure the default handler for <see cref="System.ComponentModel.DataAnnotations.ValidationException"/> with the specified HTTP status code.</summary>
         public static ExceptionHandlerBuilder

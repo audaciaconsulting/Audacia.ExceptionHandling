@@ -1,6 +1,5 @@
 using System;
 using System.Web.Http.Filters;
-using Audacia.ExceptionHandling.Builders;
 
 namespace Audacia.ExceptionHandling.AspNetFramework
 {

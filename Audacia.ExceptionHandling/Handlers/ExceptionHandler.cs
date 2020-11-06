@@ -1,7 +1,6 @@
 using System;
-using System.Collections.Generic;
 
-namespace Audacia.ExceptionHandling
+namespace Audacia.ExceptionHandling.Handlers
 {
     /// <summary>
     /// A wrapper around how to handle different exception types

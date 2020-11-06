@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 
-namespace Audacia.ExceptionHandling
+namespace Audacia.ExceptionHandling.Handlers
 {
     /// <summary>
     /// An exception handler specific to applications that use HTTP.

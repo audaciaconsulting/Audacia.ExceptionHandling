@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
-using Audacia.ExceptionHandling.Builders;
+using Audacia.ExceptionHandling.Results;
 
 namespace Audacia.ExceptionHandling.Annotations
 {
@@ -12,8 +12,12 @@ namespace Audacia.ExceptionHandling.Annotations
         public static ExceptionHandlerBuilder ValidationException(
             this ExceptionHandlerBuilder builder,
             HttpStatusCode statusCode) =>
-            builder.Add(statusCode, (ValidationException e) => e.ValidationResult.MemberNames
-                .Select(member => new ValidationErrorResult(e.ValidationResult.ErrorMessage, member)));
+            builder.Add((ValidationException e) => e.ValidationResult.MemberNames
+                    .Select(member => new ValidationErrorResult(e.ValidationResult.ErrorMessage,
+                        string.Empty,
+                        nameof(ValidationException),
+                        member)),
+                statusCode);
 
         /// <summary>Configure the default handler for <see cref="System.ComponentModel.DataAnnotations.ValidationException"/> with the specified http status code.</summary>
         public static ExceptionHandlerBuilder

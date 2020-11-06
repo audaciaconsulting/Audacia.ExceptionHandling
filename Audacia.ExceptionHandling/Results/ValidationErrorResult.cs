@@ -1,4 +1,4 @@
-﻿namespace Audacia.ExceptionHandling
+﻿namespace Audacia.ExceptionHandling.Results
 {
     /// <summary>
     /// A class that is used for describing validation errors.
@@ -13,7 +13,8 @@
         public string? Property { get; }
 
         /// <summary>Create an error result with the specified message for the specified property.</summary>
-        public ValidationErrorResult(string message, string property) : base(message)
+        public ValidationErrorResult(string message, string errorCode, string errorType, string property) : base(
+            message, errorCode, errorType)
         {
             Property = property;
         }

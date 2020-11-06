@@ -4,7 +4,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http.Filters;
-using Audacia.ExceptionHandling.Builders;
+using Audacia.ExceptionHandling.Handlers;
 
 namespace Audacia.ExceptionHandling.AspNetFramework
 {
@@ -36,7 +36,7 @@ namespace Audacia.ExceptionHandling.AspNetFramework
                 }
             }
 
-            var handler = _builder.Get(exception);
+            var handler = _builder.Get(exception.GetType());
 
             if (handler == null)
             {

@@ -1,10 +1,8 @@
 using System;
-using System.IO;
-using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using Audacia.ExceptionHandling.Builders;
+using Audacia.ExceptionHandling.Handlers;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -35,7 +33,7 @@ namespace Audacia.ExceptionHandling.AspNetCore
                 }
             }
 
-            var handler = _exceptions.Get(exception);
+            var handler = _exceptions.Get(exception.GetType());
 
             if (handler == null)
             {

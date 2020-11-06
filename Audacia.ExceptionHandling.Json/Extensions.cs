@@ -1,5 +1,5 @@
 ﻿using System.Net;
-using Audacia.ExceptionHandling.Builders;
+using Audacia.ExceptionHandling.Results;
 using Newtonsoft.Json;
 
 namespace Audacia.ExceptionHandling.Json
@@ -12,14 +12,15 @@ namespace Audacia.ExceptionHandling.Json
             this ExceptionHandlerBuilder builder,
             HttpStatusCode statusCode)
         {
-            return builder.Add(statusCode, (JsonReaderException e) => new ValidationErrorResult(e.Message, e.Path)
-            {
-                ExtraProperties =
+            return builder.Add((JsonReaderException e) =>
+                new ValidationErrorResult(e.Message, string.Empty, nameof(JsonReaderException), e.Path)
                 {
-                    ["LineNumber"] = e.LineNumber,
-                    ["Position"] = e.LinePosition
-                }
-            });
+                    ExtraProperties =
+                    {
+                        ["LineNumber"] = e.LineNumber,
+                        ["Position"] = e.LinePosition
+                    }
+                }, statusCode);
         }
 
         /// <summary>Configure the default handler for <see cref="Newtonsoft.Json.JsonReaderException"/> with the specified HTTP status code.</summary>

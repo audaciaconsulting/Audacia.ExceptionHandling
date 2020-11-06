@@ -1,24 +1,25 @@
 using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Audacia.ExceptionHandling.AspNetCore;
+using Audacia.ExceptionHandling.Results;
 using Audacia.Middleware.Extensions;
 using Audacia.Middleware.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
 using Robotify.AspNetCore;
 
 namespace Audacia.ExceptionHandling.TestApp
 {
     public class Startup
     {
-        private HttpClient _http = new HttpClient { BaseAddress = new Uri("http://localhost:5000") };
+        private HttpClient _http = new HttpClient
+        {
+            BaseAddress = new Uri("http://localhost:5000")
+        };
 
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
@@ -42,7 +43,11 @@ namespace Audacia.ExceptionHandling.TestApp
             {
                 e.KeyNotFoundException();
                 e.UnauthorizedAccessException();
-                e.Add<InvalidOperationException>(HttpStatusCode.LoopDetected, exception => new ErrorResult("huh"));
+                e.Add((InvalidOperationException exception) => new ErrorResult(
+                        "huh",
+                        string.Empty,
+                        string.Empty),
+                    HttpStatusCode.LoopDetected);
             });
 
             app.UseEndpoints(endpoints =>

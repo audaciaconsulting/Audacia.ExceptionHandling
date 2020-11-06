@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using Audacia.ExceptionHandling.Builders;
+using Audacia.ExceptionHandling.Results;
 using FluentAssertions;
 using Xunit;
 
@@ -17,12 +17,13 @@ namespace Audacia.ExceptionHandling.Tests
             ExceptionHandlerBuilder.Add((InvalidOperationException e) =>
                 new List<ErrorResult>
                 {
-                    new ErrorResult(nameof(InvalidOperationException))
+                    new ErrorResult(nameof(InvalidOperationException), nameof(InvalidOperationException),
+                        nameof(InvalidOperationException))
                 }, HttpStatusCode.Ambiguous);
             ExceptionHandlerBuilder.Add((SystemException e) =>
                     new List<ErrorResult>
                     {
-                        new ErrorResult(nameof(SystemException))
+                        new ErrorResult(nameof(SystemException), nameof(SystemException), nameof(SystemException))
                     },
                 HttpStatusCode.Ambiguous);
         }
@@ -38,6 +39,8 @@ namespace Audacia.ExceptionHandling.Tests
                 var actions = result?.As<IEnumerable<ErrorResult>>().ToList();
                 actions.Should().HaveCount(1);
                 actions?[0].Message.Should().Be(nameof(InvalidOperationException));
+                actions?[0].ErrorCode.Should().Be(nameof(InvalidOperationException));
+                actions?[0].ErrorType.Should().Be(nameof(InvalidOperationException));
             }
 
             [Fact]

@@ -1,10 +1,8 @@
 using System;
-using System.Collections.Generic;
 using System.Net;
-using Audacia.ExceptionHandling.Builders;
-using Audacia.ExceptionHandling.Json;
+using Audacia.ExceptionHandling.Handlers;
+using Audacia.ExceptionHandling.Results;
 using FluentAssertions;
-using Newtonsoft.Json;
 using Xunit;
 
 namespace Audacia.ExceptionHandling.Tests
@@ -19,7 +17,7 @@ namespace Audacia.ExceptionHandling.Tests
         }
 
         [Fact]
-        public void Registers_correctly()
+        public void Registers_Correctly()
         {
             HandlerBuilder.UnauthorizedAccessException();
             var handler = HandlerBuilder.Get<UnauthorizedAccessException>();

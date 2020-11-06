@@ -1,7 +1,7 @@
 using System.Data.Entity.Validation;
 using System.Linq;
 using System.Net;
-using Audacia.ExceptionHandling.Builders;
+using Audacia.ExceptionHandling.Results;
 
 namespace Audacia.ExceptionHandling.EntityFramework6
 {
@@ -13,15 +13,17 @@ namespace Audacia.ExceptionHandling.EntityFramework6
             builder.DbEntityValidationException(HttpStatusCode.BadRequest);
 
         /// <summary>Configure the default handler for <see cref="System.Data.Entity.Validation.DbEntityValidationException"/> with the specified HTTP status code.</summary>
-        public static ExceptionHandlerBuilder DbEntityValidationException(this ExceptionHandlerBuilder builder,
+        public static ExceptionHandlerBuilder DbEntityValidationException(
+            this ExceptionHandlerBuilder builder,
             int statusCode) =>
             builder.DbEntityValidationException((HttpStatusCode) statusCode);
 
         /// <summary>Configure the default handler for <see cref="System.Data.Entity.Validation.DbEntityValidationException"/> with the specified HTTP status code.</summary>
-        public static ExceptionHandlerBuilder DbEntityValidationException(this ExceptionHandlerBuilder builder,
+        public static ExceptionHandlerBuilder DbEntityValidationException(
+            this ExceptionHandlerBuilder builder,
             HttpStatusCode statusCode)
         {
-            return builder.Add(statusCode, (DbEntityValidationException e) => e.EntityValidationErrors
+            return builder.Add((DbEntityValidationException e) => e.EntityValidationErrors
                 .Select((entityValidation, index) => entityValidation.ValidationErrors
                     .Select(propertyValidation =>
                     {
@@ -30,15 +32,20 @@ namespace Audacia.ExceptionHandling.EntityFramework6
                             propertyValidation
                                 .PropertyName; // .CamelCase(); todo: let asp.net decide whether to camelcase things
                         var message = propertyValidation.ErrorMessage;
-                        return new ValidationErrorResult(message, propertyName)
+                        return new ValidationErrorResult(message, string.Empty, nameof(DbEntityValidationException),
+                            propertyName)
                         {
                             ExtraProperties =
                             {
-                                { "Type", entityType },
-                                { "Ordinal", index }
+                                {
+                                    "Type", entityType
+                                },
+                                {
+                                    "Ordinal", index
+                                }
                             }
                         };
-                    })).SelectMany(c => c));
+                    })).SelectMany(c => c), statusCode);
         }
     }
 }
