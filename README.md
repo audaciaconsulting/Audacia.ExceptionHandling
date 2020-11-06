@@ -1,7 +1,10 @@
-## Audacia.ExceptionHandling
+# Audacia.ExceptionHandling
+
 Fluent standardized exception configuration for ASP.NET Web APIs.
 
-### ASP.NET Core
+## Frameworks
+
+### ASP.NET MVC Core
 
 After adding the `Audacia.ExceptionHandling.AspNetCore` package, the following can be added to your `Startup.cs` file:
 
@@ -11,6 +14,8 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment env)
     app.ConfigureExceptions(e => { });
 }
 ```
+
+This adds an exception filter that catches every exception that happens and sends a HTTP response of your choosing.
 
 ### ASP.NET Framework
 
@@ -23,31 +28,111 @@ protected void Application_Start()
 }
 ```
 
+## Customisation
+
 ### Adding Handlers
 
-And we can now start adding some handlers like this:
+Both of the above methods accept actions to customise the handlers that deal with exceptions. An example of this below:
 
 ```c#
 app.ConfigureExceptions(e =>
 {
-    // Add the default handler for a KeyNotFoundException
-    e.Handle.KeyNotFoundException();
-    e.Handle.UnauthorizedAccessException();
-    
-    // Add a custom handler for an exception 
-    e.Handle<ConfigurationErrorsException>(exception => new ErrorResult(HttpStatusCode.ServiceUnavailable, "The app is not configured properly."));
+    e.Handle((KeyNotFoundException ex) => new
+    {
+        Result = ex.Message
+    }, HttpStatusCode.NotFound);
+
+    e.Handle((InvalidOperationException ex) => new
+    {
+        Result = ex.Message
+    });
+
+    e.Handle((ArgumentException ex) => new
+    {
+        Result = ex.Message
+    });
 });
 ```
 
-As can be seen, there are some default handlers that are included in the base library, and new handlers can be defined in-line.
+Both of the above methods state the type of exception being handled as well state what result to return as the response body. The `Add` method accepts two generic arguments, one for the type of `Exception` and one for the type of result, both of these can be insinuated if you define the action to perform with the `Exception` as above.
 
-A full list of default handlers and their usages are as follows:
+As you can see, there is a difference between the two method calls. One of them accepts a `HttpStatusCode`, which tells the exception filter what Status Code to return the response as. If you don't specify the Status Code will default to `400`.
 
+#### Examples
 
-| Exception                                                                                 | Package                                     | Response Code              |
-|-------------------------------------------------------------------------------------------|---------------------------------------------|----------------------------|
-| KeyNotFoundException                                                                      | Audacia.ExceptionHandling                   | 404 (Not Found)            |
-| UnauthorizedAccessException                                                               | Audacia.ExceptionHandling                   | 403 (Forbidden)            |
-| ValidationException                                                                       | Audacia.ExceptionHandling.Annotations       | 422 (Unprocessable Entity) |
-| ValidationException [FluentValidation](https://github.com/JeremySkinner/FluentValidation) | Audacia.ExceptionHandling.FluentValidation  | 422 (Unprocessable Entity) |
-| JsonReaderException [Json.NET](https://github.com/JamesNK/Newtonsoft.Json)                | Audacia.ExceptionHandling.Json              | 400 (Bad Request)          |
+##### Entity Framework 6
+
+```csharp
+
+e.Handle((DbEntityValidationException ex) => ex.EntityValidationErrors
+                .Select((entityValidation, index) => entityValidation.ValidationErrors
+                    .Select(propertyValidation =>
+                    {
+                        var entityType = entityValidation.Entry.Entity.GetType().Name;
+                        var propertyName = propertyValidation.PropertyName;
+                        var message = propertyValidation.ErrorMessage;
+                        return new
+                        {
+                            EntityType = entityType,
+                            PropertyName = propertyName,
+                            Message = message
+                        }
+                    })).SelectMany(c => c),
+        HttpStatusCode.BadRequest);
+```
+
+##### FluentValidation
+
+```csharp
+e.Handle((ValidationException ex) => ex.Errors
+                    .Select(member => new
+                        {
+                            Message = member.ErrorMessage,
+                            PropertyName = member.PropertyName
+                        }),
+        HttpStatusCode.BadRequest);
+```
+
+##### NewtonsoftJSON
+
+```csharp
+e.Handle((JsonReaderException ex) => new
+        {
+            Message = ex.Message,
+            Path = ex.Path,
+            LineNumber = ex.LineNumber,
+            LinePosition = ex.LinePosition
+        },
+    HttpStatusCode.BadRequest);
+```
+
+### Logging
+
+It is possible for you to setup logging for exceptions as a whole, or different types of logging for each type of exception.
+
+#### Default Logging
+
+When setting a default logging method, this is done directly against the builder that you get access to in the `ConfigureExceptions` method.
+
+```csharp
+e.Logging(ex =>
+{
+    Console.Error.Write(ex);
+});
+```
+
+#### Logging per Exception Type
+
+When setting the logging action for an individual handler it is just passed in as argument to the `Handle` method.
+
+```csharp
+e.Handle((ArgumentException ex) => new
+{
+    Result = ex.Message
+}, ex =>
+{
+    Console.Error.Write("Argument exception encountered");
+});
+```
+
+If you don't pass an action for logging a specific type of `Exception`, it will revert back to the default logging that was setup.
