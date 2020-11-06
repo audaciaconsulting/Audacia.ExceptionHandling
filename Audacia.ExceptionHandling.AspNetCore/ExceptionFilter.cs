@@ -42,7 +42,7 @@ namespace Audacia.ExceptionHandling.AspNetCore
                 return Task.CompletedTask;
             }
 
-            var result = handler.Action.Invoke(exception);
+            var result = handler.Invoke(exception);
 
             var statusCode = HttpStatusCode.BadRequest;
 

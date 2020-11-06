@@ -9,7 +9,8 @@ namespace Audacia.ExceptionHandling
     public static class Extensions
     {
         /// <summary>Register the default handler for a <see cref="System.Collections.Generic.KeyNotFoundException"/> with the specified HTTP status code.</summary>
-        public static ExceptionHandlerBuilder KeyNotFoundException(this ExceptionHandlerBuilder builder,
+        public static ExceptionHandlerBuilder KeyNotFoundException(
+            this ExceptionHandlerBuilder builder,
             HttpStatusCode statusCode) =>
             builder.Add(statusCode, (KeyNotFoundException e) => new ErrorResult(e.Message));
 
@@ -23,12 +24,14 @@ namespace Audacia.ExceptionHandling
             builder.KeyNotFoundException(HttpStatusCode.NotFound);
 
         /// <summary>Register the default handler for a <see cref="System.UnauthorizedAccessException"/> with the specified HTTP status code.</summary>
-        public static ExceptionHandlerBuilder UnauthorizedAccessException(this ExceptionHandlerBuilder builder,
+        public static ExceptionHandlerBuilder UnauthorizedAccessException(
+            this ExceptionHandlerBuilder builder,
             HttpStatusCode statusCode) =>
             builder.Add(statusCode, (UnauthorizedAccessException e) => new ErrorResult());
 
         /// <summary>Register the default handler for a <see cref="System.UnauthorizedAccessException"/> with the specified HTTP status code.</summary>
-        public static ExceptionHandlerBuilder UnauthorizedAccessException(this ExceptionHandlerBuilder builder,
+        public static ExceptionHandlerBuilder UnauthorizedAccessException(
+            this ExceptionHandlerBuilder builder,
             int statusCode) =>
             builder.UnauthorizedAccessException((HttpStatusCode) statusCode);
 
@@ -38,7 +41,9 @@ namespace Audacia.ExceptionHandling
 
         /// <summary>Register a handler for the specified exception, using the specified transformation function.</summary>
         public static ExceptionHandlerBuilder Add<T>(
-            this ExceptionHandlerBuilder builder, HttpStatusCode statusCode, Func<T, ErrorResult> action)
+            this ExceptionHandlerBuilder builder,
+            HttpStatusCode statusCode,
+            Func<T, ErrorResult> action)
             where T : Exception =>
             builder.Add(action, statusCode);
 
@@ -46,7 +51,8 @@ namespace Audacia.ExceptionHandling
         public static ExceptionHandlerBuilder Add<T>(
             this ExceptionHandlerBuilder builder,
             HttpStatusCode statusCode,
-            Func<T, IEnumerable<ErrorResult>> action) where T : Exception =>
+            Func<T, IEnumerable<ErrorResult>> action)
+            where T : Exception =>
             builder.Add(action, statusCode);
     }
 }

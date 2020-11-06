@@ -7,7 +7,7 @@ namespace Audacia.ExceptionHandling.Builders
         private Type ExceptionType { get; }
         private Type InheritedType { get; }
 
-        public TypeKey(Type exceptionType, Type inheritedType = null)
+        public TypeKey(Type exceptionType, Type inheritedType = null!)
         {
             ExceptionType = exceptionType;
             InheritedType = inheritedType;
@@ -17,7 +17,15 @@ namespace Audacia.ExceptionHandling.Builders
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return ExceptionType.Equals(other.ExceptionType) && InheritedType.Equals(other.InheritedType);
+
+            var exceptionTypeEquals = ExceptionType.Equals(other.ExceptionType);
+
+            if (InheritedType == null)
+            {
+                return exceptionTypeEquals;
+            }
+
+            return exceptionTypeEquals && InheritedType.Equals(other.InheritedType);
         }
 
         public override bool Equals(object? obj)
@@ -32,7 +40,13 @@ namespace Audacia.ExceptionHandling.Builders
         {
             unchecked
             {
-                return (ExceptionType.GetHashCode() * 397) ^ InheritedType.GetHashCode();
+                var exceptionTypeValue = ExceptionType.GetHashCode() * 397;
+                if (InheritedType == null)
+                {
+                    return exceptionTypeValue;
+                }
+
+                return exceptionTypeValue ^ InheritedType.GetHashCode();
             }
         }
     }

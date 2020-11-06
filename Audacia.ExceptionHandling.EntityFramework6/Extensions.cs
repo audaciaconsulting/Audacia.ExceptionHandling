@@ -30,7 +30,7 @@ namespace Audacia.ExceptionHandling.EntityFramework6
                             propertyValidation
                                 .PropertyName; // .CamelCase(); todo: let asp.net decide whether to camelcase things
                         var message = propertyValidation.ErrorMessage;
-                        return new ErrorResult(message, propertyName)
+                        return new ValidationErrorResult(message, propertyName)
                         {
                             ExtraProperties =
                             {

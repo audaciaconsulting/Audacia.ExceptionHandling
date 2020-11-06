@@ -32,7 +32,7 @@ namespace Audacia.ExceptionHandling.Tests
             HandlerBuilder.UnauthorizedAccessException(418);
             var handler = HandlerBuilder.Get<UnauthorizedAccessException>();
             handler.Should().NotBeNull();
-            handler.Should().BeOfType<ExceptionHandler<UnauthorizedAccessException, ErrorResult>>();
+            handler.Should().BeOfType<HttpExceptionHandler<UnauthorizedAccessException, ErrorResult>>();
             if (handler is HttpExceptionHandler<Exception, object> unauthorizedHandler)
             {
                 unauthorizedHandler.StatusCode.Should().Be(418);
@@ -45,7 +45,7 @@ namespace Audacia.ExceptionHandling.Tests
             HandlerBuilder.UnauthorizedAccessException(HttpStatusCode.UnavailableForLegalReasons);
             var handler = HandlerBuilder.Get<UnauthorizedAccessException>();
             handler.Should().NotBeNull();
-            handler.Should().BeOfType<ExceptionHandler<UnauthorizedAccessException, ErrorResult>>();
+            handler.Should().BeOfType<HttpExceptionHandler<UnauthorizedAccessException, ErrorResult>>();
             if (handler is HttpExceptionHandler<Exception, object> unauthorizedHandler)
             {
                 unauthorizedHandler.StatusCode.Should().Be(HttpStatusCode.UnavailableForLegalReasons);

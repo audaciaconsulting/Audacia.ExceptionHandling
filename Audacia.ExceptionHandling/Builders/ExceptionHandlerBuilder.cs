@@ -9,8 +9,8 @@ namespace Audacia.ExceptionHandling.Builders
     /// <summary>Fluent API interface for configuring how exceptions are handled.</summary>
     public class ExceptionHandlerBuilder
     {
-        private readonly IDictionary<TypeKey, ExceptionHandler<Exception, object>> _exceptionToHandlerMap =
-            new Dictionary<TypeKey, ExceptionHandler<Exception, object>>();
+        private readonly IDictionary<TypeKey, IExceptionHandler> _exceptionToHandlerMap =
+            new Dictionary<TypeKey, IExceptionHandler>();
 
         private static IEnumerable<TypeKey> GetKeys<TException>()
         {
@@ -28,13 +28,6 @@ namespace Audacia.ExceptionHandling.Builders
             return keys.ToArray();
         }
 
-        private void Add<TException, TResult>(TypeKey key, ExceptionHandler<TException, TResult> action)
-            where TException : Exception
-        {
-            var castHandler = (action as ExceptionHandler<Exception, object>);
-            _exceptionToHandlerMap.Add(key, castHandler!);
-        }
-
         private void Add<TException, TResult>(ExceptionHandler<TException, TResult> handler)
             where TException : Exception
         {
@@ -44,7 +37,7 @@ namespace Audacia.ExceptionHandling.Builders
             {
                 if (!_exceptionToHandlerMap.ContainsKey(key))
                 {
-                    Add(key, handler);
+                    _exceptionToHandlerMap.Add(key, handler);
                 }
             }
         }
@@ -66,7 +59,7 @@ namespace Audacia.ExceptionHandling.Builders
             return this;
         }
 
-        public ExceptionHandler<Exception, object>? Get<TException>()
+        public IExceptionHandler? Get<TException>()
             where TException : Exception
         {
             var keys = GetKeys<TException>();
@@ -82,7 +75,10 @@ namespace Audacia.ExceptionHandling.Builders
             return null;
         }
 
-        public ExceptionHandler<Exception, object>? Get<TException>(TException exception)
+        // ReSharper disable once UnusedParameter.Global
+        // This is unused because it allows us to pass an exception in
+        // without knowing the type at runtime
+        public IExceptionHandler? Get<TException>(TException _)
             where TException : Exception
         {
             return Get<TException>();

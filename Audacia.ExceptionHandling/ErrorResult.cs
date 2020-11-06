@@ -5,11 +5,15 @@ namespace Audacia.ExceptionHandling
     /// <summary>Represents an API response which contains the details of an error.</summary>
     public class ErrorResult
     {
-        public string Message { get; }
+        /// <summary>
+        /// The message to describe the error.
+        /// </summary>
+        public string Message { get; } = default!;
 
-        public string? Property { get; }
-
-        public Dictionary<string, object> ExtraProperties { get; }
+        /// <summary>
+        /// Any extra properties that the user wants to use for this error result without creating a new class.
+        /// </summary>
+        public Dictionary<string, object> ExtraProperties { get; } = new Dictionary<string, object>();
 
         /// <summary>Creates a new instance of <see cref="ErrorResult"/>.</summary>
         public ErrorResult() { }
@@ -18,12 +22,6 @@ namespace Audacia.ExceptionHandling
         public ErrorResult(string message)
         {
             Message = message;
-        }
-
-        /// <summary>Create an error result with the specified message for the specified property.</summary>
-        public ErrorResult(string message, string property) : this(message)
-        {
-            Property = property;
         }
     }
 }

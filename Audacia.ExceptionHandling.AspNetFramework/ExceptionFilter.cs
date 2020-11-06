@@ -43,11 +43,11 @@ namespace Audacia.ExceptionHandling.AspNetFramework
                 return Task.CompletedTask;
             }
 
-            var result = handler.Action.Invoke(context.Exception);
+            var result = handler.Invoke(context.Exception);
 
             var statusCode = HttpStatusCode.BadRequest;
 
-            if (handler is HttpExceptionHandler<Exception, object> httpExceptionHandler)
+            if (handler is IHttpExceptionHandler httpExceptionHandler)
             {
                 statusCode = httpExceptionHandler.StatusCode;
             }

@@ -15,30 +15,36 @@ namespace Audacia.ExceptionHandling.Tests
         public ExceptionHandlerBuilderTests()
         {
             ExceptionHandlerBuilder.Add((InvalidOperationException e) =>
-                new ErrorResult(nameof(InvalidOperationException)), HttpStatusCode.Ambiguous);
-            ExceptionHandlerBuilder.Add((SystemException e) => new ErrorResult(nameof(SystemException)),
+                new List<ErrorResult>
+                {
+                    new ErrorResult(nameof(InvalidOperationException))
+                }, HttpStatusCode.Ambiguous);
+            ExceptionHandlerBuilder.Add((SystemException e) =>
+                    new List<ErrorResult>
+                    {
+                        new ErrorResult(nameof(SystemException))
+                    },
                 HttpStatusCode.Ambiguous);
         }
 
         public class Match : ExceptionHandlerBuilderTests
         {
             [Fact]
-            public void Matches_the_exact_type()
+            public void Matches_The_Exact_Type()
             {
-                var match = ExceptionHandlerBuilder.Get(new InvalidOperationException());
+                var match = ExceptionHandlerBuilder.Get<InvalidOperationException>();
                 match.Should().NotBeNull();
-                match?.ExceptionType.Should().Be(typeof(InvalidOperationException));
-                var actions = match?.Action(new InvalidOperationException()).As<IEnumerable<ErrorResult>>().ToList();
+                var result = match?.Invoke(new InvalidOperationException());
+                var actions = result?.As<IEnumerable<ErrorResult>>().ToList();
                 actions.Should().HaveCount(1);
                 actions?[0].Message.Should().Be(nameof(InvalidOperationException));
             }
 
             [Fact]
-            public void Matches_a_base_type()
+            public void Matches_A_Base_Type()
             {
-                var match = ExceptionHandlerBuilder.Get(new FormatException());
+                var match = ExceptionHandlerBuilder.Get<SystemException>();
                 match.Should().NotBeNull();
-                match?.ExceptionType.Should().Be(typeof(SystemException));
             }
         }
     }

@@ -8,7 +8,8 @@ namespace Audacia.ExceptionHandling
     /// </summary>
     /// <typeparam name="TException">The type of exception being handled.</typeparam>
     /// <typeparam name="TResult">The result type that is returned.</typeparam>
-    public class HttpExceptionHandler<TException, TResult> : ExceptionHandler<TException, TResult>
+    public class HttpExceptionHandler<TException, TResult> : ExceptionHandler<TException, TResult>,
+        IHttpExceptionHandler
         where TException : Exception
     {
         /// <summary>The HTTP Status code to set on the response.</summary>
@@ -23,5 +24,16 @@ namespace Audacia.ExceptionHandling
         {
             StatusCode = statusCode;
         }
+    }
+
+    /// <summary>
+    /// A generic-less interface for <see cref="IHttpExceptionHandler"/>.
+    /// </summary>
+    public interface IHttpExceptionHandler
+    {
+        /// <summary>
+        /// The status code to return for the given exception type.
+        /// </summary>
+        public HttpStatusCode StatusCode { get; }
     }
 }
