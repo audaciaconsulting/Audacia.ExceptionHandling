@@ -16,68 +16,68 @@ using Robotify.AspNetCore;
 
 namespace Audacia.ExceptionHandling.TestApp
 {
-	public class Startup
-	{
-		private HttpClient _http = new HttpClient { BaseAddress = new Uri("http://localhost:5000") };
+    public class Startup
+    {
+        private HttpClient _http = new HttpClient { BaseAddress = new Uri("http://localhost:5000") };
 
-		// This method gets called by the runtime. Use this method to add services to the container.
-		// For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
-		public void ConfigureServices(IServiceCollection services)
-		{
-			services.AddRobotify();
-			services.AddCorsPolicy();
-		}
+        // This method gets called by the runtime. Use this method to add services to the container.
+        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddRobotify();
+            services.AddCorsPolicy();
+        }
 
-		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-		{
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            app.UseDeveloperExceptionPage();
 
-			app.UseDeveloperExceptionPage();
+            app.UseXRobotsMetaTagMiddleware(new XRobotsModel());
+            app.UseCors("CorsPolicy");
+            app.UseRobotify();
+            app.UseRouting();
 
-			app.UseXRobotsMetaTagMiddleware(new XRobotsModel());
-			app.UseCors("CorsPolicy");
-			app.UseRobotify();
-			app.UseRouting();
+            app.ConfigureExceptions(e =>
+            {
+                e.KeyNotFoundException();
+                e.UnauthorizedAccessException();
+                e.Add<InvalidOperationException>(HttpStatusCode.LoopDetected, exception => new ErrorResult("huh"));
+            });
 
-			app.ConfigureExceptions(e =>
-			{
-				e.Handle.KeyNotFoundException();
-				e.Handle.UnauthorizedAccessException();
-				e.Handle<InvalidOperationException>(HttpStatusCode.LoopDetected, exception => new ErrorResult("huh"));
-			});
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapGet("/", context => throw new InvalidOperationException("hehehe"));
+            });
 
-			app.UseEndpoints(endpoints =>
-			{
-				endpoints.MapGet("/", context => throw new InvalidOperationException("hehehe"));
-			});
+            Task.Run(async () =>
+            {
+                var response = await _http.GetAsync("/");
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine("RESPONSE: " + await response.Content.ReadAsStringAsync());
+                Console.ResetColor();
+            });
+        }
+    }
 
-			Task.Run(async () =>
-			{
-				var response = await _http.GetAsync("/");
-				Console.ForegroundColor = ConsoleColor.Yellow;
-				Console.WriteLine("RESPONSE: " + await response.Content.ReadAsStringAsync());
-				Console.ResetColor();
-			});
-		}
-	}
+    public static class ServiceCollectionExtensions
+    {
+        public static IServiceCollection AddCorsPolicy(this IServiceCollection serviceCollection)
+        {
+            serviceCollection.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy", builder =>
+                {
+                    builder.WithOrigins("localhost:12345");
+                    builder.WithHeaders("authorization", "content-type", "connection", "host", "X-Requested-With",
+                        "Refer", "Origin");
+                    builder.WithMethods(HttpMethods.Get, HttpMethods.Post, HttpMethods.Put, HttpMethods.Delete,
+                        HttpMethods.Options, HttpMethods.Patch);
+                    builder.AllowCredentials();
+                });
+            });
 
-	public static class ServiceCollectionExtensions
-	{
-		public static IServiceCollection AddCorsPolicy(this IServiceCollection serviceCollection)
-		{
-			serviceCollection.AddCors(options =>
-			{
-				var serviceProvider = serviceCollection.BuildServiceProvider();
-				options.AddPolicy("CorsPolicy", builder =>
-				{
-				    builder.WithOrigins("localhost:12345");
-				    builder.WithHeaders("authorization", "content-type", "connection", "host", "X-Requested-With", "Refer", "Origin");
-				    builder.WithMethods(HttpMethods.Get, HttpMethods.Post, HttpMethods.Put, HttpMethods.Delete, HttpMethods.Options, HttpMethods.Patch);
-				    builder.AllowCredentials();
-				});
-			});
-
-			return serviceCollection;
-		}
-	}
+            return serviceCollection;
+        }
+    }
 }

@@ -4,42 +4,57 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http.Filters;
+using Audacia.ExceptionHandling.Builders;
 
 namespace Audacia.ExceptionHandling.AspNetFramework
 {
-	/// <summary>Handles exceptions and produces standardised error responses from them.</summary>
-	public class ExceptionFilter : IExceptionFilter
-	{
-		private readonly ExceptionHandlerCollection _handlers;
+    /// <summary>Handles exceptions and produces standardised error responses from them.</summary>
+    public class ExceptionFilter : IExceptionFilter
+    {
+        private readonly ExceptionHandlerBuilder _builder;
 
-		/// <summary>Create a new <see cref="ExceptionFilter"/> instance.</summary>
-		public ExceptionFilter(ExceptionHandlerCollection handlers)
-		{
-			_handlers = handlers;
-		}
+        /// <summary>Create a new <see cref="ExceptionFilter"/> instance.</summary>
+        public ExceptionFilter(ExceptionHandlerBuilder builder)
+        {
+            _builder = builder;
+        }
 
-		/// <inheritdoc />
-		public bool AllowMultiple { get; } = false;
+        /// <inheritdoc />
+        public bool AllowMultiple { get; } = false;
 
-		/// <inheritdoc />
-		public Task ExecuteExceptionFilterAsync(HttpActionExecutedContext context, CancellationToken cancellationToken)
-		{
-			var exception = context.Exception;
-			if (exception is AggregateException aggregateException)
-			{
-				exception = aggregateException.Flatten();
+        /// <inheritdoc />
+        public Task ExecuteExceptionFilterAsync(HttpActionExecutedContext context, CancellationToken cancellationToken)
+        {
+            var exception = context.Exception;
+            if (exception is AggregateException aggregateException)
+            {
+                exception = aggregateException.Flatten();
 
-				if (exception.InnerException != null)
-					exception = exception.InnerException;
-			}
+                if (exception.InnerException != null)
+                {
+                    exception = exception.InnerException;
+                }
+            }
 
-			if (!_handlers.TryGetValue(exception.GetType(), out var handler)) return Task.CompletedTask;
-			if (handler == null) return Task.CompletedTask;
+            var handler = _builder.Get(exception);
 
-			var result = handler.Action.Invoke(context.Exception);
-			context.Response = context.Request.CreateResponse(HttpStatusCode.BadRequest, result);
-			
-			return Task.CompletedTask;
-		}
-	}
+            if (handler == null)
+            {
+                return Task.CompletedTask;
+            }
+
+            var result = handler.Action.Invoke(context.Exception);
+
+            var statusCode = HttpStatusCode.BadRequest;
+
+            if (handler is HttpExceptionHandler<Exception, object> httpExceptionHandler)
+            {
+                statusCode = httpExceptionHandler.StatusCode;
+            }
+
+            context.Response = context.Request.CreateResponse(statusCode, result);
+
+            return Task.CompletedTask;
+        }
+    }
 }

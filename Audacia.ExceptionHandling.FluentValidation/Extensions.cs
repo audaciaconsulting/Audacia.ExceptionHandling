@@ -8,17 +8,17 @@ namespace Audacia.ExceptionHandling.FluentValidation
 	public static class Extensions
 	{
 		/// <summary>Configure the default handler for FluentValidation's <see cref="ValidationException"/> with the specified HTTP status code.</summary>
-		public static ExceptionHandlerCollectionBuilder FluentValidationException(this ExceptionHandlerBuilder builder, HttpStatusCode statusCode) =>
-			builder.Handle(statusCode, (ValidationException e) => e.Errors
+		public static ExceptionHandlerBuilder FluentValidationException(this ExceptionHandlerBuilder builder, HttpStatusCode statusCode) =>
+			builder.Add(statusCode, (ValidationException e) => e.Errors
 				.Select(member => new ErrorResult(member.ErrorMessage, member.PropertyName)));
 
 		/// <summary>Configure the default handler for <see cref="System.ComponentModel.DataAnnotations.ValidationException"/> with the specified HTTP status code.</summary>
-		public static ExceptionHandlerCollectionBuilder
+		public static ExceptionHandlerBuilder
 			FluentValidationException(this ExceptionHandlerBuilder builder, int statusCode) =>
 			builder.FluentValidationException((HttpStatusCode) statusCode);
 
 		/// <summary>Configure the default handler for <see cref="System.ComponentModel.DataAnnotations.ValidationException"/> with an HTTP status code of 422: Unprocessable Entity.</summary>
-		public static ExceptionHandlerCollectionBuilder FluentValidationException(this ExceptionHandlerBuilder builder) =>
+		public static ExceptionHandlerBuilder FluentValidationException(this ExceptionHandlerBuilder builder) =>
 			builder.FluentValidationException((HttpStatusCode) 422);
 	}
 }

@@ -6,27 +6,27 @@ using Microsoft.AspNetCore.Diagnostics;
 
 namespace Audacia.ExceptionHandling.AspNetCore
 {
-	/// <summary>Extension methods.</summary>
-	public static class Extensions
-	{
-		/// <summary>Configure an <see cref="ExceptionHandlerCollection"/> for an application.</summary>
-		public static IApplicationBuilder ConfigureExceptions(this IApplicationBuilder appBuilder, Action<ExceptionHandlerCollectionBuilder> action)
-		{
-			var configBuilder = new ExceptionHandlerCollectionBuilder();
-			action(configBuilder);
-			var config = configBuilder.ExceptionHandlerCollection;
-			var filter = new ExceptionFilter(config);
+    /// <summary>Extension methods.</summary>
+    public static class Extensions
+    {
+        /// <summary>Configure an <see cref="ExceptionHandlerBuilder"/> for an application.</summary>
+        public static IApplicationBuilder ConfigureExceptions(this IApplicationBuilder appBuilder,
+            Action<ExceptionHandlerBuilder> action)
+        {
+            var configBuilder = new ExceptionHandlerBuilder();
+            action(configBuilder);
+            var filter = new ExceptionFilter(configBuilder);
 
-			appBuilder.UseExceptionHandler(builder =>
-			{
-				builder.Run(context =>
-				{
-					var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
-					return filter.OnExceptionAsync(exceptionHandlerPathFeature.Error, context);
-				});
-			});
+            appBuilder.UseExceptionHandler(builder =>
+            {
+                builder.Run(context =>
+                {
+                    var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
+                    return filter.OnExceptionAsync(exceptionHandlerPathFeature.Error, context);
+                });
+            });
 
-			return appBuilder;
-		}
-	}
+            return appBuilder;
+        }
+    }
 }

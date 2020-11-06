@@ -6,6 +6,8 @@
 		<Description>Configuration library for adding functionality from Audacia.ExceptionHandling to an ASP.NET Core Web API.</Description>
 		<Copyright>Copyright © Audacia 2019</Copyright>
 		<PackageIconUrl>https://www.audacia.co.uk/media/pkenoobu/audacia-logo-circle-blue.png</PackageIconUrl>
+		<LangVersion>latest</LangVersion>
+		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
 	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">

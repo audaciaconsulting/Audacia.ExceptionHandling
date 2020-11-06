@@ -1,39 +1,28 @@
 using System;
 using System.Collections.Generic;
-using System.Net;
 
 namespace Audacia.ExceptionHandling
 {
-	internal class ExceptionHandler<TException> : ExceptionHandler where TException : Exception
-	{
-		public override Func<Exception, IEnumerable<ErrorResult>> Action { get; }
+    /// <summary>
+    /// A wrapper around how to handle different exception types
+    /// </summary>
+    /// <typeparam name="TException">The type of exception being handled.</typeparam>
+    /// <typeparam name="TResult">The result type that is returned.</typeparam>
+    public class ExceptionHandler<TException, TResult> where TException : Exception
+    {
+        /// <summary>Initializes a new instance of <see cref="ExceptionHandler{TException, TResult}"/></summary>
+        public ExceptionHandler(Func<TException, TResult> action)
+        {
+            Action = action;
+        }
 
-		public override Type ExceptionType => typeof(TException);
+        /// <summary>The type of Exception this handler handles.</summary>
+        public Type ExceptionType => typeof(TException);
 
-		public ExceptionHandler(Func<TException, IEnumerable<ErrorResult>> action, HttpStatusCode statusCode) : base(statusCode)
-		{
-			Action = x => action((TException) x);
-		}
+        /// <summary>The type of Result this handler outputs.</summary>
+        public Type ResultType => typeof(TResult);
 
-		public ExceptionHandler(Func<TException,ErrorResult> action, HttpStatusCode statusCode) : base(statusCode)
-		{
-			Action = x => new[] {action((TException) x)};
-		}
-	}
-
-	/// <summary>Handles an exception, transforming it into a standardized <see cref="ErrorResult"/>.</summary>
-	public abstract class ExceptionHandler
-	{
-		/// <summary>Initializes a new instance of <see cref="ExceptionHandler{TException}"/></summary>
-		public ExceptionHandler(HttpStatusCode statusCode) => StatusCode = statusCode;
-
-		/// <summary>The HTTP Status code to set on the response.</summary>
-		public HttpStatusCode StatusCode { get; }
-
-		/// <summary>The type of Exception this handler handles.</summary>
-		public abstract Type ExceptionType { get; }
-
-		/// <summary>The function which transforms the exception into an <see cref="ErrorResult"/>.</summary>
-		public abstract Func<Exception, IEnumerable<ErrorResult>> Action { get; }
-	}
+        /// <summary>The function which transforms the exception into <see cref="TResult"/>.</summary>
+        public Func<TException, TResult> Action { get; }
+    }
 }

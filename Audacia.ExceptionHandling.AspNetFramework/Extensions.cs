@@ -7,13 +7,12 @@ namespace Audacia.ExceptionHandling.AspNetFramework
 	/// <summary>Extension methods.</summary>
 	public static class Extensions
 	{
-		/// <summary>Configure an <see cref="ExceptionHandlerCollection"/> for an application.</summary>
+		/// <summary>Configure an <see cref="ExceptionHandlerBuilder"/> for an application.</summary>
 		public static HttpFilterCollection ConfigureExceptions(this HttpFilterCollection filters,
-			Action<ExceptionHandlerCollectionBuilder> action)
+			Action<ExceptionHandlerBuilder> action)
 		{
-			var configBuilder = new ExceptionHandlerCollectionBuilder();
-			action(configBuilder);
-			var config = configBuilder.ExceptionHandlerCollection;
+			var config = new ExceptionHandlerBuilder();
+			action(config);
 			var filter = new ExceptionFilter(config);
 
 			filters.Add(filter);
