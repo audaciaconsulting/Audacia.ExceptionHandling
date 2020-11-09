@@ -6,22 +6,22 @@ namespace Audacia.ExceptionHandling.Results
     public class ErrorResult
     {
         /// <summary>
-        /// The message to describe the error.
+        /// Gets the message to describe the error.
         /// </summary>
         public string Message { get; } = default!;
 
         /// <summary>
-        /// The Error Code.
+        /// Gets the Error Code.
         /// </summary>
         public string ErrorCode { get; } = default!;
 
         /// <summary>
-        /// The Type of Error.
+        /// Gets the Type of Error.
         /// </summary>
         public string ErrorType { get; } = default!;
 
         /// <summary>
-        /// Any extra properties that the user wants to use for this error result without creating a new class.
+        /// Gets any extra properties that the user wants to use for this error result without creating a new class.
         /// </summary>
         public Dictionary<string, object> ExtraProperties { get; } = new Dictionary<string, object>();
 

@@ -10,23 +10,23 @@ namespace Audacia.ExceptionHandling.Handlers
     public class ExceptionHandler<TException, TResult> : IExceptionHandler
         where TException : Exception
     {
-        /// <summary>Initializes a new instance of <see cref="ExceptionHandler{TException, TResult}"/></summary>
+        /// <summary>Initializes a new instance of <see cref="ExceptionHandler{TException, TResult}"/>.</summary>
         public ExceptionHandler(Func<TException, TResult> action, Action<TException>? log = null)
         {
             Action = action;
             LogAction = log;
         }
 
-        /// <summary>The type of Exception this handler handles.</summary>
+        /// <summary>Gets the type of Exception this handler handles.</summary>
         public Type ExceptionType => typeof(TException);
 
-        /// <summary>The type of Result this handler outputs.</summary>
+        /// <summary>Gets the type of Result this handler outputs.</summary>
         public Type ResultType => typeof(TResult);
 
-        /// <summary>The function which transforms the exception into <see cref="TResult"/>.</summary>
+        /// <summary>Gets the function which transforms the exception into <see typeparamref="TResult"/>.</summary>
         public Func<TException, TResult> Action { get; }
 
-        /// <summary>The function which transforms the exception into <see cref="TResult"/>.</summary>
+        /// <summary>Gets the function which transforms the exception into <see typeparamref="TResult"/>.</summary>
         public Action<TException>? LogAction { get; }
 
         /// <summary>
@@ -50,6 +50,7 @@ namespace Audacia.ExceptionHandling.Handlers
         /// </summary>
         /// <param name="exception">The exception that has been encountered.</param>
         /// <returns>True if the exception was logged, false if not, an exception if the exception input is not of the correct type.</returns>
+        /// <exception cref="ArgumentException">If the exception type passed in doesn't match the type for the handler an argument exception is thrown.</exception>
         public bool Log(Exception exception)
         {
             if (exception is TException ex)

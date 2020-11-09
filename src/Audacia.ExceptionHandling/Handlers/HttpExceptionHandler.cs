@@ -12,7 +12,7 @@ namespace Audacia.ExceptionHandling.Handlers
         IHttpExceptionHandler
         where TException : Exception
     {
-        /// <summary>The HTTP Status code to set on the response.</summary>
+        /// <summary>Gets the HTTP Status code to set on the response.</summary>
         public HttpStatusCode StatusCode { get; }
 
         /// <summary>

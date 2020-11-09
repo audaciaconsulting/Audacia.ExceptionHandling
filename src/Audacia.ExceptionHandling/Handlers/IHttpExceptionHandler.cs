@@ -8,7 +8,7 @@ namespace Audacia.ExceptionHandling.Handlers
     public interface IHttpExceptionHandler
     {
         /// <summary>
-        /// The status code to return for the given exception type.
+        /// Gets the status code to return for the given exception type.
         /// </summary>
         public HttpStatusCode StatusCode { get; }
     }

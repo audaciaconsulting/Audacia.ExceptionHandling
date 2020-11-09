@@ -7,10 +7,17 @@ namespace Audacia.ExceptionHandling.AspNetCore
     /// <summary>Extension methods.</summary>
     public static class ApplicationBuilderExtensions
     {
-        /// <summary>Configure an <see cref="ExceptionHandlerCollection"/> for an application.</summary>
-        public static IApplicationBuilder ConfigureExceptions(this IApplicationBuilder appBuilder,
+        /// <summary>Configure an <see cref="ExceptionHandlerMap"/> for an application.</summary>
+        /// <exception cref="ArgumentNullException"><paramref name="action"/> is <see langword="null"/>.</exception>
+        public static IApplicationBuilder ConfigureExceptions(
+            this IApplicationBuilder appBuilder,
             Action<ExceptionHandlerOptionsBuilder> action)
         {
+            if (action == null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
+
             var configBuilder = new ExceptionHandlerOptionsBuilder();
             action(configBuilder);
             var filter = new ExceptionFilter(configBuilder.Build());

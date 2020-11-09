@@ -22,10 +22,8 @@ namespace Audacia.ExceptionHandling.AspNetFramework
         /// <inheritdoc />
         public bool AllowMultiple { get; } = false;
 
-        /// <inheritdoc />
-        public Task ExecuteExceptionFilterAsync(HttpActionExecutedContext context, CancellationToken cancellationToken)
+        private static Exception Flatten(Exception exception)
         {
-            var exception = context.Exception;
             if (exception is AggregateException aggregateException)
             {
                 exception = aggregateException.Flatten();
@@ -36,7 +34,34 @@ namespace Audacia.ExceptionHandling.AspNetFramework
                 }
             }
 
-            var handler = _options.Get(exception.GetType());
+            return exception;
+        }
+
+        private static HttpStatusCode GetStatusCode(IExceptionHandler? handler)
+        {
+            var statusCode = HttpStatusCode.BadRequest;
+
+            if (handler is IHttpExceptionHandler httpExceptionHandler)
+            {
+                statusCode = httpExceptionHandler.StatusCode;
+            }
+
+            return statusCode;
+        }
+
+        /// <inheritdoc />
+        public Task ExecuteExceptionFilterAsync(
+            HttpActionExecutedContext actionExecutedContext,
+            CancellationToken cancellationToken)
+        {
+            if (actionExecutedContext == null)
+            {
+                throw new ArgumentNullException(nameof(actionExecutedContext));
+            }
+
+            var exception = Flatten(actionExecutedContext.Exception);
+
+            var handler = _options.GetHandler(exception.GetType());
 
             _options.Log(handler, exception);
 
@@ -45,16 +70,10 @@ namespace Audacia.ExceptionHandling.AspNetFramework
                 return Task.CompletedTask;
             }
 
-            var result = handler.Invoke(context.Exception);
+            var result = handler.Invoke(actionExecutedContext.Exception);
+            var statusCode = GetStatusCode(handler);
 
-            var statusCode = HttpStatusCode.BadRequest;
-
-            if (handler is IHttpExceptionHandler httpExceptionHandler)
-            {
-                statusCode = httpExceptionHandler.StatusCode;
-            }
-
-            context.Response = context.Request.CreateResponse(statusCode, result);
+            actionExecutedContext.Response = actionExecutedContext.Request.CreateResponse(statusCode, result);
 
             return Task.CompletedTask;
         }

@@ -8,7 +8,7 @@
     public class ValidationErrorResult : ErrorResult
     {
         /// <summary>
-        /// The property that the error is for.
+        /// Gets the property that the error is for.
         /// </summary>
         public string? Property { get; }
 

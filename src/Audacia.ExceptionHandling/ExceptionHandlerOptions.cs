@@ -3,15 +3,18 @@ using Audacia.ExceptionHandling.Handlers;
 
 namespace Audacia.ExceptionHandling
 {
+    /// <summary>
+    /// The options that describe how to deal with exceptions.
+    /// </summary>
     public class ExceptionHandlerOptions
     {
         /// <summary>
-        /// A collection of handlers.
+        /// Gets a collection of handlers.
         /// </summary>
-        public ExceptionHandlerCollection HandlerCollection { get; } = new ExceptionHandlerCollection();
+        public ExceptionHandlerMap HandlerMap { get; } = new ExceptionHandlerMap();
 
         /// <summary>
-        /// An action to log any exception if an individual handler doesn't have a logger.
+        /// Gets an action to log any exception if an individual handler doesn't have a logger.
         /// </summary>
         public Action<Exception>? Logging { get; internal set; }
 
@@ -20,10 +23,10 @@ namespace Audacia.ExceptionHandling
         /// You can call this method after getting the type using <see cref="Type.GetType()"/>.
         /// </summary>
         /// <param name="exceptionType">The type of exception to handle.</param>
-        /// <returns>An exception handler if one has been setup</returns>
-        public IExceptionHandler? Get(Type exceptionType)
+        /// <returns>An exception handler if one has been setup.</returns>
+        public virtual IExceptionHandler? GetHandler(Type exceptionType)
         {
-            return HandlerCollection.Get(exceptionType);
+            return HandlerMap.Get(exceptionType);
         }
 
         /// <summary>
@@ -31,25 +34,25 @@ namespace Audacia.ExceptionHandling
         /// </summary>
         /// <typeparam name="TException">The type of exception to return a handler for.</typeparam>
         /// <returns>An exception handler if one has been setup</returns>
-        public IExceptionHandler? Get<TException>()
+        public IExceptionHandler? GetHandler<TException>()
             where TException : Exception
         {
-            return HandlerCollection.Get(typeof(TException));
+            return GetHandler(typeof(TException));
         }
 
         /// <summary>
         /// Try log an exception with the handler. If it isn't logged, try log it with the overall logger.
         /// </summary>
         /// <param name="handler">The handler to log from.</param>
-        /// <param name="ex">The exception to try log.</param>
-        public void Log(IExceptionHandler? handler, Exception ex)
+        /// <param name="exception">The exception to try log.</param>
+        public void Log(IExceptionHandler? handler, Exception exception)
         {
-            if (handler?.Log(ex) ?? false)
+            if (handler?.Log(exception) ?? false)
             {
                 return;
             }
 
-            Logging?.Invoke(ex);
+            Logging?.Invoke(exception);
         }
     }
 }

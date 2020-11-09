@@ -4,7 +4,6 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Audacia.ExceptionHandling.AspNetCore;
-using Audacia.ExceptionHandling.Results;
 using Audacia.Middleware.Extensions;
 using Audacia.Middleware.Models;
 using Microsoft.AspNetCore.Builder;
