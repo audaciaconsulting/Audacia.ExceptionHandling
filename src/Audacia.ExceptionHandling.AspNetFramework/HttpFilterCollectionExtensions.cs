@@ -4,7 +4,7 @@ using System.Web.Http.Filters;
 namespace Audacia.ExceptionHandling.AspNetFramework
 {
     /// <summary>Extension methods.</summary>
-    public static class Extensions
+    public static class HttpFilterCollectionExtensions
     {
         /// <summary>Configure an <see cref="ExceptionHandlerCollection"/> for an application.</summary>
         public static HttpFilterCollection ConfigureExceptions(
