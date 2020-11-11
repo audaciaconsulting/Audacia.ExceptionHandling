@@ -1,7 +1,5 @@
 using System;
-using Gymfinity.GymManagement.Api.Middleware;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Diagnostics;
 
 namespace Audacia.ExceptionHandling.AspNetCore
 {

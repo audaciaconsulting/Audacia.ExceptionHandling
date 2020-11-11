@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace Gymfinity.GymManagement.Api.Middleware
+namespace Audacia.ExceptionHandling.AspNetCore
 {
     /// <summary>
     /// A custom middleware for handling exceptions
@@ -27,6 +27,7 @@ namespace Gymfinity.GymManagement.Api.Middleware
             _options = options;
         }
 
+#pragma warning disable RCS1046 // Add suffix 'Async' to asynchronous method name.
         /// <summary>
         /// Run this step of the HTTP Request pipeline.
         /// </summary>
@@ -34,15 +35,16 @@ namespace Gymfinity.GymManagement.Api.Middleware
         /// <returns>If there is an exception will set the response on the context, if there isn't one then nothing will happen.</returns>
         public Task Invoke(HttpContext context)
         {
-            var ex = context.Features.Get<IExceptionHandlerFeature>()?.Error;
+            var exception = context.Features.Get<IExceptionHandlerFeature>()?.Error;
 
-            if (ex == null)
+            if (exception == null)
             {
                 return Task.CompletedTask;
             }
 
-            return OnExceptionAsync(ex, context);
+            return OnExceptionAsync(exception, context);
         }
+#pragma warning restore RCS1046
 
         private static Exception Flatten(Exception exception)
         {
@@ -92,7 +94,7 @@ namespace Gymfinity.GymManagement.Api.Middleware
 
         /// <summary>Handles the specified exception based on the configured <see cref="ExceptionHandlerMap"/>.</summary>
         /// <exception cref="ArgumentNullException"><paramref name="context"/> is <see langword="null"/>.</exception>
-        private Task OnExceptionAsync(Exception exception, HttpContext context, ExceptionHandlerOptions options)
+        private Task OnExceptionAsync(Exception exception, HttpContext context)
         {
             if (context == null)
             {
