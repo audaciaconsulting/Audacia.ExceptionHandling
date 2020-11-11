@@ -1,4 +1,5 @@
 using System;
+using Gymfinity.GymManagement.Api.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 
@@ -20,15 +21,10 @@ namespace Audacia.ExceptionHandling.AspNetCore
 
             var configBuilder = new ExceptionHandlerOptionsBuilder();
             action(configBuilder);
-            var filter = new ExceptionFilter(configBuilder.Build());
 
-            appBuilder.UseExceptionHandler(builder =>
+            appBuilder.UseExceptionHandler(new Microsoft.AspNetCore.Builder.ExceptionHandlerOptions
             {
-                builder.Run(context =>
-                {
-                    var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
-                    return filter.OnExceptionAsync(exceptionHandlerPathFeature.Error, context);
-                });
+                ExceptionHandler = new ExceptionHandlingMiddleware(configBuilder.Build()).Invoke
             });
 
             return appBuilder;

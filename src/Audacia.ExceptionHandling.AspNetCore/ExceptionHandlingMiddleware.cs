@@ -2,22 +2,46 @@ using System;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Audacia.ExceptionHandling;
 using Audacia.ExceptionHandling.Handlers;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace Audacia.ExceptionHandling.AspNetCore
+namespace Gymfinity.GymManagement.Api.Middleware
 {
-    /// <summary>Handles exceptions thrown in an ASP.NET Core application based on the configured <see cref="ExceptionHandlerMap"/>.</summary>
-    public class ExceptionFilter
+    /// <summary>
+    /// A custom middleware for handling exceptions
+    /// </summary>
+    public class ExceptionHandlingMiddleware
     {
         private readonly ExceptionHandlerOptions _options;
 
-        /// <summary>Create a new instance of <see cref="ExceptionFilter"/>.</summary>
-        public ExceptionFilter(ExceptionHandlerOptions options)
+        /// <summary>
+        /// Create a new instance of <see cref="ExceptionHandlingMiddleware" />.
+        /// </summary>
+        /// <param name="options">The options for how to handle exceptions.</param>
+        public ExceptionHandlingMiddleware(ExceptionHandlerOptions options)
         {
             _options = options;
+        }
+
+        /// <summary>
+        /// Run this step of the HTTP Request pipeline.
+        /// </summary>
+        /// <param name="context">The current HttpContext</param>
+        /// <returns>If there is an exception will set the response on the context, if there isn't one then nothing will happen.</returns>
+        public Task Invoke(HttpContext context)
+        {
+            var ex = context.Features.Get<IExceptionHandlerFeature>()?.Error;
+
+            if (ex == null)
+            {
+                return Task.CompletedTask;
+            }
+
+            return OnExceptionAsync(ex, context);
         }
 
         private static Exception Flatten(Exception exception)
@@ -49,9 +73,9 @@ namespace Audacia.ExceptionHandling.AspNetCore
 
         private static void SetResponse(HttpContext context, object? result, HttpStatusCode statusCode)
         {
-            #pragma warning disable AV2318
+#pragma warning disable AV2318
             // todo: make this respect the accept header from the client (if possible)
-            #pragma warning restore AV2318
+#pragma warning restore AV2318
             var json = JsonConvert.SerializeObject(
                 result,
                 new JsonSerializerSettings
@@ -68,7 +92,7 @@ namespace Audacia.ExceptionHandling.AspNetCore
 
         /// <summary>Handles the specified exception based on the configured <see cref="ExceptionHandlerMap"/>.</summary>
         /// <exception cref="ArgumentNullException"><paramref name="context"/> is <see langword="null"/>.</exception>
-        public Task OnExceptionAsync(Exception exception, HttpContext context)
+        private Task OnExceptionAsync(Exception exception, HttpContext context, ExceptionHandlerOptions options)
         {
             if (context == null)
             {
