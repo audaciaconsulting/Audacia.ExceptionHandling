@@ -121,7 +121,7 @@ dotnet_diagnostic.AV1706.severity = none
 dotnet_diagnostic.AV1708.severity = warning
 
 # Don't repeat the name of a class or enumeration in its members
-dotnet_diagnostic.AV1710.severity = none
+dotnet_diagnostic.AV1710.severity = warning
 
 # Name members similarly to members of related .NET Framework classes
 dotnet_diagnostic.AV1711.severity = warning
@@ -148,7 +148,7 @@ dotnet_diagnostic.AV1755.severity = none
 dotnet_diagnostic.AV2202.severity = warning
 
 # Build with the highest warning level
-dotnet_diagnostic.AV2210.severity = none
+dotnet_diagnostic.AV2210.severity = warning
 
 # Avoid LINQ query syntax for simple expressions
 dotnet_diagnostic.AV2220.severity = none
@@ -298,7 +298,7 @@ dotnet_diagnostic.CA1303.severity = none
 dotnet_diagnostic.CA1304.severity = warning
 
 # [GLOBALIZATION] Specify IFormatProvider
-dotnet_diagnostic.CA1305.severity = none
+dotnet_diagnostic.CA1305.severity = warning
 
 # [GLOBALIZATION] Specify StringComparison
 dotnet_diagnostic.CA1307.severity = warning
@@ -432,8 +432,8 @@ dotnet_diagnostic.CA1828.severity = warning
 # [PERFORMANCE] Use Length/Count property instead of Count() when available
 dotnet_diagnostic.CA1829.severity = warning
 
-# [RELIABILITY] Dispose objects before losing scope
-dotnet_diagnostic.CA2000.severity = suggestion
+# [RELIABILITY] Dispose objects before losing scope *** Suppress as covered by IDISP004 ***
+dotnet_diagnostic.CA2000.severity = none
 
 # [RELIABILITY] Do not lock on objects with weak identity
 dotnet_diagnostic.CA2002.severity = warning
@@ -708,7 +708,7 @@ dotnet_diagnostic.CA5383.severity = warning
 # [SECURITY] Do Not Use Digital Signature Algorithm (DSA)
 dotnet_diagnostic.CA5384.severity = warning
 
-# [SECURITY] Use Rivest–Shamir–Adleman (RSA) Algorithm With Sufficient Key Size
+# [SECURITY] Use Rivestâ€“Shamirâ€“Adleman (RSA) Algorithm With Sufficient Key Size
 dotnet_diagnostic.CA5385.severity = warning
 
 # [SECURITY] Avoid hardcoding SecurityProtocolType value
@@ -891,7 +891,7 @@ dotnet_diagnostic.RCS1005.severity = warning
 # [SIMPLIFICATION] Merge else clause with nested if statement
 dotnet_diagnostic.RCS1006.severity = warning
 
-# [STYLE] Add braces
+# [STYLE] Add braces *** Suppress as covered by ACL1006 ***
 dotnet_diagnostic.RCS1007.severity = none
 
 # [READABILITY] Use explicit type instead of 'var' (when the type is not obvious)
@@ -2241,7 +2241,7 @@ dotnet_diagnostic.SCS0016.severity = warning
 # [SECURITY] Request validation is disabled. Request validation allows the filtering of some XSS patterns submitted to the application.
 dotnet_diagnostic.SCS0017.severity = warning
 
-# [SECURITY] A path traversal attack (also known as directory traversal) aims to access files and directories that are stored outside the expected directory.By manipulating variables that reference files with �dot-dot-slash (../)� sequences and its variations or by using absolute file paths, it may be possible to access arbitrary files and directories stored on file system including application source code or configuration and critical system files.
+# [SECURITY] A path traversal attack (also known as directory traversal) aims to access files and directories that are stored outside the expected directory.By manipulating variables that reference files with “dot-dot-slash (../)” sequences and its variations or by using absolute file paths, it may be possible to access arbitrary files and directories stored on file system including application source code or configuration and critical system files.
 dotnet_diagnostic.SCS0018.severity = warning
 
 # [SECURITY] Use parametrized queries to mitigate SQL injection.

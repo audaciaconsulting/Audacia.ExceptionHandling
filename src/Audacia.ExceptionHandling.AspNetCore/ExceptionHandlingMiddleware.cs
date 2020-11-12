@@ -2,7 +2,6 @@ using System;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using Audacia.ExceptionHandling;
 using Audacia.ExceptionHandling.Handlers;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
@@ -12,7 +11,7 @@ using Newtonsoft.Json.Serialization;
 namespace Audacia.ExceptionHandling.AspNetCore
 {
     /// <summary>
-    /// A custom middleware for handling exceptions
+    /// A custom middleware for handling exceptions.
     /// </summary>
     public class ExceptionHandlingMiddleware
     {
@@ -30,10 +29,16 @@ namespace Audacia.ExceptionHandling.AspNetCore
         /// <summary>
         /// Run this step of the HTTP Request pipeline.
         /// </summary>
-        /// <param name="context">The current HttpContext</param>
+        /// <param name="context">The current HttpContext.</param>
         /// <returns>If there is an exception will set the response on the context, if there isn't one then nothing will happen.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="context"/> is <see langword="null"/>.</exception>
         public Task InvokeAsync(HttpContext context)
         {
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
             var exception = context.Features.Get<IExceptionHandlerFeature>()?.Error;
 
             if (exception == null)
@@ -112,7 +117,9 @@ namespace Audacia.ExceptionHandling.AspNetCore
 
             context.Response.Clear();
             context.Response.Headers.Add("Content-Type", "application/json");
+#pragma warning disable CA1305 // specify IFormatProvider
             context.Response.Headers.Add("Content-Length", Encoding.UTF8.GetByteCount(json).ToString());
+#pragma warning restore CA1305
             context.Response.StatusCode = (int)statusCode;
             context.Response.WriteAsync(json, Encoding.UTF8);
         }
