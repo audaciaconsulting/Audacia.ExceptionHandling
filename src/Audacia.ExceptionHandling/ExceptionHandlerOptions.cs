@@ -33,7 +33,7 @@ namespace Audacia.ExceptionHandling
         /// Get the handler when you know the exception type.
         /// </summary>
         /// <typeparam name="TException">The type of exception to return a handler for.</typeparam>
-        /// <returns>An exception handler if one has been setup</returns>
+        /// <returns>An exception handler if one has been setup.</returns>
         public IExceptionHandler? GetHandler<TException>()
             where TException : Exception
         {

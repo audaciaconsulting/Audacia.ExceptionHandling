@@ -14,6 +14,7 @@ namespace Audacia.ExceptionHandling.AspNetFramework
         private readonly ExceptionHandlerOptions _options;
 
         /// <summary>Create a new <see cref="ExceptionFilter"/> instance.</summary>
+        /// <param name="options">The options that will be used to handle exceptions.</param>
         public ExceptionFilter(ExceptionHandlerOptions options)
         {
             _options = options;
@@ -49,6 +50,7 @@ namespace Audacia.ExceptionHandling.AspNetFramework
             return statusCode;
         }
 
+#pragma warning disable AV1710 // Member name includes the name of its including type.
         /// <inheritdoc />
         public Task ExecuteExceptionFilterAsync(
             HttpActionExecutedContext actionExecutedContext,
@@ -77,5 +79,6 @@ namespace Audacia.ExceptionHandling.AspNetFramework
 
             return Task.CompletedTask;
         }
+#pragma warning restore AV1710
     }
 }

@@ -12,13 +12,28 @@ namespace Audacia.ExceptionHandling
             new Dictionary<Type, IExceptionHandler>();
 
 #pragma warning disable AV1551 // Don't need to call another overload.
-        internal void Add<TException>(IExceptionHandler handler)
+        /// <summary>
+        /// Add an <see cref="IExceptionHandler"/> to the map.
+        /// </summary>
+        /// <param name="handler">The handler to the add to the Map.</param>
+        /// <typeparam name="TException">The type of <see cref="Exception"/> that is being handled.</typeparam>
+        /// <returns>The instance of the <see cref="ExceptionHandlerMap"/> that is being acted upon.</returns>
+        internal ExceptionHandlerMap Add<TException>(IExceptionHandler handler)
             where TException : Exception
         {
             _exceptionToHandlerMap.Add(typeof(TException), handler);
+            return this;
         }
 #pragma warning restore AV1551
 
+        /// <summary>
+        /// Add an <see cref="ExceptionHandler{TException,TResult}"/> to the map.
+        /// </summary>
+        /// <param name="action">The action to create the <see cref="ExceptionHandler{TException,TResult}"/> with.</param>
+        /// <param name="logAction">The action to log the exception with.</param>
+        /// <typeparam name="TException">The type of <see cref="Exception"/>.</typeparam>
+        /// <typeparam name="TResult">The type of result that the action returns.</typeparam>
+        /// <returns>The instance of the <see cref="ExceptionHandlerMap"/> that is being acted upon.</returns>
         internal ExceptionHandlerMap Add<TException, TResult>(
             Func<TException, TResult> action,
             Action<TException>? logAction = null)
@@ -29,6 +44,15 @@ namespace Audacia.ExceptionHandling
             return this;
         }
 
+        /// <summary>
+        /// Add an <see cref="HttpExceptionHandler{TException,TResult}"/> to the map.
+        /// </summary>
+        /// <param name="action">The action to create the <see cref="HttpExceptionHandler{TException,TResult}"/> with.</param>
+        /// <param name="statusCode">The <see cref="HttpStatusCode"/> to create the handler with.</param>
+        /// <param name="logAction">The action to log the exception with.</param>
+        /// <typeparam name="TException">The type of <see cref="Exception"/>.</typeparam>
+        /// <typeparam name="TResult">The type of result that the action returns.</typeparam>
+        /// <returns>The instance of the <see cref="ExceptionHandlerMap"/> that is being acted upon.</returns>
         internal ExceptionHandlerMap Add<TException, TResult>(
             Func<TException, TResult> action,
             HttpStatusCode statusCode,

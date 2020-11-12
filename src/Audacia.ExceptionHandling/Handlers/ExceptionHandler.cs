@@ -3,14 +3,18 @@ using System;
 namespace Audacia.ExceptionHandling.Handlers
 {
     /// <summary>
-    /// A wrapper around how to handle different exception types
+    /// A wrapper around how to handle different exception types.
     /// </summary>
     /// <typeparam name="TException">The type of exception being handled.</typeparam>
     /// <typeparam name="TResult">The result type that is returned.</typeparam>
     public class ExceptionHandler<TException, TResult> : IExceptionHandler
         where TException : Exception
     {
-        /// <summary>Initializes a new instance of <see cref="ExceptionHandler{TException, TResult}"/>.</summary>
+        /// <summary>
+        /// Initializes a new instance of <see cref="ExceptionHandler{TException, TResult}"/>.
+        /// </summary>
+        /// <param name="action">The action to run on the given exception type to return the expected result.</param>
+        /// <param name="log">The (optional) action to run on the exception to log it.</param>
         public ExceptionHandler(Func<TException, TResult> action, Action<TException>? log = null)
         {
             Action = action;
@@ -30,11 +34,11 @@ namespace Audacia.ExceptionHandling.Handlers
         public Action<TException>? LogAction { get; }
 
         /// <summary>
-        /// Call the action. This is a wrapper such that
+        /// Call the action. This is a wrapper such that you don't need to know the type of <see typeparamref="TException"/> or <see typeparamref="TResult"/> at the time of execution.
         /// </summary>
-        /// <param name="exception">The exception to be processed</param>
+        /// <param name="exception">The exception to be processed.</param>
         /// <returns>The result that this exception products.</returns>
-        /// <exception cref="ArgumentException">If the passed exception is not of the correct type an exception is thrown</exception>
+        /// <exception cref="ArgumentException">If the passed exception is not of the correct type an exception is thrown.</exception>
         public object? Invoke(Exception exception)
         {
             if (exception is TException ex)

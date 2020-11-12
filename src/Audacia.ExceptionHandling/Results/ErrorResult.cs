@@ -29,6 +29,9 @@ namespace Audacia.ExceptionHandling.Results
         public ErrorResult() { }
 
         /// <summary>Create an <see cref="ErrorResult"/> with the specified message.</summary>
+        /// <param name="message">The message to give this error.</param>
+        /// <param name="errorCode">The error code.</param>
+        /// <param name="errorType">The type of error that happened.</param>
         public ErrorResult(string message, string errorCode, string errorType)
         {
             Message = message;
