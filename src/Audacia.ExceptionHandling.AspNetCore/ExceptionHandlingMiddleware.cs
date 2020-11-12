@@ -27,13 +27,12 @@ namespace Audacia.ExceptionHandling.AspNetCore
             _options = options;
         }
 
-#pragma warning disable RCS1046 // Add suffix 'Async' to asynchronous method name.
         /// <summary>
         /// Run this step of the HTTP Request pipeline.
         /// </summary>
         /// <param name="context">The current HttpContext</param>
         /// <returns>If there is an exception will set the response on the context, if there isn't one then nothing will happen.</returns>
-        public Task Invoke(HttpContext context)
+        public Task InvokeAsync(HttpContext context)
         {
             var exception = context.Features.Get<IExceptionHandlerFeature>()?.Error;
 
@@ -44,7 +43,33 @@ namespace Audacia.ExceptionHandling.AspNetCore
 
             return OnExceptionAsync(exception, context);
         }
-#pragma warning restore RCS1046
+
+        /// <summary>Handles the specified exception based on the configured <see cref="ExceptionHandlerMap"/>.</summary>
+        /// <exception cref="ArgumentNullException"><paramref name="context"/> is <see langword="null"/>.</exception>
+        private Task OnExceptionAsync(Exception exception, HttpContext context)
+        {
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
+            exception = Flatten(exception);
+
+            var handler = _options.GetHandler(exception.GetType());
+
+            _options.Log(handler, exception);
+
+            if (handler == null)
+            {
+                return Task.CompletedTask;
+            }
+
+            var result = handler.Invoke(exception);
+            var statusCode = GetStatusCode(handler);
+
+            SetResponse(context, result, statusCode);
+            return Task.CompletedTask;
+        }
 
         private static Exception Flatten(Exception exception)
         {
@@ -90,33 +115,6 @@ namespace Audacia.ExceptionHandling.AspNetCore
             context.Response.Headers.Add("Content-Length", Encoding.UTF8.GetByteCount(json).ToString());
             context.Response.StatusCode = (int)statusCode;
             context.Response.WriteAsync(json, Encoding.UTF8);
-        }
-
-        /// <summary>Handles the specified exception based on the configured <see cref="ExceptionHandlerMap"/>.</summary>
-        /// <exception cref="ArgumentNullException"><paramref name="context"/> is <see langword="null"/>.</exception>
-        private Task OnExceptionAsync(Exception exception, HttpContext context)
-        {
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
-
-            exception = Flatten(exception);
-
-            var handler = _options.GetHandler(exception.GetType());
-
-            _options.Log(handler, exception);
-
-            if (handler == null)
-            {
-                return Task.CompletedTask;
-            }
-
-            var result = handler.Invoke(exception);
-            var statusCode = GetStatusCode(handler);
-
-            SetResponse(context, result, statusCode);
-            return Task.CompletedTask;
         }
     }
 }
