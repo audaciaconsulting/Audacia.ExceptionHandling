@@ -54,10 +54,9 @@ namespace Audacia.ExceptionHandling
         /// </summary>
         /// <param name="handler">The handler to add to the collection.</param>
         /// <typeparam name="TException">The type of exception to handle.</typeparam>
-        /// <typeparam name="TResult">The type of the result to return from handling the exception.</typeparam>
         /// <returns>The <see cref="ExceptionHandlerOptionsBuilder"/> instance.</returns>
-        public ExceptionHandlerOptionsBuilder AddHandler<TException, TResult>(
-            ExceptionHandler<TException, TResult> handler)
+        public ExceptionHandlerOptionsBuilder AddHandler<TException>(
+            IExceptionHandler handler)
             where TException : Exception
         {
             _options.HandlerMap.Add<TException>(handler);

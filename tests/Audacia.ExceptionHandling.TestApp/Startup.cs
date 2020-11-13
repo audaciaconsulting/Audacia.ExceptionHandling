@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Robotify.AspNetCore;
 
 namespace Audacia.ExceptionHandling.TestApp
@@ -36,6 +37,8 @@ namespace Audacia.ExceptionHandling.TestApp
             app.UseRobotify();
             app.UseRouting();
 
+            var logger = app.ApplicationServices.GetService<ILogger>();
+
             app.ConfigureExceptions(e =>
             {
                 e.Handle((KeyNotFoundException ex) => new
@@ -58,6 +61,7 @@ namespace Audacia.ExceptionHandling.TestApp
 
                 e.WithDefaultLogging(ex =>
                 {
+                    logger.LogError(ex, ex.Message);
                     Console.Error.Write(ex);
                 });
             });
