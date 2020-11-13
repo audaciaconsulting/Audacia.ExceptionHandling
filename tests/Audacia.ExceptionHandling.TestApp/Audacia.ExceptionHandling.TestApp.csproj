@@ -9,7 +9,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Audacia.Middleware.RobotsMetaTag" Version="0.0.19028.30907"/>
         <PackageReference Include="Robotify.AspNetCore" Version="1.0.2"/>
     </ItemGroup>
 

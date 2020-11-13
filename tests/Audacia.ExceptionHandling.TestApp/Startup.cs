@@ -4,8 +4,6 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Audacia.ExceptionHandling.AspNetCore;
-using Audacia.Middleware.Extensions;
-using Audacia.Middleware.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -34,7 +32,6 @@ namespace Audacia.ExceptionHandling.TestApp
         {
             app.UseDeveloperExceptionPage();
 
-            app.UseXRobotsMetaTagMiddleware(new XRobotsModel());
             app.UseCors("CorsPolicy");
             app.UseRobotify();
             app.UseRouting();
