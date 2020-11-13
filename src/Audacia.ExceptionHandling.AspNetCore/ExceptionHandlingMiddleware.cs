@@ -15,14 +15,17 @@ namespace Audacia.ExceptionHandling.AspNetCore
     /// </summary>
     public class ExceptionHandlingMiddleware
     {
+        private readonly RequestDelegate _next;
         private readonly ExceptionHandlerOptions _options;
 
         /// <summary>
         /// Create a new instance of <see cref="ExceptionHandlingMiddleware" />.
         /// </summary>
+        /// <param name="next">The next method to call in the middleware pipeline.</param>
         /// <param name="options">The options for how to handle exceptions.</param>
-        public ExceptionHandlingMiddleware(ExceptionHandlerOptions options)
+        public ExceptionHandlingMiddleware(RequestDelegate next, ExceptionHandlerOptions options)
         {
+            _next = next;
             _options = options;
         }
 
@@ -32,21 +35,18 @@ namespace Audacia.ExceptionHandling.AspNetCore
         /// <param name="context">The current HttpContext.</param>
         /// <returns>If there is an exception will set the response on the context, if there isn't one then nothing will happen.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="context"/> is <see langword="null"/>.</exception>
-        public Task InvokeAsync(HttpContext context)
+        public async Task InvokeAsync(HttpContext context)
         {
-            if (context == null)
+#pragma warning disable CA1031 // Capture a more specific exception type
+            try
             {
-                throw new ArgumentNullException(nameof(context));
+                await _next(context).ConfigureAwait(false);
             }
-
-            var exception = context.Features.Get<IExceptionHandlerFeature>()?.Error;
-
-            if (exception == null)
+            catch (Exception exception)
             {
-                return Task.CompletedTask;
+                await OnExceptionAsync(exception, context).ConfigureAwait(false);
             }
-
-            return OnExceptionAsync(exception, context);
+#pragma warning restore CA1031
         }
 
         /// <summary>Handles the specified exception based on the configured <see cref="ExceptionHandlerMap"/>.</summary>

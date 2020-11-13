@@ -25,10 +25,7 @@ namespace Audacia.ExceptionHandling.AspNetCore
             var configBuilder = new ExceptionHandlerOptionsBuilder();
             action(configBuilder);
 
-            appBuilder.UseExceptionHandler(new Microsoft.AspNetCore.Builder.ExceptionHandlerOptions
-            {
-                ExceptionHandler = new ExceptionHandlingMiddleware(configBuilder.Build()).InvokeAsync
-            });
+            appBuilder.UseMiddleware<ExceptionHandlingMiddleware>(configBuilder.Build());
 
             return appBuilder;
         }
