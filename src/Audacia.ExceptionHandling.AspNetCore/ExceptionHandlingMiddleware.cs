@@ -105,9 +105,6 @@ namespace Audacia.ExceptionHandling.AspNetCore
 
         private static void SetResponse(HttpContext context, object? result, HttpStatusCode statusCode)
         {
-#pragma warning disable AV2318
-            // todo: make this respect the accept header from the client (if possible)
-#pragma warning restore AV2318
             var json = JsonConvert.SerializeObject(
                 result,
                 new JsonSerializerSettings
