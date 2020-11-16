@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <Authors>Audacia</Authors>
+        <Description>Configuration library for adding functionality from Audacia.ExceptionHandling to an ASP.NET Core Web API.</Description>
+        <Copyright>Copyright © Audacia 2020</Copyright>
+        <PackageIconUrl>https://www.audacia.co.uk/media/pkenoobu/audacia-logo-circle-blue.png</PackageIconUrl>
+        <LangVersion>latest</LangVersion>
+        <Nullable>enable</Nullable>
+        <Version>2.0.0</Version>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+        <DocumentationFile>bin\Debug\Audacia.ExceptionHandling.AspNetCore.xml</DocumentationFile>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+        <DocumentationFile>bin\Release\Audacia.ExceptionHandling.AspNetCore.xml</DocumentationFile>
+        <WarningsAsErrors>NU1605;CS1591</WarningsAsErrors>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Audacia.CodeAnalysis" Version="1.0.20269.1">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Audacia.CodeAnalysis.AspNetCore" Version="1.0.20269.1" />
+        <PackageReference Include="Microsoft.AspNetCore.Diagnostics" Version="2.2.0" />
+        <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+        <PackageReference Include="System.Diagnostics.StackTrace" Version="4.3.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Audacia.ExceptionHandling\Audacia.ExceptionHandling.csproj" />
+    </ItemGroup>
+
+</Project>
