@@ -72,9 +72,18 @@ namespace Audacia.ExceptionHandling
         /// <returns>An exception handler instance if there is one.</returns>
         internal IExceptionHandler? Get(Type exceptionType)
         {
-            if (_exceptionToHandlerMap.TryGetValue(exceptionType, out var handler))
+            var types = new List<Type>
             {
-                return handler;
+                exceptionType
+            };
+            types.AddRange(exceptionType.InheritanceHierarchy());
+
+            foreach (var inheritedType in types)
+            {
+                if (_exceptionToHandlerMap.TryGetValue(inheritedType, out var handler))
+                {
+                    return handler;
+                }
             }
 
             return null;
