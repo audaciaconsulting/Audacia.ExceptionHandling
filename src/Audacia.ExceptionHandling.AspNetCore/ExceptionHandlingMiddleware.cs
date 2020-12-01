@@ -3,7 +3,6 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Audacia.ExceptionHandling.Handlers;
-using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -66,14 +65,13 @@ namespace Audacia.ExceptionHandling.AspNetCore
 
             if (handler == null)
             {
-                return Task.CompletedTask;
+                return SetResponseAsync(context, null, HttpStatusCode.InternalServerError);
             }
 
             var result = handler.Invoke(exception);
             var statusCode = GetStatusCode(handler);
-
-            SetResponse(context, result, statusCode);
-            return Task.CompletedTask;
+            
+            return SetResponseAsync(context, result, statusCode);
         }
 
         private static Exception Flatten(Exception exception)
@@ -103,7 +101,19 @@ namespace Audacia.ExceptionHandling.AspNetCore
             return statusCode;
         }
 
-        private static void SetResponse(HttpContext context, object? result, HttpStatusCode statusCode)
+        private static Task SetResponseAsync(HttpContext context, object? result, HttpStatusCode statusCode)
+        {
+            context.Response.StatusCode = (int)statusCode;
+
+            if (result != null)
+            {
+                return SetResponseBodyAsync(result, context.Response);
+            }
+
+            return Task.CompletedTask;
+        }
+
+        private static Task SetResponseBodyAsync(object result, HttpResponse response)
         {
             var json = JsonConvert.SerializeObject(
                 result,
@@ -112,13 +122,13 @@ namespace Audacia.ExceptionHandling.AspNetCore
                     ContractResolver = new CamelCasePropertyNamesContractResolver()
                 });
 
-            context.Response.Clear();
-            context.Response.Headers.Add("Content-Type", "application/json");
+            response.Clear();
+            response.Headers.Add("Content-Type", "application/json");
 #pragma warning disable CA1305 // specify IFormatProvider
-            context.Response.Headers.Add("Content-Length", Encoding.UTF8.GetByteCount(json).ToString());
+            response.Headers.Add("Content-Length", Encoding.UTF8.GetByteCount(json).ToString());
 #pragma warning restore CA1305
-            context.Response.StatusCode = (int)statusCode;
-            context.Response.WriteAsync(json, Encoding.UTF8);
+            
+            return response.WriteAsync(json, Encoding.UTF8);
         }
     }
 }
