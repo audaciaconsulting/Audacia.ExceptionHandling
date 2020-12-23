@@ -67,10 +67,10 @@ namespace Audacia.ExceptionHandling.AspNetCore
             {
                 return SetResponseAsync(context, null, HttpStatusCode.InternalServerError);
             }
-
+         
             var result = handler.Invoke(exception);
             var statusCode = GetStatusCode(handler);
-            
+
             return SetResponseAsync(context, result, statusCode);
         }
 
@@ -103,6 +103,7 @@ namespace Audacia.ExceptionHandling.AspNetCore
 
         private static Task SetResponseAsync(HttpContext context, object? result, HttpStatusCode statusCode)
         {
+            context.Response.Clear();
             context.Response.StatusCode = (int)statusCode;
 
             if (result != null)
@@ -121,8 +122,7 @@ namespace Audacia.ExceptionHandling.AspNetCore
                 {
                     ContractResolver = new CamelCasePropertyNamesContractResolver()
                 });
-
-            response.Clear();
+            
             response.Headers.Add("Content-Type", "application/json");
 #pragma warning disable CA1305 // specify IFormatProvider
             response.Headers.Add("Content-Length", Encoding.UTF8.GetByteCount(json).ToString());

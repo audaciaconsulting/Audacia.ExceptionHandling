@@ -26,10 +26,11 @@ namespace Audacia.ExceptionHandling.TestApp
         {
             services.AddRobotify();
             services.AddCorsPolicy();
+            services.AddLogging();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
         {
             app.UseDeveloperExceptionPage();
 
@@ -37,7 +38,7 @@ namespace Audacia.ExceptionHandling.TestApp
             app.UseRobotify();
             app.UseRouting();
 
-            var logger = app.ApplicationServices.GetService<ILogger>();
+            var logger = loggerFactory.CreateLogger("Default");
 
             app.ConfigureExceptions(e =>
             {
@@ -49,7 +50,7 @@ namespace Audacia.ExceptionHandling.TestApp
                 e.Handle((InvalidOperationException ex) => new
                 {
                     Result = ex.Message
-                });
+                }, HttpStatusCode.InternalServerError);
 
                 e.Handle((ArgumentException ex) => new
                 {
