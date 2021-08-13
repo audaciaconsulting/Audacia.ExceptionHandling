@@ -2,8 +2,11 @@ using System;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Audacia.ExceptionHandling.Extensions;
 using Audacia.ExceptionHandling.Handlers;
+using Audacia.ExceptionHandling.Results;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
@@ -15,16 +18,19 @@ namespace Audacia.ExceptionHandling.AspNetCore
     public class ExceptionHandlingMiddleware
     {
         private readonly RequestDelegate _next;
+        private readonly ILoggerFactory _loggerFactory;
         private readonly ExceptionHandlerOptions _options;
 
         /// <summary>
         /// Create a new instance of <see cref="ExceptionHandlingMiddleware" />.
         /// </summary>
         /// <param name="next">The next method to call in the middleware pipeline.</param>
+        /// <param name="loggerFactory">Logger factory, required for attaching customer references to error logs.</param>
         /// <param name="options">The options for how to handle exceptions.</param>
-        public ExceptionHandlingMiddleware(RequestDelegate next, ExceptionHandlerOptions options)
+        public ExceptionHandlingMiddleware(RequestDelegate next, ILoggerFactory loggerFactory, ExceptionHandlerOptions options)
         {
             _next = next;
+            _loggerFactory = loggerFactory;
             _options = options;
         }
 
@@ -50,7 +56,9 @@ namespace Audacia.ExceptionHandling.AspNetCore
 
         /// <summary>Handles the specified exception based on the configured <see cref="ExceptionHandlerMap"/>.</summary>
         /// <exception cref="ArgumentNullException"><paramref name="context"/> is <see langword="null"/>.</exception>
+#pragma warning disable ACL1002 // Member or local function contains too many statements
         private Task OnExceptionAsync(Exception exception, HttpContext context)
+#pragma warning restore ACL1002 // Member or local function contains too many statements
         {
             if (context == null)
             {
@@ -58,17 +66,28 @@ namespace Audacia.ExceptionHandling.AspNetCore
             }
 
             exception = Flatten(exception);
-
+            
+            // Find the related exception handler
             var handler = _options.GetHandler(exception.GetType());
 
-            _options.Log(handler, exception);
+            // Generate a customer reference for the current exception
+            var customerReference = StringExtensions.GetCustomerReference();
+
+            // Create a logger scope to attach the customer reference to log messages
+            var logger = _loggerFactory.CreateLogger("ExceptionHandler");
+            using (logger.BeginScope(nameof(ErrorResult.CustomerReference), customerReference))
+            {
+                // Run the log action on the exception handler
+                _options.Log(logger, handler, exception);
+            }
 
             if (handler == null)
             {
                 return SetResponseAsync(context, null, HttpStatusCode.InternalServerError);
             }
-         
-            var result = handler.Invoke(exception);
+
+            // Handle the exception and generate an API response
+            var result = handler.Invoke(customerReference, exception);
             var statusCode = GetStatusCode(handler);
 
             return SetResponseAsync(context, result, statusCode);

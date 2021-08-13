@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Web.Http.Filters;
+using Microsoft.Extensions.Logging;
 
 namespace Audacia.ExceptionHandling.AspNetFramework
 {
@@ -9,11 +10,13 @@ namespace Audacia.ExceptionHandling.AspNetFramework
     {
         /// <summary>Configure an <see cref="ExceptionHandlerMap"/> for an application.</summary>
         /// <param name="filters">The collection of HttpFilters.</param>
+        /// <param name="loggerFactory">Logger factory, required for attaching customer references to error logs.</param>
         /// <param name="action">The action that is used to configure the exception handling.</param>
         /// <returns>The list of filters after you have added the exception handling.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="action"/> is <see langword="null"/>.</exception>
         public static IEnumerable<FilterInfo> ConfigureExceptions(
             this HttpFilterCollection filters,
+            ILoggerFactory loggerFactory,
             Action<ExceptionHandlerOptionsBuilder> action)
         {
             if (action == null)
@@ -23,8 +26,8 @@ namespace Audacia.ExceptionHandling.AspNetFramework
 
             var config = new ExceptionHandlerOptionsBuilder();
             action(config);
-            var filter = new ExceptionFilter(config.Build());
 
+            var filter = new ExceptionFilter(loggerFactory, config.Build());
             filters.Add(filter);
 
             return filters;

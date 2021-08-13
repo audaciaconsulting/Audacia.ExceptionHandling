@@ -1,10 +1,17 @@
 ﻿using System.Collections.Generic;
+using Audacia.ExceptionHandling.Extensions;
 
 namespace Audacia.ExceptionHandling.Results
 {
     /// <summary>Represents an API response which contains the details of an error.</summary>
     public class ErrorResult
     {
+        /// <summary>
+        /// Gets the reference to be displayed to the customer,
+        /// this has been attached to the related log in Application Insights.
+        /// </summary>
+        public string CustomerReference { get; } = default!;
+
         /// <summary>
         /// Gets the message to describe the error.
         /// </summary>
@@ -29,14 +36,16 @@ namespace Audacia.ExceptionHandling.Results
         public ErrorResult() { }
 
         /// <summary>Create an <see cref="ErrorResult"/> with the specified message.</summary>
+        /// <param name="customerReference">An error code to be displayed to the customer that has been attached to related the Application Insights log.</param>
         /// <param name="message">The message to give this error.</param>
         /// <param name="errorCode">The error code.</param>
         /// <param name="errorType">The type of error that happened.</param>
-        public ErrorResult(string message, string errorCode, string errorType)
+        public ErrorResult(string customerReference, string message, string errorCode, string errorType)
         {
             Message = message;
             ErrorCode = errorCode;
             ErrorType = errorType;
+            CustomerReference = customerReference;
         }
     }
 }

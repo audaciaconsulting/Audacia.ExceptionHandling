@@ -10,22 +10,30 @@ namespace Audacia.ExceptionHandling.Tests
 {
     public class ExceptionHandlerBuilderTests
     {
+        private const string ExampleCustomerReference = "4444-3333-2222";
+        private const string MessageFormat = "An {0} has occurred.";
+
         private ExceptionHandlerMap ExceptionHandlerMap { get; } = new ExceptionHandlerMap();
 
         public ExceptionHandlerBuilderTests()
         {
-            ExceptionHandlerMap.Add((InvalidOperationException e) =>
-                new List<ErrorResult>
-                {
-                    new ErrorResult(nameof(InvalidOperationException), nameof(InvalidOperationException),
-                        nameof(InvalidOperationException))
-                }, HttpStatusCode.Ambiguous);
-            ExceptionHandlerMap.Add((SystemException e) =>
-                    new List<ErrorResult>
-                    {
-                        new ErrorResult(nameof(SystemException), nameof(SystemException), nameof(SystemException))
-                    },
-                HttpStatusCode.Ambiguous);
+            ExceptionHandlerMap.Add((string customerReference, InvalidOperationException e) => new[]
+            {
+                new ErrorResult(
+                    customerReference: customerReference,
+                    message: string.Format(MessageFormat, nameof(InvalidOperationException)),
+                    errorCode: nameof(InvalidOperationException).GetHashCode().ToString(),
+                    errorType: nameof(InvalidOperationException))
+            }, HttpStatusCode.Ambiguous);
+
+            ExceptionHandlerMap.Add((string customerReference, SystemException e) => new []
+            {
+                new ErrorResult(
+                    customerReference: customerReference,
+                    message: string.Format(MessageFormat, nameof(SystemException)),
+                    errorCode: nameof(SystemException).GetHashCode().ToString(),
+                    errorType: nameof(SystemException))
+            },  HttpStatusCode.Ambiguous);
         }
 
         public class Match : ExceptionHandlerBuilderTests
@@ -33,14 +41,19 @@ namespace Audacia.ExceptionHandling.Tests
             [Fact]
             public void Matches_The_Exact_Type()
             {
-                var match = ExceptionHandlerMap.Get<InvalidOperationException>();
-                match.Should().NotBeNull();
-                var result = match?.Invoke(new InvalidOperationException());
+                var handler = ExceptionHandlerMap.Get<InvalidOperationException>();
+                handler.Should().NotBeNull();
+
+                var result = handler?.Invoke(ExampleCustomerReference, new InvalidOperationException());
+
                 var actions = result?.As<IEnumerable<ErrorResult>>().ToList();
                 actions.Should().HaveCount(1);
-                actions?[0].Message.Should().Be(nameof(InvalidOperationException));
-                actions?[0].ErrorCode.Should().Be(nameof(InvalidOperationException));
-                actions?[0].ErrorType.Should().Be(nameof(InvalidOperationException));
+
+                var errorResult = actions?[0];
+                errorResult.CustomerReference.Should().Be(ExampleCustomerReference);
+                errorResult.Message.Should().Be(string.Format(MessageFormat, nameof(InvalidOperationException)));
+                errorResult.ErrorCode.Should().Be(nameof(InvalidOperationException).GetHashCode().ToString());
+                errorResult.ErrorType.Should().Be(nameof(InvalidOperationException));
             }
 
             [Fact]

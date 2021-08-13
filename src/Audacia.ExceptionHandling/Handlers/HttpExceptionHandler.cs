@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using Microsoft.Extensions.Logging;
 
 namespace Audacia.ExceptionHandling.Handlers
 {
@@ -22,9 +23,10 @@ namespace Audacia.ExceptionHandling.Handlers
         /// <param name="statusCode">The Http Status code to return on this error type.</param>
         /// <param name="log">The action to log the exception (optional).</param>
         public HttpExceptionHandler(
-            Func<TException, TResult> action,
+            Func<string, TException, TResult> action,
             HttpStatusCode statusCode,
-            Action<TException>? log = null) : base(action, log)
+            Action<ILogger, TException>? log = null)
+            : base(action, log)
         {
             StatusCode = statusCode;
         }

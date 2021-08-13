@@ -1,5 +1,6 @@
 ﻿using System;
 using Audacia.ExceptionHandling.Handlers;
+using Microsoft.Extensions.Logging;
 
 namespace Audacia.ExceptionHandling
 {
@@ -16,7 +17,7 @@ namespace Audacia.ExceptionHandling
         /// <summary>
         /// Gets an action to log any exception if an individual handler doesn't have a logger.
         /// </summary>
-        public Action<Exception>? Logging { get; internal set; }
+        public Action<ILogger, Exception>? Logging { get; internal set; }
 
         /// <summary>
         /// Get the handler when you just have an exception, but don't know the type.
@@ -43,16 +44,17 @@ namespace Audacia.ExceptionHandling
         /// <summary>
         /// Try log an exception with the handler. If it isn't logged, try log it with the overall logger.
         /// </summary>
+        /// <param name="logger">An instance of <see cref="ILogger"/>.</param>
         /// <param name="handler">The handler to log from.</param>
         /// <param name="exception">The exception to try log.</param>
-        public void Log(IExceptionHandler? handler, Exception exception)
+        public void Log(ILogger logger, IExceptionHandler? handler, Exception exception)
         {
-            if (handler?.Log(exception) ?? false)
+            if (handler?.Log(logger, exception) ?? false)
             {
                 return;
             }
 
-            Logging?.Invoke(exception);
+            Logging?.Invoke(logger, exception);
         }
     }
 }

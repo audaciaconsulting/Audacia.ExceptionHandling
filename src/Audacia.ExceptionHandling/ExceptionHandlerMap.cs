@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
+using Audacia.ExceptionHandling.Extensions;
 using Audacia.ExceptionHandling.Handlers;
+using Microsoft.Extensions.Logging;
 
 namespace Audacia.ExceptionHandling
 {
@@ -35,8 +37,8 @@ namespace Audacia.ExceptionHandling
         /// <typeparam name="TResult">The type of result that the action returns.</typeparam>
         /// <returns>The instance of the <see cref="ExceptionHandlerMap"/> that is being acted upon.</returns>
         internal ExceptionHandlerMap Add<TException, TResult>(
-            Func<TException, TResult> action,
-            Action<TException>? logAction = null)
+            Func<string, TException, TResult> action,
+            Action<ILogger, TException>? logAction = null)
             where TException : Exception
         {
             var handler = new ExceptionHandler<TException, TResult>(action, logAction);
@@ -54,9 +56,9 @@ namespace Audacia.ExceptionHandling
         /// <typeparam name="TResult">The type of result that the action returns.</typeparam>
         /// <returns>The instance of the <see cref="ExceptionHandlerMap"/> that is being acted upon.</returns>
         internal ExceptionHandlerMap Add<TException, TResult>(
-            Func<TException, TResult> action,
+            Func<string, TException, TResult> action,
             HttpStatusCode statusCode,
-            Action<TException>? logAction = null)
+            Action<ILogger, TException>? logAction = null)
             where TException : Exception
         {
             var handler = new HttpExceptionHandler<TException, TResult>(action, statusCode, logAction);

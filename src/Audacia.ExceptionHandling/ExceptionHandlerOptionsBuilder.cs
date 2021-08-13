@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using Audacia.ExceptionHandling.Handlers;
+using Microsoft.Extensions.Logging;
 
 namespace Audacia.ExceptionHandling
 {
@@ -21,8 +22,8 @@ namespace Audacia.ExceptionHandling
         /// <typeparam name="TResult">The type of the result to return from handling the exception.</typeparam>
         /// <returns>The <see cref="ExceptionHandlerOptionsBuilder"/> instance.</returns>
         public ExceptionHandlerOptionsBuilder Handle<TException, TResult>(
-            Func<TException, TResult> handlerAction,
-            Action<TException>? logAction = null)
+            Func<string, TException, TResult> handlerAction,
+            Action<ILogger, TException>? logAction = null)
             where TException : Exception
         {
             _options.HandlerMap.Add(handlerAction, logAction);
@@ -40,9 +41,9 @@ namespace Audacia.ExceptionHandling
         /// <typeparam name="TResult">The type of the result to return from handling the exception.</typeparam>
         /// <returns>The <see cref="ExceptionHandlerOptionsBuilder"/> instance.</returns>
         public virtual ExceptionHandlerOptionsBuilder Handle<TException, TResult>(
-            Func<TException, TResult> handlerAction,
+            Func<string, TException, TResult> handlerAction,
             HttpStatusCode statusCode,
-            Action<TException>? logAction = null)
+            Action<ILogger, TException>? logAction = null)
             where TException : Exception
         {
             _options.HandlerMap.Add(handlerAction, statusCode, logAction);
@@ -68,7 +69,7 @@ namespace Audacia.ExceptionHandling
         /// </summary>
         /// <param name="loggingAction">The action to run on logging the exception.</param>
         /// <returns>The <see cref="ExceptionHandlerOptionsBuilder"/> instance.</returns>
-        public ExceptionHandlerOptionsBuilder WithDefaultLogging(Action<Exception> loggingAction)
+        public ExceptionHandlerOptionsBuilder WithDefaultLogging(Action<ILogger, Exception> loggingAction)
         {
             _options.Logging = loggingAction;
             return this;
