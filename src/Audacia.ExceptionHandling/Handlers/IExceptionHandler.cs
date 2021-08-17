@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using Audacia.ExceptionHandling.Results;
 using Microsoft.Extensions.Logging;
 
 namespace Audacia.ExceptionHandling.Handlers
@@ -11,10 +13,9 @@ namespace Audacia.ExceptionHandling.Handlers
         /// <summary>
         /// Given an exception return a result.
         /// </summary>
-        /// <param name="customerReference">The customer reference to be attached to the error result.</param>
         /// <param name="exception">The exception that has been encountered.</param>
         /// <returns>The error result that has been setup.</returns>
-        public object? Invoke(string customerReference, Exception exception);
+        public IEnumerable<IHandledError> Invoke(Exception exception);
 
         /// <summary>
         /// Logs an exception.

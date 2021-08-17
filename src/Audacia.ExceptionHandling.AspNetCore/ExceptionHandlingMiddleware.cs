@@ -19,19 +19,19 @@ namespace Audacia.ExceptionHandling.AspNetCore
     {
         private readonly RequestDelegate _next;
         private readonly ILoggerFactory _loggerFactory;
-        private readonly ExceptionHandlerOptions _options;
+        private readonly ExceptionHandlerProvider _provider;
 
         /// <summary>
         /// Create a new instance of <see cref="ExceptionHandlingMiddleware" />.
         /// </summary>
         /// <param name="next">The next method to call in the middleware pipeline.</param>
         /// <param name="loggerFactory">Logger factory, required for attaching customer references to error logs.</param>
-        /// <param name="options">The options for how to handle exceptions.</param>
-        public ExceptionHandlingMiddleware(RequestDelegate next, ILoggerFactory loggerFactory, ExceptionHandlerOptions options)
+        /// <param name="provider">Provides exception hanlders to gracefully handle failures.</param>
+        public ExceptionHandlingMiddleware(RequestDelegate next, ILoggerFactory loggerFactory, ExceptionHandlerProvider provider)
         {
             _next = next;
             _loggerFactory = loggerFactory;
-            _options = options;
+            _provider = provider;
         }
 
         /// <summary>
@@ -66,31 +66,37 @@ namespace Audacia.ExceptionHandling.AspNetCore
             }
 
             exception = Flatten(exception);
+            var exceptionType = exception.GetType();
             
             // Find the related exception handler
-            var handler = _options.GetHandler(exception.GetType());
+            var handler = _provider.Resolve(exceptionType);
 
             // Generate a customer reference for the current exception
             var customerReference = StringExtensions.GetCustomerReference();
 
             // Create a logger scope to attach the customer reference to log messages
             var logger = _loggerFactory.CreateLogger("ExceptionHandler");
-            using (logger.BeginScope(nameof(ErrorResult.CustomerReference), customerReference))
+            using (logger.BeginScope(nameof(ErrorResponse.CustomerReference), customerReference))
             {
                 // Run the log action on the exception handler
-                _options.Log(logger, handler, exception);
+                _provider.Log(logger, handler, exception);
             }
 
             if (handler == null)
             {
-                return SetResponseAsync(context, null, HttpStatusCode.InternalServerError);
+                var unhandledExceptionResponse = new ErrorResponse(customerReference, exceptionType);
+
+                return SetResponseAsync(context, unhandledExceptionResponse, HttpStatusCode.InternalServerError);
             }
 
             // Handle the exception and generate an API response
-            var result = handler.Invoke(customerReference, exception);
+            var handledErrorMessages = handler.Invoke(exception);
+
+            var errorResponse = new ErrorResponse(customerReference, exceptionType, handledErrorMessages);
+
             var statusCode = GetStatusCode(handler);
 
-            return SetResponseAsync(context, result, statusCode);
+            return SetResponseAsync(context, errorResponse, statusCode);
         }
 
         private static Exception Flatten(Exception exception)

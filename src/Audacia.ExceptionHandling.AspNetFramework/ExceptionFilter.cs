@@ -15,15 +15,15 @@ namespace Audacia.ExceptionHandling.AspNetFramework
     public class ExceptionFilter : IExceptionFilter
     {
         private readonly ILoggerFactory _loggerFactory;
-        private readonly ExceptionHandlerOptions _options;
+        private readonly ExceptionHandlerProvider _provider;
 
         /// <summary>Create a new <see cref="ExceptionFilter"/> instance.</summary>
         /// <param name="loggerFactory">Logger factory, required for attaching customer references to error logs.</param>
-        /// <param name="options">The options that will be used to handle exceptions.</param>
-        public ExceptionFilter(ILoggerFactory loggerFactory, ExceptionHandlerOptions options)
+        /// <param name="provider">Provides exception hanlders to gracefully handle failures.</param>
+        public ExceptionFilter(ILoggerFactory loggerFactory, ExceptionHandlerProvider provider)
         {
             _loggerFactory = loggerFactory;
-            _options = options;
+            _provider = provider;
         }
 
         /// <inheritdoc />
@@ -69,19 +69,20 @@ namespace Audacia.ExceptionHandling.AspNetFramework
             }
 
             var exception = Flatten(actionExecutedContext.Exception);
+            var exceptionType = exception.GetType();
 
             // Find the related exception handler
-            var handler = _options.GetHandler(exception.GetType());
+            var handler = _provider.Resolve(exceptionType);
             
             // Generate a customer reference for the current exception
             var customerReference = StringExtensions.GetCustomerReference();
             
             // Create a logger scope to attach the customer reference to log messages
             var logger = _loggerFactory.CreateLogger("ExceptionHandler");
-            using (logger.BeginScope(nameof(ErrorResult.CustomerReference), customerReference))
+            using (logger.BeginScope(nameof(ErrorResponse.CustomerReference), customerReference))
             {
                 // Run the log action on the exception handler
-                _options.Log(logger, handler, exception);
+                _provider.Log(logger, handler, exception);
             }
             
             if (handler == null)
@@ -90,10 +91,13 @@ namespace Audacia.ExceptionHandling.AspNetFramework
             }
 
             // Handle the exception and generate an API response
-            var result = handler.Invoke(customerReference, actionExecutedContext.Exception);
+            var handledErrorMessages = handler.Invoke(actionExecutedContext.Exception);
+
+            var errorResponse = new ErrorResponse(customerReference, exceptionType, handledErrorMessages);
+
             var statusCode = GetStatusCode(handler);
 
-            actionExecutedContext.Response = actionExecutedContext.Request.CreateResponse(statusCode, result);
+            actionExecutedContext.Response = actionExecutedContext.Request.CreateResponse(statusCode, errorResponse);
 
             return Task.CompletedTask;
         }
