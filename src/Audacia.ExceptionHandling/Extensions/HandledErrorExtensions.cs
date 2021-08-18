@@ -22,7 +22,7 @@ namespace Audacia.ExceptionHandling.Extensions
         }
 
         /// <summary>
-        /// Creates an instance of an <see cref="ErrorResponse"/>, the <see cref="ErrorResponse.CustomerReference"/> is automatically generated and logged to application insights, alongside the collection of error messages.
+        /// Creates an instance of an <see cref="ErrorResponse"/>, the <see cref="ErrorResponse.Reference"/> is automatically generated and logged to application insights, alongside the collection of error messages.
         /// </summary>
         /// <param name="handledErrors">An enumerable of handled error results.</param>
         /// <param name="loggerFactory">Logger factory, required for attaching customer references to error logs.</param>
@@ -41,8 +41,8 @@ namespace Audacia.ExceptionHandling.Extensions
 
             // Create a logger scope to attach the customer reference to log messages
             var logger = loggerFactory.CreateLogger("CreateErrorResponse");
-            using (logger.BeginScope(nameof(ErrorResponse.CustomerReference), customerReference))
-            using (logger.BeginScope(nameof(ErrorResponse.Errors), GetFullMessage(handledErrors)))
+            using (logger.BeginScope("Customer Exception Reference: {Reference}", customerReference))
+            using (logger.BeginScope("Validation Errors: {Reference}", GetFullMessage(handledErrors)))
             {
                 // Generally we don't need to attach the response data as the stack trace would over this,
                 // but if they're asking for help on an MVC validation response it would be goood to know what they were shown.

@@ -25,7 +25,7 @@ namespace Audacia.ExceptionHandling.Handlers
         {
             Action = action;
             LogAction = log;
-            ResponseType = errorResponseType ?? nameof(TException);
+            ResponseType = errorResponseType ?? typeof(TException).Name;
         }
 
         /// <summary>
@@ -40,7 +40,9 @@ namespace Audacia.ExceptionHandling.Handlers
 
         /// <summary>
         /// Gets the response type to be displayed on the <see cref="ErrorResponse"/>.
-        /// This is the exception type name by default, but can be altered if required.
+        /// This is the configured exception type by default,
+        /// which means if you configured a base exception but then throw an inherited exception,
+        /// that the base exception type will show here.
         /// </summary>
         public string ResponseType { get; }
 

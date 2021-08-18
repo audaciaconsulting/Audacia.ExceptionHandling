@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Audacia.ExceptionHandling.Results
 {
@@ -58,6 +59,22 @@ namespace Audacia.ExceptionHandling.Results
         public string GetFullMessage()
         {
             return $"{Code}: {Message}";
+        }
+
+        /// <summary>
+        /// Creates an instance of <see cref="ErrorResult"/> from any <see cref="Exception"/>.
+        /// </summary>
+        /// <param name="exception">Exception data.</param>
+        /// <returns>An instance of <see cref="ErrorResult"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="exception"/> is <see langword="null"/>.</exception>
+        public static ErrorResult FromException(Exception exception)
+        {
+            if (exception == null)
+            {
+                throw new ArgumentNullException(nameof(exception));
+            }
+
+            return new ErrorResult(exception.GetType().Name, exception.Message);
         }
     }
 }

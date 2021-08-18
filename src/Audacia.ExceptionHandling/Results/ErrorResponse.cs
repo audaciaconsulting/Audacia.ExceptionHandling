@@ -12,7 +12,7 @@ namespace Audacia.ExceptionHandling.Results
         /// <summary>
         /// Gets the reference displayed to the user, this is also logged to Application Insights.
         /// </summary>
-        public string CustomerReference { get; } = default!;
+        public string Reference { get; } = default!;
 
         /// <summary>
         /// Gets the type of error that was handled.
@@ -41,7 +41,7 @@ namespace Audacia.ExceptionHandling.Results
                 throw new ArgumentNullException(nameof(errorType));
             }
 
-            CustomerReference = customerReference;
+            Reference = customerReference;
             Type = errorType.ToString();
             Errors = new IHandledError[]
             {
@@ -62,7 +62,7 @@ namespace Audacia.ExceptionHandling.Results
                 throw new ArgumentNullException(nameof(errorType));
             }
 
-            CustomerReference = customerReference;
+            Reference = customerReference;
             Type = errorType;
             Errors = errors.ToArray();
         }

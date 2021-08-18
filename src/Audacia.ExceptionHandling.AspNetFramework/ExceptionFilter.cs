@@ -75,11 +75,11 @@ namespace Audacia.ExceptionHandling.AspNetFramework
             var handler = _provider.ResolveExceptionHandler(exceptionType);
             
             // Generate a customer reference for the current exception
-            var customerReference = StringExtensions.GetCustomerReference();
+            var reference = StringExtensions.GetCustomerReference();
             
             // Create a logger scope to attach the customer reference to log messages
             var logger = _loggerFactory.CreateLogger("ExceptionHandler");
-            using (logger.BeginScope(nameof(ErrorResponse.CustomerReference), customerReference))
+            using (logger.BeginScope("Customer Exception Reference: {Reference}", reference))
             {
                 // Run the log action on the exception handler
                 _provider.Log(logger, handler, exception);
@@ -88,7 +88,7 @@ namespace Audacia.ExceptionHandling.AspNetFramework
             if (handler == null)
             {
                 // When no exception handler is found return a default error response with the customer reference
-                var unhandledExceptionResponse = new ErrorResponse(customerReference, exceptionType);
+                var unhandledExceptionResponse = new ErrorResponse(reference, exceptionType);
 
                 actionExecutedContext.Response = actionExecutedContext.Request.CreateResponse(HttpStatusCode.InternalServerError, unhandledExceptionResponse);
 
@@ -98,7 +98,7 @@ namespace Audacia.ExceptionHandling.AspNetFramework
             // Handle the exception and generate an API response
             var handledErrorMessages = handler.Invoke(actionExecutedContext.Exception);
 
-            var errorResponse = new ErrorResponse(customerReference, handler.ResponseType, handledErrorMessages);
+            var errorResponse = new ErrorResponse(reference, handler.ResponseType, handledErrorMessages);
 
             var statusCode = GetStatusCode(handler);
 
