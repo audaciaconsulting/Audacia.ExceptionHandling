@@ -9,13 +9,13 @@ using Xunit;
 
 namespace Audacia.ExceptionHandling.Tests
 {
-    public class ExceptionHandlerProviderBuilderTests
+    public class ExceptionHandlerOptionsBuilderTests
     {
         private const string MessageFormat = "An {0} has occurred.";
 
-        private ExceptionHandlerProviderBuilder Builder { get; } = new ExceptionHandlerProviderBuilder();
+        private ExceptionHandlerOptionsBuilder Builder { get; } = new ExceptionHandlerOptionsBuilder();
 
-        public ExceptionHandlerProviderBuilderTests()
+        public ExceptionHandlerOptionsBuilderTests()
         {
             Builder.Handle((InvalidOperationException e) =>
             {

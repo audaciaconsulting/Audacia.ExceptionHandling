@@ -18,14 +18,14 @@ namespace Audacia.ExceptionHandling.AspNetFramework
         public static IEnumerable<FilterInfo> ConfigureExceptions(
             this HttpFilterCollection filters,
             ILoggerFactory loggerFactory,
-            Action<ExceptionHandlerProviderBuilder> configureAction)
+            Action<ExceptionHandlerOptionsBuilder> configureAction)
         {
             if (configureAction == null)
             {
                 throw new ArgumentNullException(nameof(configureAction));
             }
 
-            var builder = new ExceptionHandlerProviderBuilder();
+            var builder = new ExceptionHandlerOptionsBuilder();
             configureAction(builder);
 
             var filter = new ExceptionFilter(loggerFactory, builder.Build());

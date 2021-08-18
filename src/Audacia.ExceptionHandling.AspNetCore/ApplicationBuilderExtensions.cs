@@ -18,7 +18,7 @@ namespace Audacia.ExceptionHandling.AspNetCore
         /// <exception cref="ArgumentNullException"><paramref name="configureAction"/> is <see langword="null"/>.</exception>
         public static IApplicationBuilder ConfigureExceptions(
             this IApplicationBuilder appBuilder,
-            Action<ExceptionHandlerProviderBuilder> configureAction,
+            Action<ExceptionHandlerOptionsBuilder> configureAction,
             ILoggerFactory loggerFactory)
         {
             if (configureAction == null)
@@ -26,7 +26,7 @@ namespace Audacia.ExceptionHandling.AspNetCore
                 throw new ArgumentNullException(nameof(configureAction));
             }
 
-            var builder = new ExceptionHandlerProviderBuilder();
+            var builder = new ExceptionHandlerOptionsBuilder();
             configureAction(builder);
 
             appBuilder.UseMiddleware<ExceptionHandlingMiddleware>(loggerFactory, builder.Build());
