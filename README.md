@@ -8,10 +8,13 @@ Fluent standardized exception configuration for ASP.NET Web APIs.
 
 After adding the `Audacia.ExceptionHandling.AspNetCore` package, the following can be added to your `Startup.cs` file:
 
-```c#
-public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+```csharp
+public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
 {
-    app.ConfigureExceptions(e => { });
+    app.ConfigureExceptions(e =>
+    {
+        ...
+    }, loggerfactory);
 }
 ```
 
@@ -21,10 +24,17 @@ This adds an exception filter that catches every exception that happens and send
 
 For older .NET Framework projects this can be added into the `Global.asax.cs` file like so:
 
-```c#
+```csharp
+private static ILoggerFactory LoggerFactory { get; private set; }
+
 protected void Application_Start()
 {
-    GlobalConfiguration.Configuration.Filters.ConfigureExceptions(e => { });
+    // Logger factory will need to be configured as required on startup
+    LoggerFactory = new LoggerFactory();
+    GlobalConfiguration.Configuration.Filters.ConfigureExceptions(e =>
+    {
+        ...
+    }, LoggerFactory);
 }
 ```
 
@@ -34,32 +44,38 @@ protected void Application_Start()
 
 Both of the above methods accept actions to customise the handlers that deal with exceptions. An example of this below:
 
-```c#
+```csharp
 app.ConfigureExceptions(e =>
 {
-    e.Handle((KeyNotFoundException ex) => new
+    e.Handle((KeyNotFoundException ex) =>
     {
-        Result = ex.Message
+        return new ErrorModel(ErrorCodes.NotFound, ex.message);
     }, HttpStatusCode.NotFound);
 
-    e.Handle((InvalidOperationException ex) => new
+    e.Handle((InvalidOperationException ex) =>
     {
-        Result = ex.Message
+        return new ErrorModel(ErrorCodes.InvalidOperation, ex.message);
     });
 
-    e.Handle((ArgumentException ex) => new
+    e.Handle((DomainValidationException ex) => ex.Select(v => 
     {
-        Result = ex.Message
-    });
+        return new FieldValidationErrorModel(v.MemberName, v.ValidationMessage);
+    }));
 
-    e.Handle((DbUpdateException ex) => new
+    e.Handle((DbUpdateException ex) => new ErrorModel(ErrorCodes.DatabaseUpdateFailure, ex.Message)
     {
-        Message = ex.Message,
-        Entries = ex.Entries.Select(e => new
+        ExtraProperties =
         {
-            EntityType = e.Entity.GetType().ToString(),
-            Entity = JsonConvert.SerializeObject(e.Entity)
-        }).ToList()
+            { "StackTrace", ex.StackTrace.ToString() },
+            {
+                "Entries", 
+                ex.Entries.Select(e => new
+                {
+                    EntityType = e.Entity.GetType().ToString(),
+                    Entity = JsonConvert.SerializeObject(e.Entity)
+                }).ToList()
+            }
+        }
     });
 });
 ```
