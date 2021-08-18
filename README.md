@@ -57,10 +57,13 @@ app.ConfigureExceptions(e =>
         return new ErrorModel(ErrorCodes.InvalidOperation, ex.message);
     });
 
-    e.Handle((DomainValidationException ex) => ex.Select(v => 
-    {
-        return new FieldValidationErrorModel(v.MemberName, v.ValidationMessage);
-    }));
+    e.Handle((DomainValidationException ex) => ex.Errors
+        .GroupBy(v => v.MemberName)
+        .Select(v => 
+        {
+            return new FieldValidationErrorModel(v.MemberName, v.ErrorMessage);
+        })
+    );
 
     e.Handle((DbUpdateException ex) => new ErrorModel(ErrorCodes.DatabaseUpdateFailure, ex.Message)
     {

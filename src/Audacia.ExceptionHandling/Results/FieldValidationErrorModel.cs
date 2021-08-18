@@ -42,7 +42,7 @@ namespace Audacia.ExceptionHandling.Results
         public FieldValidationErrorModel(string fieldName, IEnumerable<string> validationErrors)
         {
             FieldName = fieldName;
-            ValidationErrors = validationErrors;
+            ValidationErrors = validationErrors.ToArray();
         }
     }
 }

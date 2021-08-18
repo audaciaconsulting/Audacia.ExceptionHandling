@@ -64,7 +64,7 @@ namespace Audacia.ExceptionHandling.Results
 
             CustomerReference = customerReference;
             Type = errorType.ToString();
-            Errors = errors;
+            Errors = errors.ToArray();
         }
     }
 }
