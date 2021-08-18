@@ -5,7 +5,7 @@ namespace Audacia.ExceptionHandling.Results
     /// <summary>
     /// Represents a single issue from an aggregate of errors.
     /// </summary>
-    public class ErrorModel : IHandledError
+    public class ErrorResult : IHandledError
     {
         /// <summary>
         /// Gets the unique code to identify the error.
@@ -23,32 +23,41 @@ namespace Audacia.ExceptionHandling.Results
         public IDictionary<string, object> ExtraProperties { get; } = new Dictionary<string, object>();
 
         /// <summary>
-        /// Creates an instance of <see cref="ErrorModel"/>.
+        /// Creates an instance of <see cref="ErrorResult"/>.
         /// </summary>
-        public ErrorModel() { }
+        public ErrorResult() { }
 
         /// <summary>
-        /// Creates an instance of <see cref="ErrorModel"/>.
+        /// Creates an instance of <see cref="ErrorResult"/>.
         /// </summary>
         /// <param name="errorCode">The unique code to identify the error.</param>
         /// <param name="message">The message to describe the error.</param>
-        public ErrorModel(string errorCode, string message)
+        public ErrorResult(string errorCode, string message)
         {
             Code = errorCode;
             Message = message;
         }
 
         /// <summary>
-        /// Creates an instance of <see cref="ErrorModel"/>.
+        /// Creates an instance of <see cref="ErrorResult"/>.
         /// </summary>
         /// <param name="errorCode">The unique code to identify the error.</param>
         /// <param name="message">The message to describe the error.</param>
         /// <param name="extraProperties">Any extra properties to be returned to the user.</param>
-        public ErrorModel(string errorCode, string message, Dictionary<string, object> extraProperties)
+        public ErrorResult(string errorCode, string message, Dictionary<string, object> extraProperties)
         {
             Code = errorCode;
             Message = message;
             ExtraProperties = extraProperties;
+        }
+
+        /// <summary>
+        /// Returns the <see cref="Code"/> and <see cref="Message"/> as a singlular string.
+        /// </summary>
+        /// <returns>A message describing the error.</returns>
+        public string GetFullMessage()
+        {
+            return $"{Code}: {Message}";
         }
     }
 }

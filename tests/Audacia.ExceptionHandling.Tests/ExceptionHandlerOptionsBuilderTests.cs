@@ -19,14 +19,14 @@ namespace Audacia.ExceptionHandling.Tests
         {
             Builder.Handle((InvalidOperationException e) =>
             {
-                return new ErrorModel(
+                return new ErrorResult(
                     nameof(InvalidOperationException),
                     string.Format(MessageFormat, nameof(InvalidOperationException)));
             }, HttpStatusCode.Ambiguous);
 
             Builder.Handle((SystemException e) =>
             {
-                return new ErrorModel(
+                return new ErrorResult(
                     nameof(SystemException),
                     string.Format(MessageFormat, nameof(SystemException)));
             }, HttpStatusCode.Ambiguous);
@@ -35,11 +35,11 @@ namespace Audacia.ExceptionHandling.Tests
             {
                 return new[]
                 {
-                    new FieldValidationErrorModel("FirstName", "First name is required."),
-                    new FieldValidationErrorModel("DateOfBirth", 
+                    new ValidationErrorResult("FirstName", "First name is required."),
+                    new ValidationErrorResult("DateOfBirth", 
                         "Must be 18+ years old to register.", 
                         "Date must be entered in the format YYYY-MM-DD"),
-                    new FieldValidationErrorModel("Consent", new List<string>
+                    new ValidationErrorResult("Consent", new List<string>
                     {
                         "Users must over the age of 18 to register.",
                         "Consent must be provided in order to create an account.",
@@ -63,7 +63,7 @@ namespace Audacia.ExceptionHandling.Tests
 
             var handledErrorEnumerable = exceptionHandler.Invoke(new InvalidOperationException());
 
-            var errorModels = handledErrorEnumerable.Cast<ErrorModel>().ToArray();
+            var errorModels = handledErrorEnumerable.Cast<ErrorResult>().ToArray();
             errorModels.Should().HaveCount(1);
 
             errorModels[0].Should().NotBeNull();
@@ -85,7 +85,7 @@ namespace Audacia.ExceptionHandling.Tests
 
             var handledErrorEnumerable = exceptionHandler.Invoke(new SystemException());
 
-            var errorModels = handledErrorEnumerable.Cast<ErrorModel>().ToArray();
+            var errorModels = handledErrorEnumerable.Cast<ErrorResult>().ToArray();
             errorModels.Should().HaveCount(1);
 
             errorModels[0].Should().NotBeNull();
@@ -104,16 +104,16 @@ namespace Audacia.ExceptionHandling.Tests
 
             var handledErrorEnumerable = exceptionHandler.Invoke(new ValidationException());
 
-            var errorModels = handledErrorEnumerable.Cast<FieldValidationErrorModel>().ToArray();
+            var errorModels = handledErrorEnumerable.Cast<ValidationErrorResult>().ToArray();
             errorModels.Should().HaveCount(3);
 
-            errorModels[0].FieldName.Should().Be("FirstName");
+            errorModels[0].Property.Should().Be("FirstName");
             errorModels[0].ValidationErrors.Should().HaveCount(1);
 
-            errorModels[1].FieldName.Should().Be("DateOfBirth");
+            errorModels[1].Property.Should().Be("DateOfBirth");
             errorModels[1].ValidationErrors.Should().HaveCount(2);
 
-            errorModels[2].FieldName.Should().Be("Consent");
+            errorModels[2].Property.Should().Be("Consent");
             errorModels[2].ValidationErrors.Should().HaveCount(3);
         }
     }

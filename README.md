@@ -49,23 +49,22 @@ app.ConfigureExceptions(e =>
 {
     e.Handle((KeyNotFoundException ex) =>
     {
-        return new ErrorModel(ErrorCodes.NotFound, ex.message);
+        return new ErrorResult(ErrorCodes.NotFound, ex.message);
     }, HttpStatusCode.NotFound);
 
     e.Handle((InvalidOperationException ex) =>
+        new ErrorResult(ErrorCodes.InvalidOperation, ex.message));
+
+    e.Handle((ValidationException ex) => 
     {
-        return new ErrorModel(ErrorCodes.InvalidOperation, ex.message);
-    });
+        return ex.Errors
+            .GroupBy(ve => ve.PropertyName, ve => ve.ErrorMessage)
+            .Select(group => new ValidationErrorResult(group.Key, group));
+    }
+    statusCode: HttpStatusCode.BadRequest,
+    responseType: ExceptionResponseTypes.Validation);
 
-    e.Handle((DomainValidationException ex) => ex.Errors
-        .GroupBy(v => v.MemberName)
-        .Select(v => 
-        {
-            return new FieldValidationErrorModel(v.MemberName, v.ErrorMessage);
-        })
-    );
-
-    e.Handle((DbUpdateException ex) => new ErrorModel(ErrorCodes.DatabaseUpdateFailure, ex.Message)
+    e.Handle((DbUpdateException ex) => new ErrorResult(ErrorCodes.DatabaseUpdateFailure, ex.Message)
     {
         ExtraProperties =
         {
@@ -121,46 +120,50 @@ This is the default implementation of `IHttpExceptionHandler`, you can inherit f
 ##### Entity Framework 6
 
 ```csharp
-
 e.Handle((DbEntityValidationException ex) => ex.EntityValidationErrors
-                .Select((entityValidation, index) => entityValidation.ValidationErrors
-                    .Select(propertyValidation =>
-                    {
-                        var entityType = entityValidation.Entry.Entity.GetType().Name;
-                        var propertyName = propertyValidation.PropertyName;
-                        var message = propertyValidation.ErrorMessage;
-                        return new
-                        {
-                            EntityType = entityType,
-                            PropertyName = propertyName,
-                            Message = message
-                        }
-                    })).SelectMany(c => c),
-        HttpStatusCode.BadRequest);
+    .Select((entityValidation, index) => 
+    {
+        var entityType = entityValidation.Entry.Entity.GetType().Name;
+        var validationErrors = entityValidation.ValidationErrors
+            .Select(propertyValidation =>
+            {
+                var propertyName = propertyValidation.PropertyName;
+                var message = propertyValidation.ErrorMessage;
+                return new ValidationErrorResult(propertyName, message);
+            });
+
+        return new EntityValidationErrorResult(entityType, validationErrors);
+    }).SelectMany(c => c),
+    statusCode: HttpStatusCode.BadRequest);
 ```
 
 ##### FluentValidation
 
 ```csharp
-e.Handle((ValidationException ex) => ex.Errors
-                    .Select(member => new
-                        {
-                            Message = member.ErrorMessage,
-                            PropertyName = member.PropertyName
-                        }),
-        HttpStatusCode.BadRequest);
+return builder.Handle(
+    (ValidationException exception) => 
+    {
+        return exception.Errors
+        .GroupBy(error => error.PropertyName, error => error.ErrorMessage)
+        .Select(group => new ValidationErrorResult(group.Key, group));
+    },
+    statusCode: HttpStatusCode.BadRequest,
+    responseType: ExceptionResponseTypes.Validation);
 ```
 
 ##### NewtonsoftJSON
 
 ```csharp
-e.Handle((JsonReaderException ex) => new
+e.Handle(
+    (JsonReaderException ex) => new ErrorResult(ErrorCodes.JsonError, ex.message)
+    {
+        ExtraProperties = 
         {
-            Message = ex.Message,
-            Path = ex.Path,
-            LineNumber = ex.LineNumber,
-            LinePosition = ex.LinePosition
-        },
+            { "Path", ex.Path },
+            { "LineNumber", ex.LineNumber },
+            { "LinePosition", ex.LinePosition }
+        }
+    },
     HttpStatusCode.BadRequest);
 ```
 
@@ -172,17 +175,17 @@ It is possible for you to setup logging for exceptions as a whole, or different 
 
 When setting a default logging method, this is done directly against the builder that you get access to in the `ConfigureExceptions` method.
 
-```csharp
-var logger = app.ApplicationServices.GetService<ILogger>();
+If you do not configure a default logging action, then the library will automatically log the exception message.
 
+```csharp
 app.ConfigureExceptions(e =>
 {
-    e.WithDefaultLogging(ex =>
+    e.WithDefaultLogging((logger, ex) =>
     {
         logger.LogError(ex, ex.Message);
         Console.Error.Write(ex);
     });
-});
+}, loggerFactory);
 ```
 
 #### Logging per Exception Type
@@ -193,9 +196,9 @@ When setting the logging action for an individual handler it is just passed in a
 e.Handle((ArgumentException ex) => new
 {
     Result = ex.Message
-}, ex =>
+}, (logger, ex) =>
 {
-    Console.Error.Write("Argument exception encountered");
+    logger.LogTrace("Argument exception encountered");
 });
 ```
 

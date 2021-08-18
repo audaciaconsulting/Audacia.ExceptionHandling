@@ -41,15 +41,15 @@ namespace Audacia.ExceptionHandling.TestApp
             app.ConfigureExceptions(e => e
                 .Handle((KeyNotFoundException ex) => 
                 {
-                    return new ErrorModel("NotFound", ex.Message);
+                    return new ErrorResult("NotFound", ex.Message);
                 }, HttpStatusCode.NotFound)
                 .Handle((InvalidOperationException ex) =>
                 {
-                    return new ErrorModel("InternalServerError", ex.Message);
+                    return new ErrorResult("InternalServerError", ex.Message);
                 }, HttpStatusCode.InternalServerError)
                 .Handle((ArgumentException ex) =>
                 {
-                    return new ErrorModel("InvalidData", ex.Message);
+                    return new ErrorResult("InvalidData", ex.Message);
                 }, (logger, ex) => 
                 {
                     logger.LogError(ex, ex.Message);

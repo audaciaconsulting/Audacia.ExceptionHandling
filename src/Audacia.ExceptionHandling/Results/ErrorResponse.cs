@@ -45,7 +45,7 @@ namespace Audacia.ExceptionHandling.Results
             Type = errorType.ToString();
             Errors = new IHandledError[]
             {
-                new ErrorModel("N/A", "An unexpected error has occurred.")
+                new ErrorResult("N/A", "An unexpected error has occurred.")
             };
         }
 

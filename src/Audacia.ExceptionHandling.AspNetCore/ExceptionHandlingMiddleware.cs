@@ -54,7 +54,7 @@ namespace Audacia.ExceptionHandling.AspNetCore
 #pragma warning restore CA1031
         }
 
-        /// <summary>Handles the specified exception based on the configured <see cref="ExceptionHandlerMap"/>.</summary>
+        /// <summary>Handles the specified exception based on the configured <see cref="ExceptionHandlerProvider"/>.</summary>
         /// <exception cref="ArgumentNullException"><paramref name="context"/> is <see langword="null"/>.</exception>
 #pragma warning disable ACL1002 // Member or local function contains too many statements
         private Task OnExceptionAsync(Exception exception, HttpContext context)
