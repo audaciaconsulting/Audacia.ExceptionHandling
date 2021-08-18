@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Audacia.ExceptionHandling.Results
 {
@@ -11,17 +12,22 @@ namespace Audacia.ExceptionHandling.Results
         /// <summary>
         /// Gets the reference displayed to the user, this is also logged to Application Insights.
         /// </summary>
-        public string CustomerReference { get; }
+        public string CustomerReference { get; } = default!;
 
         /// <summary>
         /// Gets the type of error that was handled.
         /// </summary>
-        public string Type { get; }
+        public string Type { get; } = default!;
 
         /// <summary>
         /// Gets a collection of one or more errors that have occurred.
         /// </summary>
-        public IEnumerable<IHandledError> Errors { get; }
+        public IEnumerable<IHandledError> Errors { get; } = Enumerable.Empty<IHandledError>();
+
+        /// <summary>
+        /// Creates an instance of <see cref="ErrorResponse"/>.
+        /// </summary>
+        public ErrorResponse() { }
 
         /// <summary>
         /// Creates an instance of <see cref="ErrorResponse"/> with an unhandled error message.

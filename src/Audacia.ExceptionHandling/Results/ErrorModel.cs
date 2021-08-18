@@ -20,7 +20,12 @@ namespace Audacia.ExceptionHandling.Results
         /// <summary>
         /// Gets any extra properties that the user wants to use for this error result without creating a new class.
         /// </summary>
-        public Dictionary<string, object> ExtraProperties { get; } = new Dictionary<string, object>();
+        public IDictionary<string, object> ExtraProperties { get; } = new Dictionary<string, object>();
+
+        /// <summary>
+        /// Creates an instance of <see cref="ErrorModel"/>.
+        /// </summary>
+        public ErrorModel() { }
 
         /// <summary>
         /// Creates an instance of <see cref="ErrorModel"/>.

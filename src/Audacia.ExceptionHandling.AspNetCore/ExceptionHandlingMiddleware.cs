@@ -69,7 +69,7 @@ namespace Audacia.ExceptionHandling.AspNetCore
             var exceptionType = exception.GetType();
             
             // Find the related exception handler
-            var handler = _provider.Resolve(exceptionType);
+            var handler = _provider.ResolveExceptionHandler(exceptionType);
 
             // Generate a customer reference for the current exception
             var customerReference = StringExtensions.GetCustomerReference();

@@ -40,9 +40,40 @@ namespace Audacia.ExceptionHandling
         /// </summary>
         /// <param name="exceptionType">The type of exception to handle.</param>
         /// <returns>An exception handler if one has been setup.</returns>
-        public IExceptionHandler? Resolve(Type exceptionType)
+        /// <exception cref="ArgumentNullException"><paramref name="exceptionType"/> is <see langword="null"/>.</exception>
+        public IExceptionHandler? ResolveExceptionHandler(Type exceptionType)
         {
-            return HandlerMap.GetExceptionHandler(exceptionType);
+            if (exceptionType == null)
+            {
+                throw new ArgumentNullException(nameof(exceptionType));
+            }
+
+            var types = new List<Type>
+            {
+                exceptionType
+            };
+
+            types.AddRange(exceptionType.InheritanceHierarchy());
+
+            foreach (var inheritedType in types)
+            {
+                if (HandlerMap.TryGetValue(inheritedType, out var handler))
+                {
+                    return handler;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Resolves an exception handler for the provided exception type.
+        /// </summary>
+        /// <typeparam name="TException">The type of exception to handle.</typeparam>
+        /// <returns>An exception handler if one has been setup.</returns>
+        public IExceptionHandler? ResolveExceptionHandler<TException>()
+        {
+            return ResolveExceptionHandler(typeof(TException));
         }
 
         /// <summary>
