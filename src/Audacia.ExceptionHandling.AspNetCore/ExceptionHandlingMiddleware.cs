@@ -84,6 +84,7 @@ namespace Audacia.ExceptionHandling.AspNetCore
 
             if (handler == null)
             {
+                // When no exception handler is found return a default error response with the customer reference
                 var unhandledExceptionResponse = new ErrorResponse(customerReference, exceptionType);
 
                 return SetResponseAsync(context, unhandledExceptionResponse, HttpStatusCode.InternalServerError);

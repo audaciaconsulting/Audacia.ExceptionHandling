@@ -87,6 +87,11 @@ namespace Audacia.ExceptionHandling.AspNetFramework
             
             if (handler == null)
             {
+                // When no exception handler is found return a default error response with the customer reference
+                var unhandledExceptionResponse = new ErrorResponse(customerReference, exceptionType);
+
+                actionExecutedContext.Response = actionExecutedContext.Request.CreateResponse(HttpStatusCode.InternalServerError, unhandledExceptionResponse);
+
                 return Task.CompletedTask;
             }
 
