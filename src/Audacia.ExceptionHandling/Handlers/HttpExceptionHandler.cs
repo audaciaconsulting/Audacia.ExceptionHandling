@@ -21,12 +21,14 @@ namespace Audacia.ExceptionHandling.Handlers
         /// </summary>
         /// <param name="action">The action to run to get the result type.</param>
         /// <param name="statusCode">The Http Status code to return on this error type.</param>
-        /// <param name="log">The action to log the exception (optional).</param>
+        /// <param name="log">The action to log the exception.</param>
+        /// <param name="errorResponseType">The error type to be displayed on the error response.</param>
         public HttpExceptionHandler(
             Func<TException, IEnumerable<IHandledError>> action,
             HttpStatusCode statusCode,
-            Action<ILogger, TException>? log = null)
-            : base(action, log)
+            Action<ILogger, TException>? log,
+            string? errorResponseType)
+            : base(action, log, errorResponseType)
         {
             StatusCode = statusCode;
         }

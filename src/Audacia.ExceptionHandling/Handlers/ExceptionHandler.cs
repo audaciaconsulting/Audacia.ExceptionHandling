@@ -16,18 +16,33 @@ namespace Audacia.ExceptionHandling.Handlers
         /// Initializes a new instance of <see cref="ExceptionHandler{TException}"/>.
         /// </summary>
         /// <param name="action">The action to run on the given exception type to return the expected result.</param>
-        /// <param name="log">The (optional) action to run on the exception to log it.</param>
-        public ExceptionHandler(Func<TException, IEnumerable<IHandledError>> action, Action<ILogger, TException>? log = null)
+        /// <param name="log">The action to run on the exception to log it.</param>
+        /// <param name="errorResponseType">The error type to be displayed on the error response.</param>
+        public ExceptionHandler(
+            Func<TException, IEnumerable<IHandledError>> action,
+            Action<ILogger, TException>? log,
+            string? errorResponseType)
         {
             Action = action;
             LogAction = log;
+            ResponseType = errorResponseType ?? nameof(TException);
         }
 
-        /// <summary>Gets the function which transforms the exception into <see typeparamref="TResult"/>.</summary>
+        /// <summary>
+        /// Gets the function which transforms the exception into <see typeparamref="TResult"/>.
+        /// </summary>
         public Func<TException, IEnumerable<IHandledError>> Action { get; }
 
-        /// <summary>Gets the function which transforms the exception into <see typeparamref="TResult"/>.</summary>
+        /// <summary>
+        /// Gets the function which transforms the exception into <see typeparamref="TResult"/>.
+        /// </summary>
         public Action<ILogger, TException>? LogAction { get; }
+
+        /// <summary>
+        /// Gets the response type to be displayed on the <see cref="ErrorResponse"/>.
+        /// This is the exception type name by default, but can be altered if required.
+        /// </summary>
+        public string ResponseType { get; }
 
         /// <summary>
         /// Call the action. This is a wrapper such that you don't need to know the type of <see typeparamref="TException"/> or <see typeparamref="TResult"/> at the time of execution.

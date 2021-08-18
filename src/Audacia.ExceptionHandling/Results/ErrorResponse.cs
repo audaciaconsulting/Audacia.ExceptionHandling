@@ -55,15 +55,15 @@ namespace Audacia.ExceptionHandling.Results
         /// <param name="customerReference">The reference displayed to the user.</param>
         /// <param name="errorType">The type of error that was handled.</param>
         /// <param name="errors">A collection of one or more errors that have occurred.</param>
-        public ErrorResponse(string customerReference, Type errorType, IEnumerable<IHandledError> errors)
+        public ErrorResponse(string customerReference, string errorType, IEnumerable<IHandledError> errors)
         {
-            if (errorType == null) 
+            if (string.IsNullOrWhiteSpace(errorType)) 
             {
                 throw new ArgumentNullException(nameof(errorType));
             }
 
             CustomerReference = customerReference;
-            Type = errorType.ToString();
+            Type = errorType;
             Errors = errors.ToArray();
         }
     }

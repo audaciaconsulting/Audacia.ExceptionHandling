@@ -98,7 +98,7 @@ namespace Audacia.ExceptionHandling.AspNetFramework
             // Handle the exception and generate an API response
             var handledErrorMessages = handler.Invoke(actionExecutedContext.Exception);
 
-            var errorResponse = new ErrorResponse(customerReference, exceptionType, handledErrorMessages);
+            var errorResponse = new ErrorResponse(customerReference, handler.ResponseType, handledErrorMessages);
 
             var statusCode = GetStatusCode(handler);
 
