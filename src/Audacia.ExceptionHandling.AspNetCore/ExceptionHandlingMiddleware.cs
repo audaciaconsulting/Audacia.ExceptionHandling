@@ -76,7 +76,9 @@ namespace Audacia.ExceptionHandling.AspNetCore
 
             // Create a logger scope to attach the customer reference to log messages
             var logger = _loggerFactory.CreateLogger("ExceptionHandler");
-            using (logger.BeginScope("Customer Exception Reference: {Reference}", reference))
+
+            // PLEASE NOTE: IncludeScopes MUST be enabled on the logging provider to see this value
+            using (logger.BeginScope("{CustomerReference}", reference))
             {
                 // Run the log action on the exception handler
                 _provider.Log(logger, handler, exception);

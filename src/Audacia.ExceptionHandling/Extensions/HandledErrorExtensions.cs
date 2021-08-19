@@ -41,12 +41,14 @@ namespace Audacia.ExceptionHandling.Extensions
 
             // Create a logger scope to attach the customer reference to log messages
             var logger = loggerFactory.CreateLogger("CreateErrorResponse");
-            using (logger.BeginScope("Customer Exception Reference: {Reference}", customerReference))
-            using (logger.BeginScope("Validation Errors: {Reference}", GetFullMessage(handledErrors)))
+
+            // PLEASE NOTE: IncludeScopes MUST be enabled on the logging provider to see this value
+            using (logger.BeginScope("{CustomerReference}", customerReference))
+            using (logger.BeginScope("{ValidationErrors}", GetFullMessage(handledErrors)))
             {
                 // Generally we don't need to attach the response data as the stack trace would over this,
                 // but if they're asking for help on an MVC validation response it would be goood to know what they were shown.
-                logger.LogInformation($"A {responseType} error response has been sent to the customer, please see the custom properties for more details.");
+                logger.LogInformation($"A {responseType} error response has been sent to the customer, please see the ValidationErrors in custom properties for more details.");
             }
 
             return new ErrorResponse(customerReference, responseType, handledErrors);

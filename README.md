@@ -1,6 +1,8 @@
 # Audacia.ExceptionHandling
 
-Fluent standardized exception configuration for ASP.NET Web APIs.
+Fluent standardized exception configuration for ASP.NET Web APIs.Automatically generates and logs customer reference numbers for handled exceptions.
+
+**Please Note**: `IncludeScopes` MUST be enabled for your logging provider (i.e. Application Insights) to allow for customer reference numbers to be attached to error logs.
 
 ## Frameworks
 
