@@ -9,6 +9,9 @@ namespace Audacia.ExceptionHandling.Results
     /// </summary>
     public sealed class ErrorResponse
     {
+        private const string UnexpectedErrorType = "Unexpected Server Error";
+        private const string UnexpectedErrorMessage = "An unexpected error has occurred, please contact a system administrator.";
+
         /// <summary>
         /// Gets the reference displayed to the user, this is also logged to Application Insights.
         /// </summary>
@@ -33,19 +36,13 @@ namespace Audacia.ExceptionHandling.Results
         /// Creates an instance of <see cref="ErrorResponse"/> with an unhandled error message.
         /// </summary>
         /// <param name="customerReference">The reference displayed to the user.</param>
-        /// <param name="errorType">The type of error that was handled.</param>
-        public ErrorResponse(string customerReference, Type errorType)
+        public ErrorResponse(string customerReference)
         {
-            if (errorType == null) 
-            {
-                throw new ArgumentNullException(nameof(errorType));
-            }
-
             Reference = customerReference;
-            Type = errorType.ToString();
+            Type = UnexpectedErrorType;
             Errors = new IHandledError[]
             {
-                new ErrorResult("N/A", "An unexpected error has occurred.")
+                new ErrorResult(UnexpectedErrorType, UnexpectedErrorMessage)
             };
         }
 

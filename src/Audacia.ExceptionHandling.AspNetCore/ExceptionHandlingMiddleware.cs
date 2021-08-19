@@ -67,10 +67,9 @@ namespace Audacia.ExceptionHandling.AspNetCore
             }
 
             exception = Flatten(exception);
-            var exceptionType = exception.GetType();
             
             // Find the related exception handler
-            var handler = _provider.ResolveExceptionHandler(exceptionType);
+            var handler = _provider.ResolveExceptionHandler(exception.GetType());
 
             // Generate a customer reference for the current exception
             var reference = StringExtensions.GetCustomerReference();
@@ -89,7 +88,7 @@ namespace Audacia.ExceptionHandling.AspNetCore
             if (handler == null)
             {
                 // When no exception handler is found return a default error response with the customer reference
-                var unhandledExceptionResponse = new ErrorResponse(reference, exceptionType);
+                var unhandledExceptionResponse = new ErrorResponse(reference);
 
                 return SetResponseAsync(context, unhandledExceptionResponse, HttpStatusCode.InternalServerError);
             }
