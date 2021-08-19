@@ -4,6 +4,8 @@ Fluent standardized exception configuration for ASP.NET Web APIs.Automatically g
 
 **Please Note**: `IncludeScopes` MUST be enabled for your logging provider (i.e. Application Insights) to allow for customer reference numbers to be attached to error logs.
 
+For information on how to handle an `ErrorResponse` from the UI, please see the [template project](https://dev.azure.com/audacia/Audacia/_wiki/wikis/Audacia.Template/1789/Validation?anchor=handling-validation-responses-from-the-server) documentation on configuring the [HttpInterceptor](https://dev.azure.com/audacia/Audacia/_wiki/wikis/Audacia.Angular.HttpInterceptor/2457/README).
+
 ## Frameworks
 
 ### ASP.NET MVC Core
@@ -81,6 +83,8 @@ app.ConfigureExceptions(e =>
             }
         }
     });
+
+    e.Handle((Exception ex) => ErrorResult.FromException(ex));
 });
 ```
 
