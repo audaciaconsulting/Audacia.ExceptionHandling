@@ -18,7 +18,7 @@ namespace Audacia.ExceptionHandling.Extensions
         /// <returns>Returns a message describing all errors.</returns>
         public static string GetFullMessage(this IEnumerable<IHandledError> handledErrors)
         {
-            return string.Join("\r\n", handledErrors.Select(e => e.GetFullMessage()));
+            return string.Join(Environment.NewLine, handledErrors.Select(e => e.GetFullMessage()));
         }
 
         /// <summary>
