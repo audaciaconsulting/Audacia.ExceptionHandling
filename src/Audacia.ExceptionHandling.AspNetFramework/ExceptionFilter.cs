@@ -8,6 +8,7 @@ using Audacia.ExceptionHandling.Extensions;
 using Audacia.ExceptionHandling.Handlers;
 using Audacia.ExceptionHandling.Results;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace Audacia.ExceptionHandling.AspNetFramework
 {
@@ -82,6 +83,7 @@ namespace Audacia.ExceptionHandling.AspNetFramework
 
             // PLEASE NOTE: IncludeScopes MUST be enabled on the logging provider to see this value
             using (logger.BeginScope("{CustomerReference}", reference))
+            using (logger.BeginScope("{ExceptionData}", JsonConvert.SerializeObject(exception.Data)))
             {
                 // Run the log action on the exception handler
                 _provider.Log(logger, handler, exception);

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
@@ -79,6 +80,7 @@ namespace Audacia.ExceptionHandling.AspNetCore
 
             // PLEASE NOTE: IncludeScopes MUST be enabled on the logging provider to see this value
             using (logger.BeginScope("{CustomerReference}", reference))
+            using (logger.BeginScope("{ExceptionData}", JsonConvert.SerializeObject(exception.Data)))
             {
                 // Run the log action on the exception handler
                 _provider.Log(logger, handler, exception);
