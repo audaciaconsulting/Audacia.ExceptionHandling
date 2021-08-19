@@ -7,7 +7,7 @@ namespace Audacia.ExceptionHandling.Extensions
     /// <summary>
     /// A set of extension methods for an exception handler mapping dictionary.
     /// </summary>
-    public static class ExceptionHandlerMapExtensions
+    internal static class ExceptionHandlerMapExtensions
     {
         /// <summary>
         /// Add an <see cref="ExceptionHandler{TException}"/> to the map.

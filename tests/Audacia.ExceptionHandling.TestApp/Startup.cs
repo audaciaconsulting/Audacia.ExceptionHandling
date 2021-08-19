@@ -38,7 +38,7 @@ namespace Audacia.ExceptionHandling.TestApp
             app.UseRobotify();
             app.UseRouting();
 
-            app.ConfigureExceptions(e => e
+            app.ConfigureExceptions(loggerFactory, e => e
                 .Handle((KeyNotFoundException ex) => 
                 {
                     return new ErrorResult("NotFound", ex.Message);
@@ -59,8 +59,7 @@ namespace Audacia.ExceptionHandling.TestApp
                 {
                     logger.LogError(ex, ex.Message);
                     Console.Error.Write(ex);
-                })
-            , loggerFactory);
+                }));
 
             app.UseEndpoints(endpoints =>
             {

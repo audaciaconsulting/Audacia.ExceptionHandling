@@ -15,10 +15,10 @@ After adding the `Audacia.ExceptionHandling.AspNetCore` package, the following c
 ```csharp
 public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
 {
-    app.ConfigureExceptions(e =>
+    app.ConfigureExceptions(loggerfactory, e =>
     {
         ...
-    }, loggerfactory);
+    });
 }
 ```
 
@@ -35,10 +35,10 @@ protected void Application_Start()
 {
     // Logger factory will need to be configured as required on startup
     LoggerFactory = new LoggerFactory();
-    GlobalConfiguration.Configuration.Filters.ConfigureExceptions(e =>
+    GlobalConfiguration.Configuration.Filters.ConfigureExceptions(loggerfactory, e =>
     {
         ...
-    }, LoggerFactory);
+    });
 }
 ```
 
@@ -49,7 +49,7 @@ protected void Application_Start()
 Both of the above methods accept actions to customise the handlers that deal with exceptions. An example of this below:
 
 ```csharp
-app.ConfigureExceptions(e =>
+app.ConfigureExceptions(loggerfactory, e =>
 {
     e.Handle((KeyNotFoundException ex) =>
     {
@@ -184,14 +184,14 @@ When setting a default logging method, this is done directly against the builder
 If you do not configure a default logging action, then the library will automatically log the exception message.
 
 ```csharp
-app.ConfigureExceptions(e =>
+app.ConfigureExceptions(loggerfactory, e =>
 {
     e.WithDefaultLogging((logger, ex) =>
     {
         logger.LogError(ex, ex.Message);
         Console.Error.Write(ex);
     });
-}, loggerFactory);
+});
 ```
 
 #### Logging per Exception Type
