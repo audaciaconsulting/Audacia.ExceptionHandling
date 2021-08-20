@@ -8,7 +8,7 @@
         <PackageIconUrl>https://www.audacia.co.uk/media/pkenoobu/audacia-logo-circle-blue.png</PackageIconUrl>
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
-        <Version>2.0.0</Version>
+        <Version>3.0.0</Version>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
@@ -21,13 +21,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Audacia.CodeAnalysis" Version="1.0.20269.1">
+        <PackageReference Include="Audacia.CodeAnalysis" Version="1.0.20353.1">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Audacia.CodeAnalysis.AspNetCore" Version="1.0.20269.1" />
+        <PackageReference Include="Audacia.CodeAnalysis.AspNetCore" Version="1.0.20353.1" />
         <PackageReference Include="Microsoft.AspNetCore.Diagnostics" Version="2.2.0" />
-        <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
         <PackageReference Include="System.Diagnostics.StackTrace" Version="4.3.0" />
     </ItemGroup>
 

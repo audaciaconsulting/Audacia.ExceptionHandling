@@ -4,8 +4,8 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Audacia.ExceptionHandling.AspNetCore;
+using Audacia.ExceptionHandling.Results;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -38,34 +38,28 @@ namespace Audacia.ExceptionHandling.TestApp
             app.UseRobotify();
             app.UseRouting();
 
-            var logger = loggerFactory.CreateLogger("Default");
-
-            app.ConfigureExceptions(e =>
-            {
-                e.Handle((KeyNotFoundException ex) => new
+            app.ConfigureExceptions(loggerFactory, e => e
+                .Handle((KeyNotFoundException ex) => 
                 {
-                    Result = ex.Message
-                }, HttpStatusCode.NotFound);
-
-                e.Handle((InvalidOperationException ex) => new
+                    return new ErrorResult("NotFound", ex.Message);
+                }, HttpStatusCode.NotFound)
+                .Handle((InvalidOperationException ex) =>
                 {
-                    Result = ex.Message
-                }, HttpStatusCode.InternalServerError);
-
-                e.Handle((ArgumentException ex) => new
+                    return new ErrorResult("InternalServerError", ex.Message);
+                }, HttpStatusCode.InternalServerError)
+                .Handle((ArgumentException ex) =>
                 {
-                    Result = ex.Message
-                }, ex =>
+                    return new ErrorResult("InvalidData", ex.Message);
+                }, (logger, ex) => 
                 {
+                    logger.LogError(ex, ex.Message);
                     Console.Error.Write("Argument exception encountered");
-                });
-
-                e.WithDefaultLogging(ex =>
+                })
+                .WithDefaultLogging((logger, ex) =>
                 {
                     logger.LogError(ex, ex.Message);
                     Console.Error.Write(ex);
-                });
-            });
+                }));
 
             app.UseEndpoints(endpoints =>
             {

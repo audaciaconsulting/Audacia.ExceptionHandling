@@ -1,15 +1,71 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
+using Audacia.ExceptionHandling.Extensions;
 using Audacia.ExceptionHandling.Handlers;
+using Audacia.ExceptionHandling.Results;
+using Microsoft.Extensions.Logging;
 
 namespace Audacia.ExceptionHandling
 {
     /// <summary>
     /// A builder that is used to configure how exceptions are handled.
     /// </summary>
-    public class ExceptionHandlerOptionsBuilder
+    public sealed class ExceptionHandlerOptionsBuilder
     {
-        private readonly ExceptionHandlerOptions _options = new ExceptionHandlerOptions();
+        private readonly IDictionary<Type, IExceptionHandler> _exceptionHandlerMap = new Dictionary<Type, IExceptionHandler>();
+
+        private Action<ILogger, Exception> _defaultLogAction = new Action<ILogger, Exception>((logger, ex) => logger.LogError(ex, ex.Message));
+
+        /// <summary>
+        /// Add a handler to manage a given exception type.
+        /// </summary>
+        /// <param name="handlerAction">The action to run given the exception to return the result type.</param>
+        /// <param name="logAction">(Optional) How to log this specific type of exception.</param>
+        /// <param name="responseType">(Optional) The error type to be displayed on the error response.</param>
+        /// <typeparam name="TException">The type of exception to handle.</typeparam>
+        /// <returns>The <see cref="ExceptionHandlerOptionsBuilder"/> instance.</returns>
+        public ExceptionHandlerOptionsBuilder Handle<TException>(
+            Func<TException, IHandledError> handlerAction,
+            Action<ILogger, TException>? logAction = null,
+            string? responseType = null)
+            where TException : Exception
+        {
+            // Allow developers to return as single handler result, we still need it as an enumerable
+            var handlerWrapper = new Func<TException, IEnumerable<IHandledError>>((ex) => 
+            {
+                var handledErrorModel = handlerAction.Invoke(ex);
+                return new IHandledError[] { handledErrorModel };
+            });
+
+            return Handle(handlerWrapper, logAction, responseType);
+        }
+
+        /// <summary>
+        /// Add a handler to manage a given exception type.
+        /// </summary>
+        /// <param name="handlerAction">The action to run given the exception to return the result type.</param>
+        /// <param name="statusCode">The status code to return after handling the exception.</param>
+        /// <param name="logAction">(Optional) How to log this specific type of exception.</param>
+        /// <param name="responseType">(Optional) The error type to be displayed on the error response.</param>
+        /// <typeparam name="TException">The type of exception to handle.</typeparam>
+        /// <returns>The <see cref="ExceptionHandlerOptionsBuilder"/> instance.</returns>
+        public ExceptionHandlerOptionsBuilder Handle<TException>(
+            Func<TException, IHandledError> handlerAction,
+            HttpStatusCode statusCode,
+            Action<ILogger, TException>? logAction = null,
+            string? responseType = null)
+            where TException : Exception
+        {
+            // Allow developers to return as single handler result, we still need it as an enumerable
+            var handlerWrapper = new Func<TException, IEnumerable<IHandledError>>((ex) => 
+            {
+                var handledErrorModel = handlerAction.Invoke(ex);
+                return new IHandledError[] { handledErrorModel };
+            });
+
+            return Handle(handlerWrapper, statusCode, logAction, responseType);
+        }
 
 #pragma warning disable AV1551
         /// <summary>
@@ -17,15 +73,17 @@ namespace Audacia.ExceptionHandling
         /// </summary>
         /// <param name="handlerAction">The action to run given the exception to return the result type.</param>
         /// <param name="logAction">(Optional) How to log this specific type of exception.</param>
+        /// <param name="responseType">(Optional) The error type to be displayed on the error response.</param>
         /// <typeparam name="TException">The type of exception to handle.</typeparam>
-        /// <typeparam name="TResult">The type of the result to return from handling the exception.</typeparam>
         /// <returns>The <see cref="ExceptionHandlerOptionsBuilder"/> instance.</returns>
-        public ExceptionHandlerOptionsBuilder Handle<TException, TResult>(
-            Func<TException, TResult> handlerAction,
-            Action<TException>? logAction = null)
+        public ExceptionHandlerOptionsBuilder Handle<TException>(
+            Func<TException, IEnumerable<IHandledError>> handlerAction,
+            Action<ILogger, TException>? logAction = null,
+            string? responseType = null)
             where TException : Exception
         {
-            _options.HandlerMap.Add(handlerAction, logAction);
+            var handler = new ExceptionHandler<TException>(handlerAction, logAction, responseType);
+            _exceptionHandlerMap.AddExceptionHandler<TException>(handler);
             return this;
         }
 #pragma warning restore AV1551
@@ -36,16 +94,18 @@ namespace Audacia.ExceptionHandling
         /// <param name="handlerAction">The action to run given the exception to return the result type.</param>
         /// <param name="statusCode">The status code to return after handling the exception.</param>
         /// <param name="logAction">(Optional) How to log this specific type of exception.</param>
+        /// <param name="responseType">(Optional) The error type to be displayed on the error response.</param>
         /// <typeparam name="TException">The type of exception to handle.</typeparam>
-        /// <typeparam name="TResult">The type of the result to return from handling the exception.</typeparam>
         /// <returns>The <see cref="ExceptionHandlerOptionsBuilder"/> instance.</returns>
-        public virtual ExceptionHandlerOptionsBuilder Handle<TException, TResult>(
-            Func<TException, TResult> handlerAction,
+        public ExceptionHandlerOptionsBuilder Handle<TException>(
+            Func<TException, IEnumerable<IHandledError>> handlerAction,
             HttpStatusCode statusCode,
-            Action<TException>? logAction = null)
+            Action<ILogger, TException>? logAction = null,
+            string? responseType = null)
             where TException : Exception
         {
-            _options.HandlerMap.Add(handlerAction, statusCode, logAction);
+            var handler = new HttpExceptionHandler<TException>(handlerAction, statusCode, logAction, responseType);
+            _exceptionHandlerMap.AddExceptionHandler<TException>(handler);
             return this;
         }
 
@@ -55,11 +115,10 @@ namespace Audacia.ExceptionHandling
         /// <param name="handler">The handler to add to the collection.</param>
         /// <typeparam name="TException">The type of exception to handle.</typeparam>
         /// <returns>The <see cref="ExceptionHandlerOptionsBuilder"/> instance.</returns>
-        public ExceptionHandlerOptionsBuilder AddHandler<TException>(
-            IExceptionHandler handler)
+        public ExceptionHandlerOptionsBuilder Handle<TException>(IExceptionHandler handler)
             where TException : Exception
         {
-            _options.HandlerMap.Add<TException>(handler);
+            _exceptionHandlerMap.AddExceptionHandler<TException>(handler);
             return this;
         }
 
@@ -68,19 +127,19 @@ namespace Audacia.ExceptionHandling
         /// </summary>
         /// <param name="loggingAction">The action to run on logging the exception.</param>
         /// <returns>The <see cref="ExceptionHandlerOptionsBuilder"/> instance.</returns>
-        public ExceptionHandlerOptionsBuilder WithDefaultLogging(Action<Exception> loggingAction)
+        public ExceptionHandlerOptionsBuilder WithDefaultLogging(Action<ILogger, Exception> loggingAction)
         {
-            _options.Logging = loggingAction;
+            _defaultLogAction = loggingAction;
             return this;
         }
 
         /// <summary>
         /// Return the options that will be used to handle exceptions.
         /// </summary>
-        /// <returns>An instance of <see cref="ExceptionHandlerOptions"/>.</returns>
-        public ExceptionHandlerOptions Build()
+        /// <returns>An instance of <see cref="ExceptionHandlerProvider"/>.</returns>
+        public ExceptionHandlerProvider Build()
         {
-            return _options;
+            return new ExceptionHandlerProvider(_exceptionHandlerMap, _defaultLogAction);
         }
     }
 }

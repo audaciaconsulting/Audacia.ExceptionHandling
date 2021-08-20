@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Audacia.ExceptionHandling
+namespace Audacia.ExceptionHandling.Extensions
 {
     /// <summary>
     /// Extensions on the <see cref="Type"/> type.

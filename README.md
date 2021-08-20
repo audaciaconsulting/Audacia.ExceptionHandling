@@ -1,6 +1,10 @@
 # Audacia.ExceptionHandling
 
-Fluent standardized exception configuration for ASP.NET Web APIs.
+Fluent standardized exception configuration for ASP.NET Web APIs.Automatically generates and logs customer reference numbers for handled exceptions.
+
+**Please Note**: `IncludeScopes` MUST be enabled for your logging provider (i.e. Application Insights) to allow for customer reference numbers to be attached to error logs.
+
+For information on how to handle an `ErrorResponse` from the UI, please see the [template project](https://dev.azure.com/audacia/Audacia/_wiki/wikis/Audacia.Template/1789/Validation?anchor=handling-validation-responses-from-the-server) documentation on configuring the [HttpInterceptor](https://dev.azure.com/audacia/Audacia/_wiki/wikis/Audacia.Angular.HttpInterceptor/2457/README).
 
 ## Frameworks
 
@@ -8,10 +12,13 @@ Fluent standardized exception configuration for ASP.NET Web APIs.
 
 After adding the `Audacia.ExceptionHandling.AspNetCore` package, the following can be added to your `Startup.cs` file:
 
-```c#
-public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+```csharp
+public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
 {
-    app.ConfigureExceptions(e => { });
+    app.ConfigureExceptions(loggerfactory, e =>
+    {
+        ...
+    });
 }
 ```
 
@@ -21,10 +28,17 @@ This adds an exception filter that catches every exception that happens and send
 
 For older .NET Framework projects this can be added into the `Global.asax.cs` file like so:
 
-```c#
+```csharp
+private static ILoggerFactory LoggerFactory { get; private set; }
+
 protected void Application_Start()
 {
-    GlobalConfiguration.Configuration.Filters.ConfigureExceptions(e => { });
+    // Logger factory will need to be configured as required on startup
+    LoggerFactory = new LoggerFactory();
+    GlobalConfiguration.Configuration.Filters.ConfigureExceptions(loggerfactory, e =>
+    {
+        ...
+    });
 }
 ```
 
@@ -34,33 +48,43 @@ protected void Application_Start()
 
 Both of the above methods accept actions to customise the handlers that deal with exceptions. An example of this below:
 
-```c#
-app.ConfigureExceptions(e =>
+```csharp
+app.ConfigureExceptions(loggerfactory, e =>
 {
-    e.Handle((KeyNotFoundException ex) => new
+    e.Handle((KeyNotFoundException ex) =>
     {
-        Result = ex.Message
+        return new ErrorResult(ErrorCodes.NotFound, ex.message);
     }, HttpStatusCode.NotFound);
 
-    e.Handle((InvalidOperationException ex) => new
-    {
-        Result = ex.Message
-    });
+    e.Handle((InvalidOperationException ex) =>
+        new ErrorResult(ErrorCodes.InvalidOperation, ex.message));
 
-    e.Handle((ArgumentException ex) => new
+    e.Handle((ValidationException ex) => 
     {
-        Result = ex.Message
-    });
+        return ex.Errors
+            .GroupBy(ve => ve.PropertyName, ve => ve.ErrorMessage)
+            .Select(group => new ValidationErrorResult(group.Key, group));
+    }
+    statusCode: HttpStatusCode.BadRequest,
+    responseType: ExceptionResponseTypes.Validation);
 
-    e.Handle((DbUpdateException ex) => new
+    e.Handle((DbUpdateException ex) => new ErrorResult(ErrorCodes.DatabaseUpdateFailure, ex.Message)
     {
-        Message = ex.Message,
-        Entries = ex.Entries.Select(e => new
+        ExtraProperties =
         {
-            EntityType = e.Entity.GetType().ToString(),
-            Entity = JsonConvert.SerializeObject(e.Entity)
-        }).ToList()
+            { "StackTrace", ex.StackTrace.ToString() },
+            {
+                "Entries", 
+                ex.Entries.Select(e => new
+                {
+                    EntityType = e.Entity.GetType().ToString(),
+                    Entity = JsonConvert.SerializeObject(e.Entity)
+                }).ToList()
+            }
+        }
     });
+
+    e.Handle((Exception ex) => ErrorResult.FromException(ex));
 });
 ```
 
@@ -102,46 +126,50 @@ This is the default implementation of `IHttpExceptionHandler`, you can inherit f
 ##### Entity Framework 6
 
 ```csharp
-
 e.Handle((DbEntityValidationException ex) => ex.EntityValidationErrors
-                .Select((entityValidation, index) => entityValidation.ValidationErrors
-                    .Select(propertyValidation =>
-                    {
-                        var entityType = entityValidation.Entry.Entity.GetType().Name;
-                        var propertyName = propertyValidation.PropertyName;
-                        var message = propertyValidation.ErrorMessage;
-                        return new
-                        {
-                            EntityType = entityType,
-                            PropertyName = propertyName,
-                            Message = message
-                        }
-                    })).SelectMany(c => c),
-        HttpStatusCode.BadRequest);
+    .Select((entityValidation, index) => 
+    {
+        var entityType = entityValidation.Entry.Entity.GetType().Name;
+        var validationErrors = entityValidation.ValidationErrors
+            .Select(propertyValidation =>
+            {
+                var propertyName = propertyValidation.PropertyName;
+                var message = propertyValidation.ErrorMessage;
+                return new ValidationErrorResult(propertyName, message);
+            });
+
+        return new EntityValidationErrorResult(entityType, validationErrors);
+    }).SelectMany(c => c),
+    statusCode: HttpStatusCode.BadRequest);
 ```
 
 ##### FluentValidation
 
 ```csharp
-e.Handle((ValidationException ex) => ex.Errors
-                    .Select(member => new
-                        {
-                            Message = member.ErrorMessage,
-                            PropertyName = member.PropertyName
-                        }),
-        HttpStatusCode.BadRequest);
+return builder.Handle(
+    (ValidationException exception) => 
+    {
+        return exception.Errors
+        .GroupBy(error => error.PropertyName, error => error.ErrorMessage)
+        .Select(group => new ValidationErrorResult(group.Key, group));
+    },
+    statusCode: HttpStatusCode.BadRequest,
+    responseType: ExceptionResponseTypes.Validation);
 ```
 
 ##### NewtonsoftJSON
 
 ```csharp
-e.Handle((JsonReaderException ex) => new
+e.Handle(
+    (JsonReaderException ex) => new ErrorResult(ErrorCodes.JsonError, ex.message)
+    {
+        ExtraProperties = 
         {
-            Message = ex.Message,
-            Path = ex.Path,
-            LineNumber = ex.LineNumber,
-            LinePosition = ex.LinePosition
-        },
+            { "Path", ex.Path },
+            { "LineNumber", ex.LineNumber },
+            { "LinePosition", ex.LinePosition }
+        }
+    },
     HttpStatusCode.BadRequest);
 ```
 
@@ -153,12 +181,12 @@ It is possible for you to setup logging for exceptions as a whole, or different 
 
 When setting a default logging method, this is done directly against the builder that you get access to in the `ConfigureExceptions` method.
 
-```csharp
-var logger = app.ApplicationServices.GetService<ILogger>();
+If you do not configure a default logging action, then the library will automatically log the exception message.
 
-app.ConfigureExceptions(e =>
+```csharp
+app.ConfigureExceptions(loggerfactory, e =>
 {
-    e.WithDefaultLogging(ex =>
+    e.WithDefaultLogging((logger, ex) =>
     {
         logger.LogError(ex, ex.Message);
         Console.Error.Write(ex);
@@ -174,9 +202,9 @@ When setting the logging action for an individual handler it is just passed in a
 e.Handle((ArgumentException ex) => new
 {
     Result = ex.Message
-}, ex =>
+}, (logger, ex) =>
 {
-    Console.Error.Write("Argument exception encountered");
+    logger.LogTrace("Argument exception encountered");
 });
 ```
 

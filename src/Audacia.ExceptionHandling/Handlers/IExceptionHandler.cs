@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using Audacia.ExceptionHandling.Results;
+using Microsoft.Extensions.Logging;
 
 namespace Audacia.ExceptionHandling.Handlers
 {
@@ -12,13 +15,20 @@ namespace Audacia.ExceptionHandling.Handlers
         /// </summary>
         /// <param name="exception">The exception that has been encountered.</param>
         /// <returns>The error result that has been setup.</returns>
-        public object? Invoke(Exception exception);
+        public IEnumerable<IHandledError> Invoke(Exception exception);
 
         /// <summary>
         /// Logs an exception.
         /// </summary>
+        /// <param name="logger">An instance of <see cref="ILogger"/>.</param>
         /// <param name="exception">The exception that has been encountered.</param>
         /// <returns>True if the exception was logged, false if not, an exception if the exception input is not of the correct type.</returns>
-        public bool Log(Exception exception);
+        public bool Log(ILogger logger, Exception exception);
+
+        /// <summary>
+        /// Gets the response type to be displayed on the <see cref="ErrorResponse"/>.
+        /// This is the exception type name by default, but can be altered if required.
+        /// </summary>
+        public string ResponseType { get; }
     }
 }

@@ -1,42 +1,80 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Audacia.ExceptionHandling.Results
 {
-    /// <summary>Represents an API response which contains the details of an error.</summary>
-    public class ErrorResult
+    /// <summary>
+    /// Represents a single issue from an aggregate of errors.
+    /// </summary>
+    public class ErrorResult : IHandledError
     {
+        /// <summary>
+        /// Gets the unique code to identify the error.
+        /// </summary>
+        public string Code { get; } = default!;
+
         /// <summary>
         /// Gets the message to describe the error.
         /// </summary>
         public string Message { get; } = default!;
 
         /// <summary>
-        /// Gets the Error Code.
-        /// </summary>
-        public string ErrorCode { get; } = default!;
-
-        /// <summary>
-        /// Gets the Type of Error.
-        /// </summary>
-        public string ErrorType { get; } = default!;
-
-        /// <summary>
         /// Gets any extra properties that the user wants to use for this error result without creating a new class.
         /// </summary>
-        public Dictionary<string, object> ExtraProperties { get; } = new Dictionary<string, object>();
+        public IDictionary<string, object> ExtraProperties { get; } = new Dictionary<string, object>();
 
-        /// <summary>Creates a new instance of <see cref="ErrorResult"/>.</summary>
+        /// <summary>
+        /// Creates an instance of <see cref="ErrorResult"/>.
+        /// </summary>
         public ErrorResult() { }
 
-        /// <summary>Create an <see cref="ErrorResult"/> with the specified message.</summary>
-        /// <param name="message">The message to give this error.</param>
-        /// <param name="errorCode">The error code.</param>
-        /// <param name="errorType">The type of error that happened.</param>
-        public ErrorResult(string message, string errorCode, string errorType)
+        /// <summary>
+        /// Creates an instance of <see cref="ErrorResult"/>.
+        /// </summary>
+        /// <param name="errorCode">The unique code to identify the error.</param>
+        /// <param name="message">The message to describe the error.</param>
+        public ErrorResult(string errorCode, string message)
         {
+            Code = errorCode;
             Message = message;
-            ErrorCode = errorCode;
-            ErrorType = errorType;
+        }
+
+        /// <summary>
+        /// Creates an instance of <see cref="ErrorResult"/>.
+        /// </summary>
+        /// <param name="errorCode">The unique code to identify the error.</param>
+        /// <param name="message">The message to describe the error.</param>
+        /// <param name="extraProperties">Any extra properties to be returned to the user.</param>
+        public ErrorResult(string errorCode, string message, Dictionary<string, object> extraProperties)
+        {
+            Code = errorCode;
+            Message = message;
+            ExtraProperties = extraProperties;
+        }
+
+        /// <summary>
+        /// Returns the <see cref="Code"/> and <see cref="Message"/> as a singlular string.
+        /// </summary>
+        /// <returns>A message describing the error.</returns>
+        public string GetFullMessage()
+        {
+            return $"{Code}: {Message}";
+        }
+
+        /// <summary>
+        /// Creates an instance of <see cref="ErrorResult"/> from any <see cref="Exception"/>.
+        /// </summary>
+        /// <param name="exception">Exception data.</param>
+        /// <returns>An instance of <see cref="ErrorResult"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="exception"/> is <see langword="null"/>.</exception>
+        public static ErrorResult FromException(Exception exception)
+        {
+            if (exception == null)
+            {
+                throw new ArgumentNullException(nameof(exception));
+            }
+
+            return new ErrorResult(exception.GetType().Name, exception.Message);
         }
     }
 }

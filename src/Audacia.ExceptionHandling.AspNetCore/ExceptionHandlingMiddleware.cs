@@ -1,9 +1,13 @@
 using System;
+using System.Collections;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Audacia.ExceptionHandling.Extensions;
 using Audacia.ExceptionHandling.Handlers;
+using Audacia.ExceptionHandling.Results;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
@@ -15,17 +19,20 @@ namespace Audacia.ExceptionHandling.AspNetCore
     public class ExceptionHandlingMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly ExceptionHandlerOptions _options;
+        private readonly ILoggerFactory _loggerFactory;
+        private readonly ExceptionHandlerProvider _provider;
 
         /// <summary>
         /// Create a new instance of <see cref="ExceptionHandlingMiddleware" />.
         /// </summary>
         /// <param name="next">The next method to call in the middleware pipeline.</param>
-        /// <param name="options">The options for how to handle exceptions.</param>
-        public ExceptionHandlingMiddleware(RequestDelegate next, ExceptionHandlerOptions options)
+        /// <param name="loggerFactory">Logger factory, required for attaching customer references to error logs.</param>
+        /// <param name="provider">Provides exception hanlders to gracefully handle failures.</param>
+        public ExceptionHandlingMiddleware(RequestDelegate next, ILoggerFactory loggerFactory, ExceptionHandlerProvider provider)
         {
             _next = next;
-            _options = options;
+            _loggerFactory = loggerFactory;
+            _provider = provider;
         }
 
         /// <summary>
@@ -48,9 +55,11 @@ namespace Audacia.ExceptionHandling.AspNetCore
 #pragma warning restore CA1031
         }
 
-        /// <summary>Handles the specified exception based on the configured <see cref="ExceptionHandlerMap"/>.</summary>
+        /// <summary>Handles the specified exception based on the configured <see cref="ExceptionHandlerProvider"/>.</summary>
         /// <exception cref="ArgumentNullException"><paramref name="context"/> is <see langword="null"/>.</exception>
+#pragma warning disable ACL1002 // Member or local function contains too many statements
         private Task OnExceptionAsync(Exception exception, HttpContext context)
+#pragma warning restore ACL1002 // Member or local function contains too many statements
         {
             if (context == null)
             {
@@ -58,20 +67,40 @@ namespace Audacia.ExceptionHandling.AspNetCore
             }
 
             exception = Flatten(exception);
+            
+            // Find the related exception handler
+            var handler = _provider.ResolveExceptionHandler(exception.GetType());
 
-            var handler = _options.GetHandler(exception.GetType());
+            // Generate a customer reference for the current exception
+            var reference = StringExtensions.GetCustomerReference();
 
-            _options.Log(handler, exception);
+            // Create a logger scope to attach the customer reference to log messages
+            var logger = _loggerFactory.CreateLogger("ExceptionHandler");
+
+            // PLEASE NOTE: IncludeScopes MUST be enabled on the logging provider to see this value
+            using (logger.BeginScope("{CustomerReference}", reference))
+            using (logger.BeginScope("{ExceptionData}", JsonConvert.SerializeObject(exception.Data)))
+            {
+                // Run the log action on the exception handler
+                _provider.Log(logger, handler, exception);
+            }
 
             if (handler == null)
             {
-                return SetResponseAsync(context, null, HttpStatusCode.InternalServerError);
+                // When no exception handler is found return a default error response with the customer reference
+                var unhandledExceptionResponse = new ErrorResponse(reference);
+
+                return SetResponseAsync(context, unhandledExceptionResponse, HttpStatusCode.InternalServerError);
             }
-         
-            var result = handler.Invoke(exception);
+
+            // Handle the exception and generate an API response
+            var handledErrorMessages = handler.Invoke(exception);
+
+            var errorResponse = new ErrorResponse(reference, handler.ResponseType, handledErrorMessages);
+
             var statusCode = GetStatusCode(handler);
 
-            return SetResponseAsync(context, result, statusCode);
+            return SetResponseAsync(context, errorResponse, statusCode);
         }
 
         private static Exception Flatten(Exception exception)

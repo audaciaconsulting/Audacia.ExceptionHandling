@@ -1,26 +1,57 @@
-﻿namespace Audacia.ExceptionHandling.Results
+﻿using System.Collections.Generic;
+using System.Linq;
+
+namespace Audacia.ExceptionHandling.Results
 {
     /// <summary>
-    /// A class that is used for describing validation errors.
-    /// Adding a new property of <see cref="ValidationErrorResult.Property"/> to the existing
-    /// <see cref="ErrorResult"/> class.
+    /// Represents a field validation error from a model state dictionary.
     /// </summary>
-    public class ValidationErrorResult : ErrorResult
+    public sealed class ValidationErrorResult : IHandledError
     {
         /// <summary>
-        /// Gets the property that the error is for.
+        /// Gets the property name on the model.
         /// </summary>
-        public string? Property { get; }
+        public string Property { get; } = default!;
 
-        /// <summary>Create an error result with the specified message for the specified property.</summary>
-        /// <param name="message">The message to give this error.</param>
-        /// <param name="errorCode">The error code.</param>
-        /// <param name="errorType">The type of error that happened.</param>
-        /// <param name="property">The property the validation error is for.</param>
-        public ValidationErrorResult(string message, string errorCode, string errorType, string property) : base(
-            message, errorCode, errorType)
+        /// <summary>
+        /// Gets an enumerable of one or more validation error messages.
+        /// </summary>
+        public IEnumerable<string> ValidationErrors { get; } = Enumerable.Empty<string>();
+
+        /// <summary>
+        /// Creates an instance of <see cref="ValidationErrorResult"/>.
+        /// </summary>
+        public ValidationErrorResult() { }
+
+        /// <summary>
+        /// Creates an instance of <see cref="ValidationErrorResult"/>.
+        /// </summary>
+        /// <param name="propertyName">The property name on the model.</param>
+        /// <param name="validationErrors">A collection of one or more validation error messages.</param>
+        public ValidationErrorResult(string propertyName, params string[] validationErrors)
         {
-            Property = property;
+            Property = propertyName;
+            ValidationErrors = validationErrors;
+        }
+
+        /// <summary>
+        /// Creates an instance of <see cref="ValidationErrorResult"/>.
+        /// </summary>
+        /// <param name="propertyName">The property name on the model.</param>
+        /// <param name="validationErrors">An enumerable of one or more validation error messages.</param>
+        public ValidationErrorResult(string propertyName, IEnumerable<string> validationErrors)
+        {
+            Property = propertyName;
+            ValidationErrors = validationErrors.ToArray();
+        }
+
+        /// <summary>
+        /// Returns the <see cref="Property"/> and all <see cref="ValidationErrors"/> as a singlular string.
+        /// </summary>
+        /// <returns>A message describing the error.</returns>
+        public string GetFullMessage()
+        {
+            return $"{Property}: [ {string.Join(", ", ValidationErrors)} ].";
         }
     }
 }
