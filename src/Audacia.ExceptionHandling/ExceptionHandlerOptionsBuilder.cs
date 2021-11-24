@@ -26,16 +26,16 @@ namespace Audacia.ExceptionHandling
         /// <typeparam name="TException">The type of exception to handle.</typeparam>
         /// <returns>The <see cref="ExceptionHandlerOptionsBuilder"/> instance.</returns>
         public ExceptionHandlerOptionsBuilder Handle<TException>(
-            Func<TException, IHandledError> handlerAction,
+            Func<TException, ErrorResult> handlerAction,
             Action<ILogger, TException>? logAction = null,
             string? responseType = null)
             where TException : Exception
         {
             // Allow developers to return as single handler result, we still need it as an enumerable
-            var handlerWrapper = new Func<TException, IEnumerable<IHandledError>>((ex) => 
+            var handlerWrapper = new Func<TException, IEnumerable<ErrorResult>>((ex) => 
             {
                 var handledErrorModel = handlerAction.Invoke(ex);
-                return new IHandledError[] { handledErrorModel };
+                return new ErrorResult[] { handledErrorModel };
             });
 
             return Handle(handlerWrapper, logAction, responseType);
@@ -51,17 +51,17 @@ namespace Audacia.ExceptionHandling
         /// <typeparam name="TException">The type of exception to handle.</typeparam>
         /// <returns>The <see cref="ExceptionHandlerOptionsBuilder"/> instance.</returns>
         public ExceptionHandlerOptionsBuilder Handle<TException>(
-            Func<TException, IHandledError> handlerAction,
+            Func<TException, ErrorResult> handlerAction,
             HttpStatusCode statusCode,
             Action<ILogger, TException>? logAction = null,
             string? responseType = null)
             where TException : Exception
         {
             // Allow developers to return as single handler result, we still need it as an enumerable
-            var handlerWrapper = new Func<TException, IEnumerable<IHandledError>>((ex) => 
+            var handlerWrapper = new Func<TException, IEnumerable<ErrorResult>>((ex) => 
             {
                 var handledErrorModel = handlerAction.Invoke(ex);
-                return new IHandledError[] { handledErrorModel };
+                return new ErrorResult[] { handledErrorModel };
             });
 
             return Handle(handlerWrapper, statusCode, logAction, responseType);
@@ -77,7 +77,7 @@ namespace Audacia.ExceptionHandling
         /// <typeparam name="TException">The type of exception to handle.</typeparam>
         /// <returns>The <see cref="ExceptionHandlerOptionsBuilder"/> instance.</returns>
         public ExceptionHandlerOptionsBuilder Handle<TException>(
-            Func<TException, IEnumerable<IHandledError>> handlerAction,
+            Func<TException, IEnumerable<ErrorResult>> handlerAction,
             Action<ILogger, TException>? logAction = null,
             string? responseType = null)
             where TException : Exception
@@ -98,7 +98,7 @@ namespace Audacia.ExceptionHandling
         /// <typeparam name="TException">The type of exception to handle.</typeparam>
         /// <returns>The <see cref="ExceptionHandlerOptionsBuilder"/> instance.</returns>
         public ExceptionHandlerOptionsBuilder Handle<TException>(
-            Func<TException, IEnumerable<IHandledError>> handlerAction,
+            Func<TException, IEnumerable<ErrorResult>> handlerAction,
             HttpStatusCode statusCode,
             Action<ILogger, TException>? logAction = null,
             string? responseType = null)

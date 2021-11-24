@@ -15,7 +15,7 @@ namespace Audacia.ExceptionHandling.Handlers
         /// </summary>
         /// <param name="exception">The exception that has been encountered.</param>
         /// <returns>The error result that has been setup.</returns>
-        public IEnumerable<IHandledError> Invoke(Exception exception);
+        public IEnumerable<ErrorResult> Invoke(Exception exception);
 
         /// <summary>
         /// Logs an exception.

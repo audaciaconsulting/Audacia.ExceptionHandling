@@ -25,7 +25,7 @@ namespace Audacia.ExceptionHandling.Results
         /// <summary>
         /// Gets a collection of one or more errors that have occurred.
         /// </summary>
-        public IEnumerable<IHandledError> Errors { get; } = Enumerable.Empty<IHandledError>();
+        public IEnumerable<ErrorResult> Errors { get; } = Enumerable.Empty<ErrorResult>();
 
         /// <summary>
         /// Creates an instance of <see cref="ErrorResponse"/>.
@@ -40,7 +40,7 @@ namespace Audacia.ExceptionHandling.Results
         {
             Reference = customerReference;
             Type = UnexpectedErrorType;
-            Errors = new IHandledError[]
+            Errors = new ErrorResult[]
             {
                 new ErrorResult(UnexpectedErrorType, UnexpectedErrorMessage)
             };
@@ -52,7 +52,7 @@ namespace Audacia.ExceptionHandling.Results
         /// <param name="customerReference">The reference displayed to the user.</param>
         /// <param name="errorType">The type of error that was handled.</param>
         /// <param name="errors">A collection of one or more errors that have occurred.</param>
-        public ErrorResponse(string customerReference, string errorType, IEnumerable<IHandledError> errors)
+        public ErrorResponse(string customerReference, string errorType, IEnumerable<ErrorResult> errors)
         {
             if (string.IsNullOrWhiteSpace(errorType)) 
             {
