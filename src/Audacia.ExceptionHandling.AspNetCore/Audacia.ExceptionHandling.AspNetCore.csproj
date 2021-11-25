@@ -9,6 +9,9 @@
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
         <Version>4.0.0</Version>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <WarningsAsErrors />
+        <WarningLevel>9999</WarningLevel>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
@@ -21,11 +24,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Audacia.CodeAnalysis" Version="1.0.20353.1">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="Audacia.CodeAnalysis.AspNetCore" Version="1.0.20353.1">
+        <PackageReference Include="Audacia.CodeAnalysis" Version="1.1.21314.2">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>

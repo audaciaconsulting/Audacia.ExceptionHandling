@@ -20,6 +20,11 @@ namespace Audacia.ExceptionHandling.AspNetFramework
             ILoggerFactory loggerFactory,
             Action<ExceptionHandlerOptionsBuilder> configureAction)
         {
+            if (filters == null)
+            {
+                throw new ArgumentNullException(nameof(filters));
+            }
+
             if (configureAction == null)
             {
                 throw new ArgumentNullException(nameof(configureAction));
