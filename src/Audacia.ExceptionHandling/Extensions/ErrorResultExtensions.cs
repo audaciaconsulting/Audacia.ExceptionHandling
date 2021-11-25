@@ -9,7 +9,7 @@ namespace Audacia.ExceptionHandling.Extensions
     /// <summary>
     /// A set of extension methods on <see cref="ErrorResult"/>.
     /// </summary>
-    public static class HandledErrorExtensions
+    public static class ErrorResultExtensions
     {
         /// <summary>
         /// Returns all error messages for the provided error results as a singular string.
