@@ -27,8 +27,8 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.18" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.18" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.21" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.21" />
   </ItemGroup>
 
 </Project>
