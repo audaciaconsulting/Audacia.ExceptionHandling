@@ -5,7 +5,7 @@
         <Authors>Audacia</Authors>
         <Description>Configuration library for adding functionality from Audacia.ExceptionHandling to an ASP.NET Core Web API.</Description>
         <Copyright>Copyright © Audacia 2020</Copyright>
-        <PackageIconUrl>https://www.audacia.co.uk/media/pkenoobu/audacia-logo-circle-blue.png</PackageIconUrl>
+        <PackageIcon>package-icon.png</PackageIcon>
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
         <Version>4.0.0</Version>
@@ -37,4 +37,7 @@
         <ProjectReference Include="..\Audacia.ExceptionHandling\Audacia.ExceptionHandling.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Include="..\..\package-icon.png" Pack="true" PackagePath="\" />
+    </ItemGroup>
 </Project>
