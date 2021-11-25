@@ -19,7 +19,7 @@ namespace Audacia.ExceptionHandling.Handlers
         /// <param name="log">The action to run on the exception to log it.</param>
         /// <param name="errorResponseType">The error type to be displayed on the error response.</param>
         public ExceptionHandler(
-            Func<TException, IEnumerable<IHandledError>> action,
+            Func<TException, IEnumerable<ErrorResult>> action,
             Action<ILogger, TException>? log,
             string? errorResponseType)
         {
@@ -31,7 +31,7 @@ namespace Audacia.ExceptionHandling.Handlers
         /// <summary>
         /// Gets the function which transforms the exception into <see typeparamref="TResult"/>.
         /// </summary>
-        public Func<TException, IEnumerable<IHandledError>> Action { get; }
+        public Func<TException, IEnumerable<ErrorResult>> Action { get; }
 
         /// <summary>
         /// Gets the function which transforms the exception into <see typeparamref="TResult"/>.
@@ -52,7 +52,7 @@ namespace Audacia.ExceptionHandling.Handlers
         /// <param name="exception">The exception to be processed.</param>
         /// <returns>The result that this exception products.</returns>
         /// <exception cref="ArgumentException">If the passed exception is not of the correct type an exception is thrown.</exception>
-        public IEnumerable<IHandledError> Invoke(Exception exception)
+        public IEnumerable<ErrorResult> Invoke(Exception exception)
         {
             if (exception is TException ex)
             {

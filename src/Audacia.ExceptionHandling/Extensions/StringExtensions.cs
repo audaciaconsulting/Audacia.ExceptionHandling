@@ -16,7 +16,7 @@ namespace Audacia.ExceptionHandling.Extensions
         /// Generates a customer reference number in the format "XXXX-XXXX-XXXX" where X can be A-Z,0-9.
         /// </summary>
         /// <returns>Customer reference as a string.</returns>
-        public static string GetCustomerReference() 
+        public static string GetCustomerReference()
         {
             return $"{GetRandomString(4)}-{GetRandomString(4)}-{GetRandomString(4)}";
         }
@@ -25,9 +25,8 @@ namespace Audacia.ExceptionHandling.Extensions
         {
             return new string(Enumerable
                 .Repeat(Characters, length)
-                .Select(str => str[Random.Next(str.Length)])
-                .ToArray()
-            );
+                .Select(text => text[Random.Next(text.Length)])
+                .ToArray());
         }
     }
 }

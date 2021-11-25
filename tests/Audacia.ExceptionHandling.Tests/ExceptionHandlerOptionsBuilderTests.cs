@@ -35,11 +35,11 @@ namespace Audacia.ExceptionHandling.Tests
             {
                 return new[]
                 {
-                    new ValidationErrorResult("FirstName", "First name is required."),
-                    new ValidationErrorResult("DateOfBirth", 
+                    new ErrorResult("FirstName", "First name is required."),
+                    new ErrorResult("DateOfBirth", 
                         "Must be 18+ years old to register.", 
                         "Date must be entered in the format YYYY-MM-DD"),
-                    new ValidationErrorResult("Consent", new List<string>
+                    new ErrorResult("Consent", new List<string>
                     {
                         "Users must over the age of 18 to register.",
                         "Consent must be provided in order to create an account.",
@@ -53,7 +53,7 @@ namespace Audacia.ExceptionHandling.Tests
         public void Matches_The_Exact_Type()
         {
             var expectedCode = nameof(InvalidOperationException);
-            var expectedMessage = string.Format(MessageFormat, nameof(InvalidOperationException));
+            var expectedMessage = new[] { string.Format(MessageFormat, nameof(InvalidOperationException)) };
 
             var provider = Builder.Build();
 
@@ -68,14 +68,14 @@ namespace Audacia.ExceptionHandling.Tests
 
             errorModels[0].Should().NotBeNull();
             errorModels[0].Code.Should().Be(expectedCode);
-            errorModels[0].Message.Should().Be(expectedMessage);
+            errorModels[0].Messages.Should().BeEquivalentTo(expectedMessage);
         }
 
         [Fact]
         public void Matches_A_Base_Type()
         {
             var expectedCode = nameof(SystemException);
-            var expectedMessage = string.Format(MessageFormat, nameof(SystemException));
+            var expectedMessage = new[] { string.Format(MessageFormat, nameof(SystemException)) };
 
             var provider = Builder.Build();
 
@@ -90,7 +90,7 @@ namespace Audacia.ExceptionHandling.Tests
 
             errorModels[0].Should().NotBeNull();
             errorModels[0].Code.Should().Be(expectedCode);
-            errorModels[0].Message.Should().Be(expectedMessage);
+            errorModels[0].Messages.Should().BeEquivalentTo(expectedMessage);
         }
 
         [Fact]
@@ -104,17 +104,17 @@ namespace Audacia.ExceptionHandling.Tests
 
             var handledErrorEnumerable = exceptionHandler.Invoke(new ValidationException());
 
-            var errorModels = handledErrorEnumerable.Cast<ValidationErrorResult>().ToArray();
+            var errorModels = handledErrorEnumerable.ToArray();
             errorModels.Should().HaveCount(3);
 
-            errorModels[0].Property.Should().Be("FirstName");
-            errorModels[0].ValidationErrors.Should().HaveCount(1);
+            errorModels[0].Code.Should().Be("FirstName");
+            errorModels[0].Messages.Should().HaveCount(1);
 
-            errorModels[1].Property.Should().Be("DateOfBirth");
-            errorModels[1].ValidationErrors.Should().HaveCount(2);
+            errorModels[1].Code.Should().Be("DateOfBirth");
+            errorModels[1].Messages.Should().HaveCount(2);
 
-            errorModels[2].Property.Should().Be("Consent");
-            errorModels[2].ValidationErrors.Should().HaveCount(3);
+            errorModels[2].Code.Should().Be("Consent");
+            errorModels[2].Messages.Should().HaveCount(3);
         }
     }
 }

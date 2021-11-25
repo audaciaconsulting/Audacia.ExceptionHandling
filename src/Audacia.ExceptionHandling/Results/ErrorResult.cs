@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Audacia.ExceptionHandling.Results
 {
     /// <summary>
     /// Represents a single issue from an aggregate of errors.
     /// </summary>
-    public class ErrorResult : IHandledError
+    public sealed class ErrorResult
     {
         /// <summary>
         /// Gets the unique code to identify the error.
@@ -14,14 +15,9 @@ namespace Audacia.ExceptionHandling.Results
         public string Code { get; } = default!;
 
         /// <summary>
-        /// Gets the message to describe the error.
+        /// Gets the messages to describe the error.
         /// </summary>
-        public string Message { get; } = default!;
-
-        /// <summary>
-        /// Gets any extra properties that the user wants to use for this error result without creating a new class.
-        /// </summary>
-        public IDictionary<string, object> ExtraProperties { get; } = new Dictionary<string, object>();
+        public IEnumerable<string> Messages { get; } = Enumerable.Empty<string>();
 
         /// <summary>
         /// Creates an instance of <see cref="ErrorResult"/>.
@@ -32,33 +28,36 @@ namespace Audacia.ExceptionHandling.Results
         /// Creates an instance of <see cref="ErrorResult"/>.
         /// </summary>
         /// <param name="errorCode">The unique code to identify the error.</param>
-        /// <param name="message">The message to describe the error.</param>
-        public ErrorResult(string errorCode, string message)
+        /// <param name="messages">One or more messages to describe the error.</param>
+        public ErrorResult(string errorCode, params string[] messages)
         {
             Code = errorCode;
-            Message = message;
+            Messages = messages;
         }
 
         /// <summary>
         /// Creates an instance of <see cref="ErrorResult"/>.
         /// </summary>
         /// <param name="errorCode">The unique code to identify the error.</param>
-        /// <param name="message">The message to describe the error.</param>
-        /// <param name="extraProperties">Any extra properties to be returned to the user.</param>
-        public ErrorResult(string errorCode, string message, Dictionary<string, object> extraProperties)
+        /// <param name="messages">A collection of messages to describe the error.</param>
+        public ErrorResult(string errorCode, IEnumerable<string> messages)
         {
             Code = errorCode;
-            Message = message;
-            ExtraProperties = extraProperties;
+            Messages = messages.ToArray();
         }
 
         /// <summary>
-        /// Returns the <see cref="Code"/> and <see cref="Message"/> as a singlular string.
+        /// Returns the <see cref="Code"/> and <see cref="Messages"/> as a singlular string.
         /// </summary>
         /// <returns>A message describing the error.</returns>
         public string GetFullMessage()
         {
-            return $"{Code}: {Message}";
+            if (Messages.Count() == 1) 
+            {
+                return $"{Code}: {Messages.First()}.";
+            }
+
+            return $"{Code}: [ {string.Join(", ", Messages)} ].";
         }
 
         /// <summary>

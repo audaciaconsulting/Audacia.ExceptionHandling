@@ -7,16 +7,16 @@ using Microsoft.Extensions.Logging;
 namespace Audacia.ExceptionHandling.Extensions
 {
     /// <summary>
-    /// A set of extension methods on <see cref="IHandledError"/>.
+    /// A set of extension methods on <see cref="ErrorResult"/>.
     /// </summary>
-    public static class HandledErrorExtensions
+    public static class ErrorResultExtensions
     {
         /// <summary>
         /// Returns all error messages for the provided error results as a singular string.
         /// </summary>
         /// <param name="handledErrors">An enumerable of handled error results.</param>
         /// <returns>Returns a message describing all errors.</returns>
-        public static string GetFullMessage(this IEnumerable<IHandledError> handledErrors)
+        public static string GetFullMessage(this IEnumerable<ErrorResult> handledErrors)
         {
             return string.Join(Environment.NewLine, handledErrors.Select(e => e.GetFullMessage()));
         }
@@ -29,7 +29,7 @@ namespace Audacia.ExceptionHandling.Extensions
         /// <param name="responseType">The error type to be displayed on the error response.</param>
         /// <returns>The response returned to the user.</returns>
         /// <exception cref="ArgumentNullException"><paramref name="loggerFactory"/> is <see langword="null"/>.</exception>
-        public static ErrorResponse CreateErrorResponse(this IEnumerable<IHandledError> handledErrors, ILoggerFactory loggerFactory, string responseType)
+        public static ErrorResponse CreateErrorResponse(this IEnumerable<ErrorResult> handledErrors, ILoggerFactory loggerFactory, string responseType)
         {
             if (loggerFactory == null)
             {
