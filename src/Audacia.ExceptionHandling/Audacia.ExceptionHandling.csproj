@@ -5,7 +5,7 @@
     <Authors>Audacia</Authors>
     <Description>Base libraries for standardized exception handling.</Description>
     <Copyright>Copyright © Audacia 2020</Copyright>
-    <PackageIconUrl>https://www.audacia.co.uk/media/pkenoobu/audacia-logo-circle-blue.png</PackageIconUrl>
+    <PackageIcon>package-icon.png</PackageIcon>
     <RepositoryUrl>https://dev.azure.com/audacia/Audacia/_git/Audacia.ExceptionHandling</RepositoryUrl>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
@@ -33,4 +33,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.21" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="..\..\package-icon.png" Pack="true" PackagePath="\"/>
+  </ItemGroup>
 </Project>
