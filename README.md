@@ -63,26 +63,10 @@ app.ConfigureExceptions(loggerfactory, e =>
     {
         return ex.Errors
             .GroupBy(ve => ve.PropertyName, ve => ve.ErrorMessage)
-            .Select(group => new ValidationErrorResult(group.Key, group));
+            .Select(group => new ErrorResult(group.Key, group));
     }
     statusCode: HttpStatusCode.BadRequest,
     responseType: ExceptionResponseTypes.Validation);
-
-    e.Handle((DbUpdateException ex) => new ErrorResult(ErrorCodes.DatabaseUpdateFailure, ex.Message)
-    {
-        ExtraProperties =
-        {
-            { "StackTrace", ex.StackTrace.ToString() },
-            {
-                "Entries", 
-                ex.Entries.Select(e => new
-                {
-                    EntityType = e.Entity.GetType().ToString(),
-                    Entity = JsonConvert.SerializeObject(e.Entity)
-                }).ToList()
-            }
-        }
-    });
 
     e.Handle((Exception ex) => ErrorResult.FromException(ex));
 });
@@ -127,19 +111,17 @@ This is the default implementation of `IHttpExceptionHandler`, you can inherit f
 
 ```csharp
 e.Handle((DbEntityValidationException ex) => ex.EntityValidationErrors
-    .Select((entityValidation, index) => 
+    .SelectMany((entityValidation, index) => 
     {
         var entityType = entityValidation.Entry.Entity.GetType().Name;
-        var validationErrors = entityValidation.ValidationErrors
+        return entityValidation.ValidationErrors
             .Select(propertyValidation =>
             {
                 var propertyName = propertyValidation.PropertyName;
                 var message = propertyValidation.ErrorMessage;
-                return new ValidationErrorResult(propertyName, message);
+                return new ErrorResult($"{entityType}.{propertyName}", message);
             });
-
-        return new EntityValidationErrorResult(entityType, validationErrors);
-    }).SelectMany(c => c),
+    }),
     statusCode: HttpStatusCode.BadRequest);
 ```
 
@@ -151,26 +133,10 @@ return builder.Handle(
     {
         return exception.Errors
         .GroupBy(error => error.PropertyName, error => error.ErrorMessage)
-        .Select(group => new ValidationErrorResult(group.Key, group));
+        .Select(group => new ErrorResult(group.Key, group));
     },
     statusCode: HttpStatusCode.BadRequest,
     responseType: ExceptionResponseTypes.Validation);
-```
-
-##### NewtonsoftJSON
-
-```csharp
-e.Handle(
-    (JsonReaderException ex) => new ErrorResult(ErrorCodes.JsonError, ex.message)
-    {
-        ExtraProperties = 
-        {
-            { "Path", ex.Path },
-            { "LineNumber", ex.LineNumber },
-            { "LinePosition", ex.LinePosition }
-        }
-    },
-    HttpStatusCode.BadRequest);
 ```
 
 ### Logging
