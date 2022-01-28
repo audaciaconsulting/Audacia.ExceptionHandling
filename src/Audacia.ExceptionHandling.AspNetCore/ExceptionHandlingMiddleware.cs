@@ -7,8 +7,6 @@ using Audacia.ExceptionHandling.Handlers;
 using Audacia.ExceptionHandling.Results;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 
 namespace Audacia.ExceptionHandling.AspNetCore
 {
@@ -20,6 +18,7 @@ namespace Audacia.ExceptionHandling.AspNetCore
         private readonly RequestDelegate _next;
         private readonly ILoggerFactory _loggerFactory;
         private readonly ExceptionHandlerProvider _provider;
+        private readonly IResponseSerializer _responseSerializer;
 
         /// <summary>
         /// Create a new instance of <see cref="ExceptionHandlingMiddleware" />.
@@ -27,11 +26,13 @@ namespace Audacia.ExceptionHandling.AspNetCore
         /// <param name="next">The next method to call in the middleware pipeline.</param>
         /// <param name="loggerFactory">Logger factory, required for attaching customer references to error logs.</param>
         /// <param name="provider">Provides exception hanlders to gracefully handle failures.</param>
-        public ExceptionHandlingMiddleware(RequestDelegate next, ILoggerFactory loggerFactory, ExceptionHandlerProvider provider)
+        /// <param name="responseSerializer">A <see cref="IResponseSerializer"/> instance that can serialize exception responses.</param>
+        public ExceptionHandlingMiddleware(RequestDelegate next, ILoggerFactory loggerFactory, ExceptionHandlerProvider provider, IResponseSerializer responseSerializer)
         {
             _next = next;
             _loggerFactory = loggerFactory;
             _provider = provider;
+            _responseSerializer = responseSerializer;
         }
 
         /// <summary>
@@ -78,7 +79,7 @@ namespace Audacia.ExceptionHandling.AspNetCore
 
             // PLEASE NOTE: IncludeScopes MUST be enabled on the logging provider to see this value
             using (logger.BeginScope("{CustomerReference}", reference))
-            using (logger.BeginScope("{ExceptionData}", JsonConvert.SerializeObject(exception.Data)))
+            using (logger.BeginScope("{ExceptionData}", _responseSerializer.Serialize(exception.Data)))
             {
                 // Run the log action on the exception handler
                 _provider.Log(logger, handler, exception);
@@ -129,7 +130,7 @@ namespace Audacia.ExceptionHandling.AspNetCore
             return statusCode;
         }
 
-        private static Task SetResponseAsync(HttpContext context, object? result, HttpStatusCode statusCode)
+        private Task SetResponseAsync(HttpContext context, object? result, HttpStatusCode statusCode)
         {
             context.Response.Clear();
             context.Response.StatusCode = (int)statusCode;
@@ -142,14 +143,9 @@ namespace Audacia.ExceptionHandling.AspNetCore
             return Task.CompletedTask;
         }
 
-        private static Task SetResponseBodyAsync(object result, HttpResponse response)
+        private Task SetResponseBodyAsync(object result, HttpResponse response)
         {
-            var json = JsonConvert.SerializeObject(
-                result,
-                new JsonSerializerSettings
-                {
-                    ContractResolver = new CamelCasePropertyNamesContractResolver()
-                });
+            var json = _responseSerializer.Serialize(result);
             
             response.Headers.Add("Content-Type", "application/json");
 #pragma warning disable CA1305 // specify IFormatProvider

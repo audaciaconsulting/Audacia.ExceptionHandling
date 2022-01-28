@@ -8,7 +8,7 @@ For information on how to handle an `ErrorResponse` from the UI, please see the 
 
 ## Frameworks
 
-### ASP.NET MVC Core
+### ASP.NET Core
 
 After adding the `Audacia.ExceptionHandling.AspNetCore` package, the following can be added to your `Startup.cs` file:
 
@@ -23,6 +23,19 @@ public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
 ```
 
 This adds an exception filter that catches every exception that happens and sends a HTTP response of your choosing.
+
+Starting from version 5, the `IResponseSerializer` interface must be implemented to allow the exception handler to serialize error responses (prior to version 5, this was done using `Newtonsoft.Json`, which may not always be appropriate and introduced an unwanted dependency in `Audacia.ExceptionHandling.AspNetCore`).
+
+An example implementation in an app that _is_ using `Newtonsoft.Json` would be:
+```csharp
+public class JsonResponseSerializer : IResponseSerializer
+{
+    public string Serialize(object response)
+    {
+        return JsonConvert.SerializeObject(response);
+    }
+}
+```
 
 ### ASP.NET Framework
 
