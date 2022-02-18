@@ -37,6 +37,12 @@ public class JsonResponseSerializer : IResponseSerializer
 }
 ```
 
+The `IResponseSerializer` implementation must be registered in the app's DI container. For example:
+```csharp
+// Note: choose the appropriate lifetime here, e.g. Transient or Singleton
+services.AddSingleton<IResponseSerializer, JsonResponseSerializer>();
+```
+
 ### ASP.NET Framework
 
 For older .NET Framework projects this can be added into the `Global.asax.cs` file like so:
