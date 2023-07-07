@@ -78,7 +78,7 @@ app.ConfigureExceptions(loggerfactory, e =>
     e.Handle((InvalidOperationException ex) =>
         new ErrorResult(ErrorCodes.InvalidOperation, ex.message));
 
-    e.Handle((ValidationException ex) => 
+    e.Handle((ValidationException ex) =>
     {
         return ex.Errors
             .GroupBy(ve => ve.PropertyName, ve => ve.ErrorMessage)
@@ -130,7 +130,7 @@ This is the default implementation of `IHttpExceptionHandler`, you can inherit f
 
 ```csharp
 e.Handle((DbEntityValidationException ex) => ex.EntityValidationErrors
-    .SelectMany((entityValidation, index) => 
+    .SelectMany((entityValidation, index) =>
     {
         var entityType = entityValidation.Entry.Entity.GetType().Name;
         return entityValidation.ValidationErrors
@@ -148,7 +148,7 @@ e.Handle((DbEntityValidationException ex) => ex.EntityValidationErrors
 
 ```csharp
 return builder.Handle(
-    (ValidationException exception) => 
+    (ValidationException exception) =>
     {
         return exception.Errors
         .GroupBy(error => error.PropertyName, error => error.ErrorMessage)
@@ -194,3 +194,6 @@ e.Handle((ArgumentException ex) => new
 ```
 
 If you don't pass an action for logging a specific type of `Exception`, it will revert back to the default logging that was setup.
+
+# Contributing
+We welcome contributions! Please feel free to check our Contribution Guidlines  for feature requests, issue reporting and guidelines.
