@@ -33,7 +33,9 @@ namespace Audacia.ExceptionHandling.AspNetFramework
             var builder = new ExceptionHandlerOptionsBuilder();
             configureAction(builder);
 
-            var filter = new ExceptionFilter(loggerFactory, builder.Build());
+            var exceptionHandler = builder.Build();
+
+            var filter = new ExceptionFilter(loggerFactory, exceptionHandler);
             filters.Add(filter);
 
             return filters;
