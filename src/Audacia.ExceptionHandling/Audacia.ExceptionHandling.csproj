@@ -5,11 +5,13 @@
     <Authors>Audacia</Authors>
     <Description>Base libraries for standardized exception handling.</Description>
     <Copyright>Copyright © Audacia 2020</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageIcon>package-icon.png</PackageIcon>
     <RepositoryUrl>https://dev.azure.com/audacia/Audacia/_git/Audacia.ExceptionHandling</RepositoryUrl>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
-    <Version>4.0.0</Version>
+    <Version>4.1.0</Version>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsAsErrors />
     <WarningLevel>9999</WarningLevel>
@@ -25,7 +27,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Audacia.CodeAnalysis" Version="1.1.21314.2">
+    <PackageReference Include="Audacia.CodeAnalysis" Version="1.5.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -34,6 +36,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\package-icon.png" Pack="true" PackagePath="\"/>
+    <None Include="..\..\package-icon.png" Pack="true" PackagePath="\" />
   </ItemGroup>
 </Project>

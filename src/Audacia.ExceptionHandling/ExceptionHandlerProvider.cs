@@ -53,7 +53,9 @@ namespace Audacia.ExceptionHandling
                 exceptionType
             };
 
-            types.AddRange(exceptionType.InheritanceHierarchy());
+            var exceptionTypeHierarchy = exceptionType.InheritanceHierarchy();
+
+            types.AddRange(exceptionTypeHierarchy);
 
             foreach (var inheritedType in types)
             {

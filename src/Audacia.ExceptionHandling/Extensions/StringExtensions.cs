@@ -23,10 +23,16 @@ namespace Audacia.ExceptionHandling.Extensions
 
         private static string GetRandomString(int length)
         {
-            return new string(Enumerable
+            var randomCharArray = Enumerable
                 .Repeat(Characters, length)
-                .Select(text => text[Random.Next(text.Length)])
-                .ToArray());
+                .Select(text =>
+                {
+                    var next = Random.Next(text.Length);
+                    return text[next];
+                })
+                .ToArray();
+
+            return new string(randomCharArray);
         }
     }
 }

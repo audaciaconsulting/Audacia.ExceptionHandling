@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
@@ -67,9 +68,12 @@ namespace Audacia.ExceptionHandling.AspNetCore
             }
 
             exception = Flatten(exception);
-            
+
+            // Get exception type
+            var type = exception.GetType();
+
             // Find the related exception handler
-            var handler = _provider.ResolveExceptionHandler(exception.GetType());
+            var handler = _provider.ResolveExceptionHandler(type);
 
             // Generate a customer reference for the current exception
             var reference = StringExtensions.GetCustomerReference();
@@ -148,9 +152,10 @@ namespace Audacia.ExceptionHandling.AspNetCore
             var json = _responseSerializer.Serialize(result);
             
             response.Headers.Add("Content-Type", "application/json");
-#pragma warning disable CA1305 // specify IFormatProvider
-            response.Headers.Add("Content-Length", Encoding.UTF8.GetByteCount(json).ToString());
-#pragma warning restore CA1305
+
+            var value = Encoding.UTF8.GetByteCount(json).ToString(CultureInfo.InvariantCulture);
+
+            response.Headers.Add("Content-Length", value);
             
             return response.WriteAsync(json, Encoding.UTF8);
         }

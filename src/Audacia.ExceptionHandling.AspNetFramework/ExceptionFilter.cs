@@ -71,8 +71,11 @@ namespace Audacia.ExceptionHandling.AspNetFramework
 
             var exception = Flatten(actionExecutedContext.Exception);
 
+            // Get Exception Type
+            var type = exception.GetType();
+
             // Find the related exception handler
-            var handler = _provider.ResolveExceptionHandler(exception.GetType());
+            var handler = _provider.ResolveExceptionHandler(type);
             
             // Generate a customer reference for the current exception
             var reference = StringExtensions.GetCustomerReference();
