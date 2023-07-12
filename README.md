@@ -196,4 +196,4 @@ e.Handle((ArgumentException ex) => new
 If you don't pass an action for logging a specific type of `Exception`, it will revert back to the default logging that was setup.
 
 # Contributing
-We welcome contributions! Please feel free to check our Contribution Guidlines  for feature requests, issue reporting and guidelines.
+We welcome contributions! Please feel free to check our [Contribution Guidlines](https://github.com/audaciaconsulting/.github/blob/main/CONTRIBUTING.md) for feature requests, issue reporting and guidelines.
