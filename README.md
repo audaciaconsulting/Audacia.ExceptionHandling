@@ -195,5 +195,12 @@ e.Handle((ArgumentException ex) => new
 
 If you don't pass an action for logging a specific type of `Exception`, it will revert back to the default logging that was setup.
 
+# Change History
+
+The `Audacia.ExceptionHandling` repository change history can be found in the following changelogs:
+- ExceptionHandling [changelog](src/Audacia.ExceptionHandling/CHANGELOG.md)
+- ExceptionHandling.AspNetCore [changelog](src/Audacia.ExceptionHandling.AspNetCore/CHANGELOG.md)
+- ExceptionHandling.AspNetFramework [changelog](src/Audacia.ExceptionHandling.AspNetFramework/CHANGELOG.md)
+
 # Contributing
 We welcome contributions! Please feel free to check our [Contribution Guidlines](https://github.com/audaciaconsulting/.github/blob/main/CONTRIBUTING.md) for feature requests, issue reporting and guidelines.
