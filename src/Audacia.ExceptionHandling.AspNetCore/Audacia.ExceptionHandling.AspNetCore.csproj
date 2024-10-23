@@ -10,7 +10,7 @@
         <PackageIcon>package-icon.png</PackageIcon>
         <LangVersion>latest</LangVersion>
         <Nullable>enable</Nullable>
-        <Version>5.1.0</Version>
+        <Version>5.1.1</Version>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <WarningsAsErrors />
         <WarningLevel>9999</WarningLevel>
