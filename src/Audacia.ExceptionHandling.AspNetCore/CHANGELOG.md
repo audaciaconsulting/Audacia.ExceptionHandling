@@ -1,5 +1,12 @@
 ﻿# Changelog
 
+## 5.1.1 - 2024-10-23
+### Added
+- CHANGELOG.md file added
+
+### Changed
+- README.md updated to include CHANGELOG.md reference
+
 ## 5.1.0 - 2023-07-12
 ### Added
 - Added icons to packages
