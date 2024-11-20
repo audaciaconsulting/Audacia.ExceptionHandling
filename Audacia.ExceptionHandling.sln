@@ -1,19 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.489
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35431.28
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Audacia.ExceptionHandling", "src\Audacia.ExceptionHandling\Audacia.ExceptionHandling.csproj", "{6B2854E9-16DC-4327-9732-69DB3B8AD853}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Audacia.ExceptionHandling.AspNetCore", "src\Audacia.ExceptionHandling.AspNetCore\Audacia.ExceptionHandling.AspNetCore.csproj", "{E56E2D0E-2726-4018-95B3-B214D66D2848}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Audacia.ExceptionHandling.AspNetFramework", "src\Audacia.ExceptionHandling.AspNetFramework\Audacia.ExceptionHandling.AspNetFramework.csproj", "{C54FAAB0-FD48-4BED-B7EC-5F6BE78BA9A3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Audacia.ExceptionHandling.AspNetFramework", "src\Audacia.ExceptionHandling.AspNetFramework\Audacia.ExceptionHandling.AspNetFramework.csproj", "{C54FAAB0-FD48-4BED-B7EC-5F6BE78BA9A3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Audacia.ExceptionHandling.Tests", "tests\Audacia.ExceptionHandling.Tests\Audacia.ExceptionHandling.Tests.csproj", "{33022217-9716-4C82-AAEA-01063C177BE0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{F6BAB80E-3694-4840-ACF7-77FD18690897}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Audacia.ExceptionHandling.TestApp", "tests\Audacia.ExceptionHandling.TestApp\Audacia.ExceptionHandling.TestApp.csproj", "{A5EF9180-7F24-4881-BE8C-3BFAE2343968}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,17 +35,12 @@ Global
 		{33022217-9716-4C82-AAEA-01063C177BE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{33022217-9716-4C82-AAEA-01063C177BE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{33022217-9716-4C82-AAEA-01063C177BE0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A5EF9180-7F24-4881-BE8C-3BFAE2343968}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A5EF9180-7F24-4881-BE8C-3BFAE2343968}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A5EF9180-7F24-4881-BE8C-3BFAE2343968}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A5EF9180-7F24-4881-BE8C-3BFAE2343968}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{33022217-9716-4C82-AAEA-01063C177BE0} = {F6BAB80E-3694-4840-ACF7-77FD18690897}
-		{A5EF9180-7F24-4881-BE8C-3BFAE2343968} = {F6BAB80E-3694-4840-ACF7-77FD18690897}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {79E28713-672D-45FB-AF9A-85EC6CFBAAEC}
