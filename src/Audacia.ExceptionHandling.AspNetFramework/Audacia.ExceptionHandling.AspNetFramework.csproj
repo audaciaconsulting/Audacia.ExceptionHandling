@@ -10,7 +10,7 @@
     <Copyright>Copyright © Audacia 2020</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <Version>4.1.0</Version>
+    <Version>4.1.1</Version>
     <DocumentationFile>bin\$(Configuration)\Audacia.ExceptionHandling.AspNetFramework.xml</DocumentationFile>
     <OutputPath>bin\$(Configuration)\</OutputPath>
     <PackageIcon>package-icon.png</PackageIcon>
