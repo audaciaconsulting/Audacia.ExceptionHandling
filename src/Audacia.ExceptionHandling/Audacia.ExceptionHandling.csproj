@@ -11,7 +11,6 @@
     <RepositoryUrl>https://github.com/audaciaconsulting/Audacia.ExceptionHandling</RepositoryUrl>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
-    <Version>4.1.1</Version>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsAsErrors />
     <WarningLevel>9999</WarningLevel>
