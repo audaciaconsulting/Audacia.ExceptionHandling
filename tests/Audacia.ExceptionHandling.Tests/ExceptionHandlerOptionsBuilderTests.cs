@@ -13,8 +13,6 @@ namespace Audacia.ExceptionHandling.Tests
     {
         private const string MessageFormat = "An {0} has occurred.";
 
-        private ExceptionHandlerOptionsBuilder Builder { get; } = new ExceptionHandlerOptionsBuilder();
-
         public ExceptionHandlerOptionsBuilderTests()
         {
             Builder.Handle((InvalidOperationException e) =>
