@@ -1,5 +1,15 @@
 ﻿# Changelog
 
+## 5.1.2 - 2024-12-10
+### Added
+- No new functionality added
+
+### Removed
+- Individual project versions
+
+### Changed
+- Added a `Directory.Build.props` file with one version for the solution
+
 ## 5.1.1 - 2024-10-23
 ### Added
 - CHANGELOG.md file added
