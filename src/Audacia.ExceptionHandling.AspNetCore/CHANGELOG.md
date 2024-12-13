@@ -5,7 +5,7 @@
 - No new functionality added
 
 ### Removed
-- Individual project versions
+- No new functionality removed
 
 ### Changed
 - Added a `Directory.Build.props` file with one version for the solution
