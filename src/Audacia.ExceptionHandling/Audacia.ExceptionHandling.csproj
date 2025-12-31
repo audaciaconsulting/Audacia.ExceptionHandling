@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <Authors>Audacia</Authors>
+    <Version>5.1.2</Version>
     <Description>Base libraries for standardized exception handling.</Description>
     <Copyright>Copyright © Audacia 2020</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>

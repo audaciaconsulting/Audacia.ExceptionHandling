@@ -4,6 +4,7 @@
     <TargetFramework>net472</TargetFramework>
     <AssemblyTitle>Audacia.ExceptionHandling.AspNetFramework</AssemblyTitle>
     <Authors>Audacia</Authors>
+    <Version>5.1.2</Version>
     <Company>Audacia Consulting Ltd.</Company>
     <Product>Audacia.ExceptionHandling.AspNetFramework</Product>
     <Description>Configuration library for adding functionality from Audacia.ExceptionHandling to an ASP.NET 5 Web API.</Description>

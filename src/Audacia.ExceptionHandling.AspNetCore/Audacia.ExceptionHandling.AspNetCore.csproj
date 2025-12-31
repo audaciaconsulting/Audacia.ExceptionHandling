@@ -3,6 +3,7 @@
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
         <Authors>Audacia</Authors>
+        <Version>5.1.2</Version>
         <Description>Configuration library for adding functionality from Audacia.ExceptionHandling to an ASP.NET Core Web API.</Description>
         <Copyright>Copyright © Audacia 2020</Copyright>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
