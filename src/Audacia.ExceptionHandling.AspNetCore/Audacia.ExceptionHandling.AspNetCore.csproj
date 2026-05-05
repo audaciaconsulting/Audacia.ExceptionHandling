@@ -3,7 +3,6 @@
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
         <Authors>Audacia</Authors>
-        <Version>5.1.2</Version>
         <Description>Configuration library for adding functionality from Audacia.ExceptionHandling to an ASP.NET Core Web API.</Description>
         <Copyright>Copyright © Audacia 2020</Copyright>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -26,13 +25,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Audacia.CodeAnalysis" Version="1.5.1">
+        <PackageReference Include="Audacia.CodeAnalysis" Version="1.12.1">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.AspNetCore.Diagnostics" Version="2.2.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Diagnostics" Version="2.3.9" />
         <PackageReference Include="System.Diagnostics.StackTrace" Version="4.3.0" />
-        <PackageReference Include="System.Text.Encodings.Web" Version="4.5.1" />
+        <PackageReference Include="System.Text.Encodings.Web" Version="10.0.7" />
     </ItemGroup>
 
     <ItemGroup>

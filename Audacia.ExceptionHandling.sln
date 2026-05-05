@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.11.35431.28
+# Visual Studio Version 18
+VisualStudioVersion = 18.3.11520.95 d18.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Audacia.ExceptionHandling", "src\Audacia.ExceptionHandling\Audacia.ExceptionHandling.csproj", "{6B2854E9-16DC-4327-9732-69DB3B8AD853}"
 EndProject
@@ -12,6 +12,19 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Audacia.ExceptionHandling.Tests", "tests\Audacia.ExceptionHandling.Tests\Audacia.ExceptionHandling.Tests.csproj", "{33022217-9716-4C82-AAEA-01063C177BE0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{F6BAB80E-3694-4840-ACF7-77FD18690897}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{E3193231-EC7F-4679-9B06-67EB6781BF04}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		CHANGELOG.md = CHANGELOG.md
+		Directory.Build.props = Directory.Build.props
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{E13C225B-2E67-4C07-9E25-541DBD99AEBA}"
+	ProjectSection(SolutionItems) = preProject
+		build.yaml = build.yaml
+		dependency-track.pipeline.yaml = dependency-track.pipeline.yaml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
