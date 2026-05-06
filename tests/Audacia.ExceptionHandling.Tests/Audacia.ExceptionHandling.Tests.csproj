@@ -4,6 +4,8 @@
     <Version>5.1.2</Version>
     <TargetFramework>net10.0</TargetFramework>
     <IsPackable>false</IsPackable>
+	<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+	<Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Audacia.CodeAnalysis" Version="1.12.1">

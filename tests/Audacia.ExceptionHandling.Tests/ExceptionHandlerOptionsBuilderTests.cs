@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using Audacia.ExceptionHandling.Results;
@@ -17,43 +18,53 @@ namespace Audacia.ExceptionHandling.Tests
 
         public ExceptionHandlerOptionsBuilderTests()
         {
-            Builder.Handle((InvalidOperationException e) =>
+            Builder.Handle(
+                (InvalidOperationException _) =>
             {
                 return new ErrorResult(
                     nameof(InvalidOperationException),
-                    string.Format(MessageFormat, nameof(InvalidOperationException)));
+                    string.Format(
+                        CultureInfo.InvariantCulture, MessageFormat, nameof(InvalidOperationException)));
             }, HttpStatusCode.Ambiguous);
 
-            Builder.Handle((SystemException e) =>
+            Builder.Handle(
+                (SystemException _) =>
             {
                 return new ErrorResult(
                     nameof(SystemException),
-                    string.Format(MessageFormat, nameof(SystemException)));
+                    string.Format(
+                        CultureInfo.InvariantCulture, MessageFormat, nameof(SystemException)));
             }, HttpStatusCode.Ambiguous);
 
-            Builder.Handle((ValidationException e) =>
-            {
-                return new[]
+            Builder.Handle(
+                (ValidationException _) =>
                 {
-                    new ErrorResult("FirstName", "First name is required."),
-                    new ErrorResult("DateOfBirth", 
-                        "Must be 18+ years old to register.", 
-                        "Date must be entered in the format YYYY-MM-DD"),
-                    new ErrorResult("Consent", new List<string>
-                    {
-                        "Users must over the age of 18 to register.",
-                        "Consent must be provided in order to create an account.",
-                        "You must actually read our terms and conditions before clicking accept.",
-                    })
-                };
-            }, HttpStatusCode.Ambiguous);
+                    return
+                    [
+                        new ErrorResult("FirstName", "First name is required."),
+                        new ErrorResult(
+                            "DateOfBirth", 
+                            "Must be 18+ years old to register.", 
+                            "Date must be entered in the format YYYY-MM-DD"),
+                        new ErrorResult("Consent", new List<string>
+                        {
+                            "Users must over the age of 18 to register.",
+                            "Consent must be provided in order to create an account.",
+                            "You must actually read our terms and conditions before clicking accept."
+                        })
+                    ];
+                }, 
+                HttpStatusCode.Ambiguous);
         }
 
         [Fact]
         public void Matches_The_Exact_Type()
         {
-            var expectedCode = nameof(InvalidOperationException);
-            var expectedMessage = new[] { string.Format(MessageFormat, nameof(InvalidOperationException)) };
+            const string expectedCode = nameof(InvalidOperationException);
+            var expectedMessage = new[] 
+            { 
+                string.Format(CultureInfo.InvariantCulture, MessageFormat, nameof(InvalidOperationException)) 
+            };
 
             var provider = Builder.Build();
 
@@ -61,9 +72,10 @@ namespace Audacia.ExceptionHandling.Tests
 
             exceptionHandler.ShouldNotBeNull();
 
-            var handledErrorEnumerable = exceptionHandler.Invoke(new InvalidOperationException());
+            var exception = new InvalidOperationException();
+            var handledErrorEnumerable = exceptionHandler.Invoke(exception);
 
-            var errorModels = handledErrorEnumerable.Cast<ErrorResult>().ToArray();
+            var errorModels = handledErrorEnumerable.ToArray();
             errorModels.ShouldHaveSingleItem();
 
             errorModels[0].ShouldNotBeNull();
@@ -74,8 +86,11 @@ namespace Audacia.ExceptionHandling.Tests
         [Fact]
         public void Matches_A_Base_Type()
         {
-            var expectedCode = nameof(SystemException);
-            var expectedMessage = new[] { string.Format(MessageFormat, nameof(SystemException)) };
+            const string expectedCode = nameof(SystemException);
+            var expectedMessage = new[] 
+            { 
+                string.Format(CultureInfo.InvariantCulture, MessageFormat, nameof(SystemException)) 
+            };
 
             var provider = Builder.Build();
 
@@ -83,9 +98,10 @@ namespace Audacia.ExceptionHandling.Tests
 
             exceptionHandler.ShouldNotBeNull();
 
-            var handledErrorEnumerable = exceptionHandler.Invoke(new SystemException());
+            var exception = new SystemException();
+            var handledErrorEnumerable = exceptionHandler.Invoke(exception);
 
-            var errorModels = handledErrorEnumerable.Cast<ErrorResult>().ToArray();
+            var errorModels = handledErrorEnumerable.ToArray();
             errorModels.ShouldHaveSingleItem();
 
             errorModels[0].ShouldNotBeNull();
@@ -102,7 +118,8 @@ namespace Audacia.ExceptionHandling.Tests
 
             exceptionHandler.ShouldNotBeNull();
 
-            var handledErrorEnumerable = exceptionHandler.Invoke(new ValidationException());
+            var exception = new ValidationException();
+            var handledErrorEnumerable = exceptionHandler.Invoke(exception);
 
             var errorModels = handledErrorEnumerable.ToArray();
             errorModels.Length.ShouldBe(3);
