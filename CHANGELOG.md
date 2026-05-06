@@ -6,12 +6,13 @@
 
 ### Removed
 - Consolidated indvidual CHANGELOG.md files into a solution-level one.
-- Conslidated individual csproj versioning into `Directory.Build.Props`.
+- Consolidated individual `.csproj` versioning into `Directory.Build.Props`
 
 ### Changed
 - Upgraded test project to .NET 10.
 - Upgraded all packages to the latest versions.
 - Moved Audacia.ExceptionHandling.AspNetCore CHANGELOG.md content to solution level.
+- Registered shared package `README.md`.
 
 ## 5.1.2 - 2024-12-10
 ### Added
