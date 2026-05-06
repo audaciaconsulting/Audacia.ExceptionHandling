@@ -4,7 +4,6 @@
     <TargetFramework>net472</TargetFramework>
     <AssemblyTitle>Audacia.ExceptionHandling.AspNetFramework</AssemblyTitle>
     <Authors>Audacia</Authors>
-    <Version>5.1.2</Version>
     <Company>Audacia Consulting Ltd.</Company>
     <Product>Audacia.ExceptionHandling.AspNetFramework</Product>
     <Description>Configuration library for adding functionality from Audacia.ExceptionHandling to an ASP.NET 5 Web API.</Description>
@@ -28,17 +27,17 @@
     <WarningsAsErrors>CS1591</WarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Audacia.CodeAnalysis" Version="1.5.1">
+    <PackageReference Include="Audacia.CodeAnalysis" Version="1.12.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.7" />
-    <PackageReference Include="Microsoft.AspNet.Razor" Version="3.2.7" />
-    <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.7" />
-    <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.7" />
-    <PackageReference Include="Microsoft.AspNet.WebPages" Version="3.2.7" />
-    <PackageReference Include="Microsoft.Web.Infrastructure" Version="1.0.0.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.3.0" />
+    <PackageReference Include="Microsoft.AspNet.Razor" Version="3.3.0" />
+    <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="6.0.0" />
+    <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.3.0" />
+    <PackageReference Include="Microsoft.AspNet.WebPages" Version="3.3.0" />
+    <PackageReference Include="Microsoft.Web.Infrastructure" Version="2.0.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Net.Http" />

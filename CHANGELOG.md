@@ -1,18 +1,49 @@
 ﻿# Changelog
 
-## 4.1.1 - 2024-10-23
+## 5.1.3 - 2026-05-05
+### Added
+- No functionality changed
+
+### Removed
+- Consolidated indvidual CHANGELOG.md files into a solution-level one.
+- Consolidated individual `.csproj` versioning into `Directory.Build.Props`
+
+### Changed
+- Upgraded test project to .NET 10.
+- Upgraded all packages to the latest versions.
+- Moved Audacia.ExceptionHandling.AspNetCore CHANGELOG.md content to solution level.
+- Registered shared package `README.md`.
+
+## 5.1.2 - 2024-12-10
+### Added
+- No new functionality added
+
+### Removed
+- No new functionality removed
+
+### Changed
+- Added a `Directory.Build.props` file with one version for the solution
+
+## 5.1.1 - 2024-10-23
 ### Added
 - CHANGELOG.md file added
 
 ### Changed
 - README.md updated to include CHANGELOG.md reference
 
-## 4.1.0 - 2023-07-12
+## 5.1.0 - 2023-07-12
 ### Added
 - Added icons to packages
 
 ### Changed
 - Upgraded Audacia.CodeAnalysis.Analyzers package
+
+## 5.0.0 - 2022-01-28
+### Added
+- No new functionality added
+
+### Removed
+- Removed Newtonsoft.Json dependency
 
 ## 4.0.0 - 2021-11-25
 ### Added

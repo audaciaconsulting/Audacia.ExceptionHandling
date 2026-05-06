@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using Audacia.ExceptionHandling.Results;
-using FluentAssertions;
+using Shouldly;
 using Xunit;
 
 namespace Audacia.ExceptionHandling.Tests
@@ -17,80 +18,95 @@ namespace Audacia.ExceptionHandling.Tests
 
         public ExceptionHandlerOptionsBuilderTests()
         {
-            Builder.Handle((InvalidOperationException e) =>
+            Builder.Handle(
+                (InvalidOperationException _) =>
             {
                 return new ErrorResult(
                     nameof(InvalidOperationException),
-                    string.Format(MessageFormat, nameof(InvalidOperationException)));
+                    string.Format(
+                        CultureInfo.InvariantCulture, MessageFormat, nameof(InvalidOperationException)));
             }, HttpStatusCode.Ambiguous);
 
-            Builder.Handle((SystemException e) =>
+            Builder.Handle(
+                (SystemException _) =>
             {
                 return new ErrorResult(
                     nameof(SystemException),
-                    string.Format(MessageFormat, nameof(SystemException)));
+                    string.Format(
+                        CultureInfo.InvariantCulture, MessageFormat, nameof(SystemException)));
             }, HttpStatusCode.Ambiguous);
 
-            Builder.Handle((ValidationException e) =>
-            {
-                return new[]
+            Builder.Handle(
+                (ValidationException _) =>
                 {
-                    new ErrorResult("FirstName", "First name is required."),
-                    new ErrorResult("DateOfBirth", 
-                        "Must be 18+ years old to register.", 
-                        "Date must be entered in the format YYYY-MM-DD"),
-                    new ErrorResult("Consent", new List<string>
-                    {
-                        "Users must over the age of 18 to register.",
-                        "Consent must be provided in order to create an account.",
-                        "You must actually read our terms and conditions before clicking accept.",
-                    })
-                };
-            }, HttpStatusCode.Ambiguous);
+                    return
+                    [
+                        new ErrorResult("FirstName", "First name is required."),
+                        new ErrorResult(
+                            "DateOfBirth", 
+                            "Must be 18+ years old to register.", 
+                            "Date must be entered in the format YYYY-MM-DD"),
+                        new ErrorResult("Consent", new List<string>
+                        {
+                            "Users must over the age of 18 to register.",
+                            "Consent must be provided in order to create an account.",
+                            "You must actually read our terms and conditions before clicking accept."
+                        })
+                    ];
+                }, 
+                HttpStatusCode.Ambiguous);
         }
 
         [Fact]
         public void Matches_The_Exact_Type()
         {
-            var expectedCode = nameof(InvalidOperationException);
-            var expectedMessage = new[] { string.Format(MessageFormat, nameof(InvalidOperationException)) };
+            const string expectedCode = nameof(InvalidOperationException);
+            var expectedMessage = new[] 
+            { 
+                string.Format(CultureInfo.InvariantCulture, MessageFormat, nameof(InvalidOperationException)) 
+            };
 
             var provider = Builder.Build();
 
             var exceptionHandler = provider.ResolveExceptionHandler<InvalidOperationException>();
 
-            exceptionHandler.Should().NotBeNull();
+            exceptionHandler.ShouldNotBeNull();
 
-            var handledErrorEnumerable = exceptionHandler.Invoke(new InvalidOperationException());
+            var exception = new InvalidOperationException();
+            var handledErrorEnumerable = exceptionHandler.Invoke(exception);
 
-            var errorModels = handledErrorEnumerable.Cast<ErrorResult>().ToArray();
-            errorModels.Should().HaveCount(1);
+            var errorModels = handledErrorEnumerable.ToArray();
+            errorModels.ShouldHaveSingleItem();
 
-            errorModels[0].Should().NotBeNull();
-            errorModels[0].Code.Should().Be(expectedCode);
-            errorModels[0].Messages.Should().BeEquivalentTo(expectedMessage);
+            errorModels[0].ShouldNotBeNull();
+            errorModels[0].Code.ShouldBe(expectedCode);
+            errorModels[0].Messages.ShouldBeEquivalentTo(expectedMessage);
         }
 
         [Fact]
         public void Matches_A_Base_Type()
         {
-            var expectedCode = nameof(SystemException);
-            var expectedMessage = new[] { string.Format(MessageFormat, nameof(SystemException)) };
+            const string expectedCode = nameof(SystemException);
+            var expectedMessage = new[] 
+            { 
+                string.Format(CultureInfo.InvariantCulture, MessageFormat, nameof(SystemException)) 
+            };
 
             var provider = Builder.Build();
 
             var exceptionHandler = provider.ResolveExceptionHandler<SystemException>();
 
-            exceptionHandler.Should().NotBeNull();
+            exceptionHandler.ShouldNotBeNull();
 
-            var handledErrorEnumerable = exceptionHandler.Invoke(new SystemException());
+            var exception = new SystemException();
+            var handledErrorEnumerable = exceptionHandler.Invoke(exception);
 
-            var errorModels = handledErrorEnumerable.Cast<ErrorResult>().ToArray();
-            errorModels.Should().HaveCount(1);
+            var errorModels = handledErrorEnumerable.ToArray();
+            errorModels.ShouldHaveSingleItem();
 
-            errorModels[0].Should().NotBeNull();
-            errorModels[0].Code.Should().Be(expectedCode);
-            errorModels[0].Messages.Should().BeEquivalentTo(expectedMessage);
+            errorModels[0].ShouldNotBeNull();
+            errorModels[0].Code.ShouldBe(expectedCode);
+            errorModels[0].Messages.ShouldBeEquivalentTo(expectedMessage);
         }
 
         [Fact]
@@ -100,21 +116,22 @@ namespace Audacia.ExceptionHandling.Tests
 
             var exceptionHandler = provider.ResolveExceptionHandler<ValidationException>();
 
-            exceptionHandler.Should().NotBeNull();
+            exceptionHandler.ShouldNotBeNull();
 
-            var handledErrorEnumerable = exceptionHandler.Invoke(new ValidationException());
+            var exception = new ValidationException();
+            var handledErrorEnumerable = exceptionHandler.Invoke(exception);
 
             var errorModels = handledErrorEnumerable.ToArray();
-            errorModels.Should().HaveCount(3);
+            errorModels.Length.ShouldBe(3);
 
-            errorModels[0].Code.Should().Be("FirstName");
-            errorModels[0].Messages.Should().HaveCount(1);
+            errorModels[0].Code.ShouldBe("FirstName");
+            errorModels[0].Messages.ShouldHaveSingleItem();
 
-            errorModels[1].Code.Should().Be("DateOfBirth");
-            errorModels[1].Messages.Should().HaveCount(2);
+            errorModels[1].Code.ShouldBe("DateOfBirth");
+            errorModels[1].Messages.Count().ShouldBe(2);
 
-            errorModels[2].Code.Should().Be("Consent");
-            errorModels[2].Messages.Should().HaveCount(3);
+            errorModels[2].Code.ShouldBe("Consent");
+            errorModels[2].Messages.Count().ShouldBe(3);
         }
     }
 }

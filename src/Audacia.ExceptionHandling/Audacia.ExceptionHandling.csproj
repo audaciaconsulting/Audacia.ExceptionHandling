@@ -3,7 +3,6 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <Authors>Audacia</Authors>
-    <Version>5.1.2</Version>
     <Description>Base libraries for standardized exception handling.</Description>
     <Copyright>Copyright © Audacia 2020</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -27,12 +26,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Audacia.CodeAnalysis" Version="1.5.1">
+    <PackageReference Include="Audacia.CodeAnalysis" Version="1.12.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.21" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.21" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.7" />
   </ItemGroup>
 
   <ItemGroup>
