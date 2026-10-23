@@ -29,7 +29,7 @@
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.AspNetCore.Diagnostics" Version="2.3.9" />
+        <PackageReference Include="Microsoft.AspNetCore.Diagnostics" Version="2.3.13" />
         <PackageReference Include="System.Diagnostics.StackTrace" Version="4.3.0" />
         <PackageReference Include="System.Text.Encodings.Web" Version="10.0.7" />
     </ItemGroup>
