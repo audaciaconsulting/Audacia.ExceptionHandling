@@ -13,7 +13,6 @@
 - Updated Microsoft.Extensions.Logging dependency to version 10.0.13
 - Updated Microsoft.Extensions.Logging.Abstractions dependency to version 10.0.13
 - Updated Microsoft.AspNetCore.Diagnostics dependency to version 2.3.13
-- Updated Microsoft.NET.Test.Sdk dependency to version 18.10.1
 
 ## 5.1.3 - 2026-05-05
 ### Added
