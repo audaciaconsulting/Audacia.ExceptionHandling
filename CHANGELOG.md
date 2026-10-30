@@ -1,5 +1,20 @@
 ﻿# Changelog
 
+## 5.1.4 - 2026-10-30
+
+### Added
+- No new functionality added
+
+### Removed
+- No functionality removed
+
+### Changed
+- Updated System.Text.Encodings.Web dependency to version 10.0.13
+- Updated Microsoft.Extensions.Logging dependency to version 10.0.13
+- Updated Microsoft.Extensions.Logging.Abstractions dependency to version 10.0.13
+- Updated Microsoft.AspNetCore.Diagnostics dependency to version 2.3.13
+- Updated Microsoft.NET.Test.Sdk dependency to version 18.10.1
+
 ## 5.1.3 - 2026-05-05
 ### Added
 - No functionality changed
