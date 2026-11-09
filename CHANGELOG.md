@@ -1,5 +1,11 @@
 ﻿# Changelog
 
+# 5.1.5 - 2026-11-09
+
+### Changed
+
+- Updated System.Text.Encodings.Web dependency to version 10.0.14 to address security vulnerability.
+
 ## 5.1.4 - 2026-11-02
 
 ### Added
