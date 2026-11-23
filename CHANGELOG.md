@@ -1,5 +1,13 @@
 ﻿# Changelog
 
+# 5.1.6 - 2026-11-23
+
+### Changed
+- Updated Microsoft.AspNetCore.Diagnostics to version 2.3.14.
+- Updated Microsoft.Extensions.Logging to version 10.0.15.
+- Updated Microsoft.Extensions.Logging.Abstractions to version 10.0.15.
+- Updated System.Text.Encodings.Web to version 10.0.15.
+
 # 5.1.5 - 2026-11-09
 
 ### Changed
